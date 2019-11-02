@@ -39,6 +39,7 @@ public class Grappler : MonoBehaviour
     private void DestroyJoint()
     {
         _joint.connectedBody.gameObject.layer = 10;
+        SwitchToKinematic();
         Destroy(_joint);
         _joint = null;
     }
@@ -47,31 +48,26 @@ public class Grappler : MonoBehaviour
     void Update()
     {
         HookInput();
-        if (!_hook && _joint != null)
+        // If the player is hanged to a star and either he's not pressing the hook button or he's touching the ground,
+        // destroy the joint
+        if (_joint != null)
         {
-            DestroyJoint();
-        }
-        if (_locker.IsLocked())
-        {
-            if (!_controller.IsGrounded())
+            if (!_hook || _controller.IsGrounded())
             {
-                if (_hook && _joint == null)
-                {
-                    _joint = gameObject.AddComponent<DistanceJoint2D>();
-                    Rigidbody2D otherRb = _locker.GetTarget().GetComponent<Rigidbody2D>();
-                    _joint.distance = (_rb.position - otherRb.position).magnitude;
-                    _joint.connectedBody = otherRb;
-                    _locker.GetTarget().layer = 0;
-                }
+                DestroyJoint();
             }
-            else
+        }
+        // If the player is locking a star, he's not touching the ground, he's pressing the hook button
+        // and the joint does not exist yet, then create it
+        else
+        {
+            if (_locker.IsLocked() && !_controller.IsGrounded() && _hook)
             {
-                if (_joint != null)
-                {
-                    DestroyJoint();
-                }
-                SwitchToKinematic();
-                _hook = false;
+                _joint = gameObject.AddComponent<DistanceJoint2D>();
+                Rigidbody2D otherRb = _locker.GetTarget().GetComponent<Rigidbody2D>();
+                _joint.distance = (_rb.position - otherRb.position).magnitude;
+                _joint.connectedBody = otherRb;
+                _locker.GetTarget().layer = 0;
             }
         }
     }
