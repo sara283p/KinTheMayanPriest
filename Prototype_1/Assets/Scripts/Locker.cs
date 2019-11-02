@@ -102,7 +102,7 @@ public class Locker : MonoBehaviour
 
     public bool IsLocked()
     {
-	    return _target != null;
+	    return _locked;
     }
 
     public GameObject GetTarget()
