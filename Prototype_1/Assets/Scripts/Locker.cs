@@ -42,27 +42,7 @@ public class Locker : MonoBehaviour
         	{
         		activeIcon.transform.position = _target.transform.position;
         		activeIcon.SetActive(true);
-        		/*if (!_grounded)
-        		{
-        			if (_hook && _joint == null)
-        			{
-        				_joint = gameObject.AddComponent<DistanceJoint2D>();
-        				Rigidbody2D otherRb = _closest.GetComponent<Rigidbody2D>();
-        				_joint.distance = (rb2D.position - otherRb.position).magnitude;
-        				_joint.connectedBody = otherRb;
-        			}
-        		}
-        		else
-        		{
-        			if (_joint != null)
-        			{
-        				Destroy(_joint);
-        				_joint = null;
-        			}
-        			SwitchToKinematic();
-        			_hook = false;
-        		}*/
-        	}
+            }
         }
         else
         {
