@@ -26,14 +26,21 @@ public class Grappler : MonoBehaviour
 
     private void HookInput()
     {
-        if (Input.GetKeyDown(KeyCode.UpArrow))
+        if (Input.GetButtonDown("Fire1"))
         {
             _hook = true;
         }
-        else if(Input.GetKeyUp(KeyCode.UpArrow))
+        else if(Input.GetButtonUp("Fire1"))
         {
             _hook = false;
         }
+    }
+
+    private void DestroyJoint()
+    {
+        _joint.connectedBody.gameObject.layer = 10;
+        Destroy(_joint);
+        _joint = null;
     }
     
     // Update is called once per frame
@@ -42,8 +49,7 @@ public class Grappler : MonoBehaviour
         HookInput();
         if (!_hook && _joint != null)
         {
-            Destroy(_joint);
-            _joint = null;
+            DestroyJoint();
         }
         if (_locker.IsLocked())
         {
@@ -55,14 +61,14 @@ public class Grappler : MonoBehaviour
                     Rigidbody2D otherRb = _locker.GetTarget().GetComponent<Rigidbody2D>();
                     _joint.distance = (_rb.position - otherRb.position).magnitude;
                     _joint.connectedBody = otherRb;
+                    _locker.GetTarget().layer = 0;
                 }
             }
             else
             {
                 if (_joint != null)
                 {
-                    Destroy(_joint);
-                    _joint = null;
+                    DestroyJoint();
                 }
                 SwitchToKinematic();
                 _hook = false;

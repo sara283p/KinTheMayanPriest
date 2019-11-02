@@ -7,9 +7,10 @@ using UnityEngine;
 public class Locker : MonoBehaviour
 {
 	public GameObject activeIcon;
+	public LayerMask starLayerMask;
 	
 	private bool _locked;
-	private GameObject _closest;
+	private GameObject _target;
 	private GameObject[] _stars;
 	private float _distance;
 	private Rigidbody2D _rb;
@@ -37,9 +38,9 @@ public class Locker : MonoBehaviour
         LockInput();
 	    if (_locked)
         {
-        	if (_closest != null)
+        	if (_target != null)
         	{
-        		activeIcon.transform.position = _closest.transform.position;
+        		activeIcon.transform.position = _target.transform.position;
         		activeIcon.SetActive(true);
         		/*if (!_grounded)
         		{
@@ -65,11 +66,12 @@ public class Locker : MonoBehaviour
         }
         else
         {
-        	_closest = null;
+        	_target = null;
         	activeIcon.SetActive(false);
         }
 
-        FindClosestStar();
+        //FindClosestStar();
+        TargetStar();
     }
     
     private void FindClosestStar()
@@ -82,18 +84,49 @@ public class Locker : MonoBehaviour
 		    if (currDist < _distance)
 		    {
 			    _distance = currDist;
-			    _closest = star;
+			    _target = star;
 		    }
 	    }
     }
 
+    private void TargetStar()
+    {
+	    // Get mouse position as a Vector2
+	    Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+	    // Cast a ray from player to mouse position
+	    Vector2 relativeMousePos = mousePosition - _rb.position;
+	    RaycastHit2D hit = Physics2D.Raycast(_rb.position, relativeMousePos, Mathf.Infinity, starLayerMask);
+
+	    pos = relativeMousePos * 100;
+	    if (hit.rigidbody == null)
+	    {
+		    activeIcon.SetActive(false);
+		    return;
+	    }
+
+	    _target = hit.rigidbody.gameObject;
+	}
+
+    // START of GIZMOS section useful for debugging
+    
+    private Vector2 pos;
+
+    private void OnDrawGizmos()
+    {
+	    if(pos != null)
+			Gizmos.DrawRay(_rb.position, pos);
+    }
+    
+    // END of GIZMOS section
+
     public bool IsLocked()
     {
-	    return _locked && _closest != null;
+	    return _locked && _target != null;
     }
 
     public GameObject GetTarget()
     {
-	    return _closest;
+	    return _target;
     }
 }
