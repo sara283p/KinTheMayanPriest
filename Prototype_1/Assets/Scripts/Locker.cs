@@ -8,12 +8,15 @@ public class Locker : MonoBehaviour
 {
 	public GameObject activeIcon;
 	public LayerMask starLayerMask;
-	
+
+	private Vector2 _oldMousePosition;
 	private bool _locked;
 	private GameObject _target;
 	private GameObject[] _stars;
 	private float _distance;
 	private Rigidbody2D _rb;
+
+	public Transform starViewFinder;
 
 	void Awake()
 	{
@@ -22,11 +25,11 @@ public class Locker : MonoBehaviour
 
 	private void LockInput()
 	{
-		if (Input.GetButtonDown("Fire3"))
+		if (Input.GetButtonDown("LockStarHang"))
 		{
 			_locked = true;
 		}
-		else if (Input.GetButtonUp("Fire3"))
+		else if (Input.GetButtonUp("LockStarHang"))
 		{
 			_locked = false;
 		}
@@ -36,43 +39,16 @@ public class Locker : MonoBehaviour
     void Update()
     {
         LockInput();
-	    if (_locked)
-        {
-        	if (_target != null)
-        	{
-        		activeIcon.transform.position = _target.transform.position;
-        		activeIcon.SetActive(true);
-            }
-        }
-        else
-        {
-        	_target = null;
-        	activeIcon.SetActive(false);
-        }
-
+	    
         //FindClosestStar();
         TargetStar();
     }
     
-    private void FindClosestStar()
-    {
-	    _stars = GameObject.FindGameObjectsWithTag("Star");
-	    _distance = Mathf.Infinity;
-	    foreach (GameObject star in _stars)
-	    {
-		    float currDist = (_rb.position - star.GetComponent<Rigidbody2D>().position).magnitude;
-		    if (currDist < _distance)
-		    {
-			    _distance = currDist;
-			    _target = star;
-		    }
-	    }
-    }
-
+    
     private void TargetStar()
     {
 	    // Get mouse position as a Vector2
-	    Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+	    Vector2 mousePosition = starViewFinder.position;
 
 	    // Cast a ray from player to mouse position
 	    Vector2 relativeMousePos = mousePosition - _rb.position;
@@ -91,13 +67,13 @@ public class Locker : MonoBehaviour
     // START of GIZMOS section useful for debugging
     
     private Vector2 pos;
-
-    private void OnDrawGizmos()
-    {
-	    if(pos != null)
-			Gizmos.DrawRay(_rb.position, pos);
-    }
-    
+//
+//    private void OnDrawGizmos()
+//    {
+//	    if(pos != null)
+//			Gizmos.DrawRay(_rb.position, pos);
+//    }
+//    
     // END of GIZMOS section
 
     public bool IsLocked()

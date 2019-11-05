@@ -26,11 +26,11 @@ public class Grappler : MonoBehaviour
 
     private void HookInput()
     {
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetButtonDown("LockStarHang"))
         {
             _hook = true;
         }
-        else if(Input.GetButtonUp("Fire1"))
+        else if(Input.GetButtonUp("LockStarHang"))
         {
             _hook = false;
         }
