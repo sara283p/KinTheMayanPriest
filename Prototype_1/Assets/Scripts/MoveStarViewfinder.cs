@@ -44,94 +44,9 @@ public class MoveStarViewfinder : MonoBehaviour
         verticalMove = Input.GetAxisRaw("StarViewfinderVertical");
         _direction = new Vector3(horizontalMove, verticalMove);
         
-        if (Input.GetButtonDown("LockStarAttack"))
-        {
-            _locked = true;
-        }
-        
-        if (Input.GetButtonDown("Attack"))
-        {
-            _attack = true;
-        }
-
-        if (_locked)
-        {
-            TargetStar();
-        }
-
-        if (_attack)
-        {
-            Attack();
-        }
-        
-
     }
     
-    private void TargetStar()
-    {
-        // Get viewfinder position as a Vector2
-        Vector2 viewFinderPosition = _tr.position;
-
-        // Cast a ray from player to viewfinder position
-        Vector2 relativeViewFinderPosition = viewFinderPosition - player.position;
-        RaycastHit2D hit = Physics2D.Raycast(player.position, relativeViewFinderPosition, Mathf.Infinity, starLayerMask);
-
-        // If the ray hits a star, put it in the selected stars for attack.
-        // Else, empties the list (consider it as a discard attack).
-        if (hit.rigidbody != null)
-        {
-            Star star = (Star) hit.rigidbody.gameObject.GetComponent(typeof(Star));
-            if (star != null)
-            {
-                star.Select();
-                _selectedStars.Add(star);
-            }
-        }
-        else
-        {
-            foreach (Star star in _selectedStars)
-            {
-                star.Deselect();
-            }
-        }
-
-        _locked = false;
-    }
-
-    private void Attack()
-    {
-        // Get viewfinder position as a Vector2
-        Vector2 viewFinderPosition = _tr.position;
-
-        // Cast a ray from player to viewfinder position
-        Vector2 relativeViewFinderPosition = viewFinderPosition - player.position;
-        RaycastHit2D hit = Physics2D.Raycast(player.position, relativeViewFinderPosition, Mathf.Infinity, enemyLayerMask);
-
-        // If the ray hits an enemy, perform the attack.
-        // Else, empties the list (consider it as a discard attack).
-        if (hit.rigidbody != null)
-        {
-            Enemy enemy = (Enemy) hit.rigidbody.gameObject.GetComponent(typeof(Enemy));
-            if (enemy != null)
-            {
-                enemy.TakeDamage(_selectedStars.Count*10);
-                foreach (Star star in _selectedStars)
-                {
-                    star.Deselect();
-                }
-            }
-        }
-        else
-        {
-            foreach (Star star in _selectedStars)
-            {
-                star.Deselect();
-            }
-        }
-
-        _attack = false;
-
-    }
+    
 
     private void FixedUpdate()
     {

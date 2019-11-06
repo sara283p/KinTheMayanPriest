@@ -55,6 +55,7 @@ public class Grappler : MonoBehaviour
             if (!_hook || _controller.IsGrounded())
             {
                 DestroyJoint();
+                _locker.SetHanging(false);
             }
         }
         // If the player is locking a star, he's not touching the ground, he's pressing the hook button
@@ -68,6 +69,7 @@ public class Grappler : MonoBehaviour
                 _joint.distance = (_rb.position - otherRb.position).magnitude;
                 _joint.connectedBody = otherRb;
                 _locker.GetTarget().layer = 0;
+                _locker.SetHanging(true);
             }
         }
     }
