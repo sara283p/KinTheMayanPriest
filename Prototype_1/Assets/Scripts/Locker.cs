@@ -11,6 +11,7 @@ public class Locker : MonoBehaviour
 
 	private Vector2 _oldMousePosition;
 	private bool _locked;
+	private bool _hanging;
 	private GameObject _target;
 	private GameObject[] _stars;
 	private float _distance;
@@ -35,15 +36,27 @@ public class Locker : MonoBehaviour
 		}
 	}
 	
-	// Update is called once per frame
-    void Update()
-    {
-        LockInput();
-	    
-        //FindClosestStar();
-        TargetStar();
-    }
-    
+	void Update()
+	{
+		LockInput();
+        
+		if (_locked && !_hanging)
+		{
+			TargetStar();
+			if (_target != null)
+			{
+				activeIcon.transform.position = _target.transform.position;
+				activeIcon.SetActive(true);
+			}
+		}
+		else if (!_hanging)
+		{
+			_target = null;
+			activeIcon.SetActive(false);
+		}
+		
+	}
+	
     
     private void TargetStar()
     {
@@ -53,7 +66,7 @@ public class Locker : MonoBehaviour
 	    // Cast a ray from player to mouse position
 	    Vector2 relativeMousePos = mousePosition - _rb.position;
 	    RaycastHit2D hit = Physics2D.Raycast(_rb.position, relativeMousePos, Mathf.Infinity, starLayerMask);
-
+	    
 	    pos = relativeMousePos * 100;
 	    if (hit.rigidbody == null)
 	    {
@@ -84,5 +97,10 @@ public class Locker : MonoBehaviour
     public GameObject GetTarget()
     {
 	    return _target;
+    }
+
+    public void SetHanging(bool hanging)
+    {
+	    _hanging = hanging;
     }
 }

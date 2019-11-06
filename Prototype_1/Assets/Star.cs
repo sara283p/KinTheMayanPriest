@@ -20,4 +20,9 @@ public class Star : MonoBehaviour
     {
         selectedForAttack.SetActive(false);
     }
+    
+    public bool IsSelected()
+    {
+        return selectedForAttack.activeInHierarchy;
+    }
 }
