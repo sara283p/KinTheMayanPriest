@@ -11,7 +11,8 @@ public class SkyRotation : MonoBehaviour
     private Vector2 _position;
     private float _height;
     private float _margin;
-    public float _minDistance;
+    private float _minDistance;
+    private float _rightMargin;
 
 
     private void GenerateConstellations()
@@ -35,24 +36,23 @@ public class SkyRotation : MonoBehaviour
         _height = 5f;
         _margin = 17f;
         _minDistance = 4f;
+        _rightMargin = 60f;
         Camera mainCamera = Camera.main;
         Vector2 screenBottomLeft = mainCamera.ScreenToWorldPoint(Vector3.zero);
-        Vector2 screenTopRight = mainCamera.ScreenToWorldPoint(new Vector3(Screen.width, 0));
+        Vector2 screenTopRight = new Vector3(_rightMargin, 0);
         newPos = screenBottomLeft.x + _margin;
         GenerateConstellations();
 
         Constellation constellation;
         do
         {
-            Debug.Log("Spawned at " + newPos); ;
             _position = new Vector2(newPos, _height);
             constellation = _constellations.GetRandomConstellation();
             GameObject toRender = constellation.gameObject;
             toRender.GetComponent<Transform>().position = _position;
             toRender.SetActive(true);
             newPos = constellation.GetRightBound() + constellation.GetExtent() + _minDistance;
-            Debug.Log("screen limit: " + screenTopRight.x);
-        } while (newPos < 56);
+        } while (newPos < screenTopRight.x);
     }
     
     // Start is called before the first frame update
