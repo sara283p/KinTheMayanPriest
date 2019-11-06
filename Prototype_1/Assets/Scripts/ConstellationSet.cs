@@ -10,7 +10,7 @@ public class ConstellationSet : RuntimeSet<Constellation>
     private Random _rand = new Random();
     
     // This list contains all the indexes of the rendered constellations
-    private List<int> _indexes = new List<int>();
+    private Queue<int> _indexes = new Queue<int>();
     
     public Constellation GetRandomConstellation()
     {
@@ -21,7 +21,12 @@ public class ConstellationSet : RuntimeSet<Constellation>
         {
             index = _rand.Next(0, list.Count);
         } while (_indexes.Contains(index));
-        _indexes.Add(index);
+        _indexes.Enqueue(index);
         return Get(index);
+    }
+
+    public void DespawnConstellation()
+    {
+        _indexes.Dequeue();
     }
 }

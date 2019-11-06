@@ -5,20 +5,18 @@ using UnityEngine;
 
 public class Constellation : MonoBehaviour
 {
-    private float _leftBound;
-    private float _rightBound;
     private float _extent;
     private BoxCollider2D _collider;
-    private Rigidbody2D _rb;
+    private Transform _tr;
 
     public float GetLeftBound()
     {
-        return _leftBound;
+        return _tr.position.x - _extent;
     }
 
     public float GetRightBound()
     {
-        return _rightBound;
+        return _tr.position.x + _extent;
     }
 
     public float GetExtent()
@@ -26,16 +24,14 @@ public class Constellation : MonoBehaviour
         return _extent;
     }
 
+    
     private void Awake()
     {
-        _collider = GetComponent<BoxCollider2D>();
-        _rb = GetComponent<Rigidbody2D>();
-        Bounds bounds = _collider.bounds;
-        _extent = bounds.extents.x;
-        _leftBound = _rb.position.x - _extent;
-        _rightBound = _rb.position.x + _extent;
+        _tr = GetComponent<Transform>();
+        _extent = 19.51202f / 2f;
     }
-
+    
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -45,9 +41,14 @@ public class Constellation : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Bounds bounds = _collider.bounds;
-        float _center = bounds.center.x;
-        _leftBound = bounds.min.x;
-        _rightBound = bounds.max.x;
+        
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("ConstellationDespawner"))
+        {
+            EventManager.TriggerEvent("DespawnConstellation");
+        }
     }
 }
