@@ -27,6 +27,10 @@ public class SkyRotation : MonoBehaviour
         for (int i = 0; i < constellationCount; i++)
         {
             GameObject newObject = Instantiate(constellationPrefab);
+            // The objects are first set to active to call method Awake and initialize its parameters to the
+            // desired values, then they are set to false to make them invisible until they are spawned
+            // NOTE: without this, the parameters of the constellations not spawned in the Start method
+            // will be different, resulting in a bad positioning when they're spawned
             newObject.SetActive(true);
             newObject.SetActive(false);
             _constellations.Add(newObject.GetComponent<Constellation>());
