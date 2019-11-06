@@ -7,6 +7,8 @@ public class Attack : MonoBehaviour
 {
     public LayerMask starLayerMask;
     public LayerMask enemyLayerMask;
+
+    public LineRenderer lineRenderer;
     
     private bool _locked;
     private bool _attack;
@@ -62,8 +64,8 @@ public class Attack : MonoBehaviour
             foreach (Star star in _selectedStars)
             {
                 star.Deselect();
-                _selectedStars.Remove(star);
             }
+            _selectedStars.Clear();
         }
 
         _locked = false;
@@ -81,11 +83,12 @@ public class Attack : MonoBehaviour
 
         // If the ray hits an enemy, perform the attack.
         // Else, empties the list (consider it as a discard attack).
-        if (hit.rigidbody != null)
+        if (hit)
         {
-            Enemy enemy = (Enemy) hit.rigidbody.gameObject.GetComponent(typeof(Enemy));
-            if (enemy != null)
+            Enemy enemy = hit.transform.GetComponent<Enemy>();
+            if (enemy)
             {
+                StartCoroutine(AttackEffect(enemy));
                 enemy.TakeDamage(_selectedStars.Count*10);
                 print("Inflicted: " + _selectedStars.Count*10);
                 foreach (var star in _selectedStars)
@@ -103,6 +106,27 @@ public class Attack : MonoBehaviour
             }
             _selectedStars.Clear();
         }
+    }
+
+    IEnumerator AttackEffect(Enemy enemy)
+    {
+        List<Vector3> temp = new List<Vector3>();
+        foreach(var star in _selectedStars)
+        {
+            temp.Add(star.transform.position);
+        }
+        
+        temp.Add(enemy.transform.position);
+ 
+        Vector3[] positionsOfPoints = temp.ToArray();
+        lineRenderer.SetVertexCount(positionsOfPoints.Length); 
+        lineRenderer.SetPositions(positionsOfPoints);
+
+        lineRenderer.enabled = true;
+
+        yield return new WaitForSeconds(2f);
+
+        lineRenderer.enabled = false;
     }
 
     private void FixedUpdate()

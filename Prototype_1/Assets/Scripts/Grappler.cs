@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class Grappler : MonoBehaviour
 {
+    public HangingEffect hangingEffect;
     private CharacterController2D _controller;
     private Locker _locker;
     private Rigidbody2D _rb;
@@ -56,6 +57,7 @@ public class Grappler : MonoBehaviour
             {
                 DestroyJoint();
                 _locker.SetHanging(false);
+                hangingEffect.StopEffect();
             }
         }
         // If the player is locking a star, he's not touching the ground, he's pressing the hook button
@@ -70,6 +72,7 @@ public class Grappler : MonoBehaviour
                 _joint.connectedBody = otherRb;
                 _locker.GetTarget().layer = 0;
                 _locker.SetHanging(true);
+                hangingEffect.StartEffect(otherRb.transform);
             }
         }
     }
