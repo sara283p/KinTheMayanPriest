@@ -1,7 +1,8 @@
 ﻿﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+ using Cinemachine;
+ using UnityEngine;
 
 public class MoveStarViewfinder : MonoBehaviour
 {
@@ -34,10 +35,7 @@ public class MoveStarViewfinder : MonoBehaviour
     void Update()
     {
         // Understand if the player is moving the mouse. If it is so, move the viewfinder alongside it.
-        if (Math.Abs(Input.GetAxis("StarViewfinderVerticalMouse")) > 0.001f)
-        {
-            _tr.position = (Vector2) Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        }
+        _tr.position = (Vector2) Camera.main.ScreenToWorldPoint(Input.mousePosition);
         
         // Get the controls of the viewfinder done with the joystick.
         horizontalMove = Input.GetAxisRaw("StarViewfinderHorizontal");

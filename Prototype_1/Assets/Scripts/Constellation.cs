@@ -28,6 +28,7 @@ public class Constellation : MonoBehaviour
     private void Awake()
     {
         _tr = GetComponent<Transform>();
+        // Value of the extent computed as BoxCollider2D's width divided by 2
         _extent = 19.51202f / 2f;
     }
     
