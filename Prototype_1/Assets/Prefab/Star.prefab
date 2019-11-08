@@ -133,6 +133,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccd2c287e34164497955d1239329d07b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isInCooldown: 0
+  damagePoints: 10
+  coolDownTime: 10
+  coolDownOpacity: 0.3
   selectedForAttack: {fileID: 8830459576148853548}
 --- !u!1 &8830459576148853548
 GameObject:

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Attack : MonoBehaviour
@@ -40,7 +41,7 @@ public class Attack : MonoBehaviour
 
         if (targetedStar)
         {
-            if (targetedStar.IsSelected() == false)
+            if (targetedStar.IsSelected() == false && !targetedStar.isInCooldown)
             {
                 targetedStar.Select();
                 _selectedStars.Add(targetedStar);
@@ -70,8 +71,11 @@ public class Attack : MonoBehaviour
         if (targetedEnemy)
         {
             StartCoroutine(AttackEffect(targetedEnemy));
-            targetedEnemy.TakeDamage(_selectedStars.Count*10);
-            print("Inflicted: " + _selectedStars.Count*10);
+            var damage = _selectedStars.Select(x => x.damagePoints).Sum();
+            _selectedStars.ForEach(star => star.UseForAttack());
+            
+            targetedEnemy.TakeDamage(damage);
+            print("Inflicted: " + damage);
         }
         else
         {

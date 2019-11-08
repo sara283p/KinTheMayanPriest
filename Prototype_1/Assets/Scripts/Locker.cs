@@ -27,7 +27,7 @@ public class Locker : MonoBehaviour
 		}
 		else
 		{
-			float[] distances = hit
+			var distances = hit
 				.Select(x => (viewfinderPosition - x.transform.position).magnitude)
 				.ToArray();
 			

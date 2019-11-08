@@ -10,8 +10,11 @@ public class Grappler : MonoBehaviour
     private CharacterController2D _controller;
     public Locker locker;
     private Rigidbody2D _rb;
+    private bool _wantToHook;
     private bool _hook;
     private DistanceJoint2D _joint;
+
+    private float _maxStarDistance = 5f;
     
     public GameObject activeIcon;
 
@@ -30,12 +33,18 @@ public class Grappler : MonoBehaviour
     {
         if (Input.GetButtonDown("LockStarHang"))
         {
-            _hook = true;
+            _wantToHook = true;
         }
         else if(Input.GetButtonUp("LockStarHang"))
         {
-            _hook = false;
+            _wantToHook = false;
         }
+        
+        if (Input.GetButtonDown("Jump"))
+        {
+            _hook = true;
+        }
+       
     }
 
     private void DestroyJoint()
@@ -49,10 +58,11 @@ public class Grappler : MonoBehaviour
     void Update()
     {
         HookInput();
-        
+
+        // If there is joint and either hook button is released or Kin is on the ground, destroy it
         if (_joint)
         {
-            if (!_hook || _controller.IsGrounded())
+            if (!_wantToHook || _controller.IsGrounded())
             {
                 DestroyJoint();
                 activeIcon.SetActive(false);
@@ -61,15 +71,20 @@ public class Grappler : MonoBehaviour
         }
         else
         {
-            if (_hook)
+            // If there is not a joint and hook is pressed...
+            if (_wantToHook)
             {
                 Star selectedStar = locker.GetTargetedStar();
 
                 if (selectedStar)
                 {
+                    // First of all, illuminate the star
                     activeIcon.SetActive(true);
                     activeIcon.transform.position = selectedStar.transform.position;
-                    if (!_controller.IsGrounded())
+                    
+                    // If Kin is NOT the ground and meanwhile jump is pressed assume that the hang has to be accomplished.
+                    // Create a joint, start the effect.
+                    if (_hook && !_controller.IsGrounded() && ((Vector2) selectedStar.transform.position - _rb.position).magnitude < _maxStarDistance )
                     {
                         _joint = gameObject.AddComponent<DistanceJoint2D>();
                         Rigidbody2D otherRb = selectedStar.GetComponent<Rigidbody2D>();
@@ -79,10 +94,12 @@ public class Grappler : MonoBehaviour
                     }
                 }
             }
+            // Hook has been released: de-illuminate the star.
             else
             {
                 activeIcon.SetActive(false);
             }
         }
+        _hook = false;
     }
 }
