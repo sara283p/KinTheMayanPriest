@@ -1,106 +1,53 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class Locker : MonoBehaviour
 {
-	public GameObject activeIcon;
 	public LayerMask starLayerMask;
+	public LayerMask enemyLayerMask;
 
-	private Vector2 _oldMousePosition;
-	private bool _locked;
-	private bool _hanging;
-	private GameObject _target;
-	private GameObject[] _stars;
-	private float _distance;
-	private Rigidbody2D _rb;
-
-	public Transform starViewFinder;
-
-	void Awake()
+	public Transform kin;
+	public Transform viewfinder;
+	
+	public Star GetTargetedStar()
 	{
-		_rb = GetComponent<Rigidbody2D>();
-	}
+		Vector3 kinPosition = kin.position;
+		Vector3 viewfinderPosition = viewfinder.position;
+		Vector3 relativeViewfinderPosition = viewfinderPosition - kinPosition;
+		RaycastHit2D[] hit = Physics2D.RaycastAll(kinPosition, relativeViewfinderPosition, Mathf.Infinity, starLayerMask);
 
-	private void LockInput()
-	{
-		if (Input.GetButtonDown("LockStarHang"))
+		if (hit.Length == 0) return null;
+		if (hit.Length == 1)
 		{
-			_locked = true;
+			return (Star) hit[0].rigidbody.gameObject.GetComponent(typeof(Star));
 		}
-		else if (Input.GetButtonUp("LockStarHang"))
+		else
 		{
-			_locked = false;
+			float[] distances = hit
+				.Select(x => (viewfinderPosition - x.transform.position).magnitude)
+				.ToArray();
+			
+			return (Star) hit[Array.IndexOf(distances, distances.Min())].rigidbody.gameObject.GetComponent(typeof(Star));
 		}
 	}
 	
-	void Update()
+	public Enemy GetTargetedEnemy(Star star)
 	{
-		LockInput();
-        
-		if (_locked && !_hanging)
-		{
-			TargetStar();
-			if (_target != null)
-			{
-				activeIcon.transform.position = _target.transform.position;
-				activeIcon.SetActive(true);
-			}
-		}
-		else if (!_hanging)
-		{
-			_target = null;
-			activeIcon.SetActive(false);
-		}
+		Vector2 starPosition = star.transform.position;
+		Vector2 viewfinderPosition = viewfinder.position;
+		Vector2 relativeViewfinderPosition = viewfinderPosition - starPosition;
+		RaycastHit2D hit = Physics2D.Raycast(starPosition, relativeViewfinderPosition, Mathf.Infinity, enemyLayerMask);
 		
+		if (hit)
+		{
+			return (Enemy) hit.rigidbody.gameObject.GetComponent(typeof(Enemy));
+		}
+
+		return null;
 	}
 	
-    
-    private void TargetStar()
-    {
-	    // Get mouse position as a Vector2
-	    Vector2 mousePosition = starViewFinder.position;
-
-	    // Cast a ray from player to mouse position
-	    Vector2 relativeMousePos = mousePosition - _rb.position;
-	    RaycastHit2D hit = Physics2D.Raycast(_rb.position, relativeMousePos, Mathf.Infinity, starLayerMask);
-	    
-	    pos = relativeMousePos * 100;
-	    if (hit.rigidbody == null)
-	    {
-		    activeIcon.SetActive(false);
-		    return;
-	    }
-
-	    _target = hit.rigidbody.gameObject;
-	}
-
-    // START of GIZMOS section useful for debugging
-    
-    private Vector2 pos;
-//
-//    private void OnDrawGizmos()
-//    {
-//	    if(pos != null)
-//			Gizmos.DrawRay(_rb.position, pos);
-//    }
-//    
-    // END of GIZMOS section
-
-    public bool IsLocked()
-    {
-	    return _locked;
-    }
-
-    public GameObject GetTarget()
-    {
-	    return _target;
-    }
-
-    public void SetHanging(bool hanging)
-    {
-	    _hanging = hanging;
-    }
 }

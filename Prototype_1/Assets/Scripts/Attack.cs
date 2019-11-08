@@ -5,22 +5,22 @@ using UnityEngine;
 
 public class Attack : MonoBehaviour
 {
-    public LayerMask starLayerMask;
-    public LayerMask enemyLayerMask;
+    public Locker locker;
 
     public LineRenderer lineRenderer;
     
     private bool _locked;
     private bool _attack;
-    private GameObject _target;
+    private bool _isAttackOngoing;
+    
     private List<Star> _selectedStars = new List<Star>();
-    private float _distance;
-    public GameObject player;
-    public GameObject starViewFinder;
-
-    private Vector3 _direction;
-
-    // Update is called once per frame
+    
+    private void Awake()
+    // Initialize the attack effect
+    {
+        lineRenderer.positionCount = 0;
+    }
+    
     void Update()
     {
         if (Input.GetButtonDown("LockStarAttack"))
@@ -36,26 +36,17 @@ public class Attack : MonoBehaviour
     
     private void TargetStar()
     {
-        // Get viewfinder position as a Vector2
-        Vector2 viewFinderPosition = starViewFinder.transform.position;
-        Vector2 playerPosition = player.transform.position;
+        var targetedStar = locker.GetTargetedStar();
 
-        // Cast a ray from player to viewfinder position
-        Vector2 relativeViewFinderPosition = viewFinderPosition - playerPosition;
-        RaycastHit2D hit = Physics2D.Raycast(playerPosition, relativeViewFinderPosition, Mathf.Infinity, starLayerMask);
-
-        // If the ray hits a star, put it in the selected stars for attack.
-        // Else, empties the list (consider it as a discard attack).
-        if (hit.rigidbody != null)
+        if (targetedStar)
         {
-            Star star = (Star) hit.rigidbody.gameObject.GetComponent(typeof(Star));
-            if (star != null)
+            if (targetedStar.IsSelected() == false)
             {
-                if (star.IsSelected() == false)
-                {
-                    star.Select();
-                    _selectedStars.Add(star);
-                }
+                targetedStar.Select();
+                _selectedStars.Add(targetedStar);
+
+                lineRenderer.positionCount++;
+                lineRenderer.SetPosition(_selectedStars.Count - 1, targetedStar.transform.position);
                 
             }
         }
@@ -65,81 +56,69 @@ public class Attack : MonoBehaviour
             {
                 star.Deselect();
             }
+            
+            lineRenderer.positionCount = 0;
             _selectedStars.Clear();
         }
-
-        _locked = false;
+        
     }
 
     private void PerformAttack()
     {
-        // Get viewfinder position as a Vector2
-        Vector2 viewFinderPosition = starViewFinder.transform.position;
-        Vector2 playerPosition = player.transform.position;
+        Enemy targetedEnemy = locker.GetTargetedEnemy(_selectedStars[_selectedStars.Count - 1]);
 
-        // Cast a ray from player to viewfinder position
-        Vector2 relativeViewFinderPosition = viewFinderPosition - playerPosition;
-        RaycastHit2D hit = Physics2D.Raycast(playerPosition, relativeViewFinderPosition, Mathf.Infinity, enemyLayerMask);
-
-        // If the ray hits an enemy, perform the attack.
-        // Else, empties the list (consider it as a discard attack).
-        if (hit)
+        if (targetedEnemy)
         {
-            Enemy enemy = hit.transform.GetComponent<Enemy>();
-            if (enemy)
-            {
-                StartCoroutine(AttackEffect(enemy));
-                enemy.TakeDamage(_selectedStars.Count*10);
-                print("Inflicted: " + _selectedStars.Count*10);
-                foreach (var star in _selectedStars)
-                {
-                    star.Deselect();
-                }
-                _selectedStars.Clear();
-            }
+            StartCoroutine(AttackEffect(targetedEnemy));
+            targetedEnemy.TakeDamage(_selectedStars.Count*10);
+            print("Inflicted: " + _selectedStars.Count*10);
         }
-        else 
+        else
         {
-            foreach (Star star in _selectedStars)
-            {
-                star.Deselect();
-            }
-            _selectedStars.Clear();
+            lineRenderer.positionCount = 0;
         }
+        
+        foreach (var star in _selectedStars)
+        {
+            star.Deselect();
+        }
+        _selectedStars.Clear();
+        
     }
 
     IEnumerator AttackEffect(Enemy enemy)
     {
-        List<Vector3> temp = new List<Vector3>();
-        foreach(var star in _selectedStars)
-        {
-            temp.Add(star.transform.position);
-        }
-        
-        temp.Add(enemy.transform.position);
- 
-        Vector3[] positionsOfPoints = temp.ToArray();
-        lineRenderer.SetVertexCount(positionsOfPoints.Length); 
-        lineRenderer.SetPositions(positionsOfPoints);
-
-        lineRenderer.enabled = true;
+        _isAttackOngoing = true;
+        lineRenderer.positionCount++;
+        lineRenderer.SetPosition(_selectedStars.Count, enemy.transform.position);
 
         yield return new WaitForSeconds(2f);
-
-        lineRenderer.enabled = false;
+        
+        if (_isAttackOngoing)
+        {
+            _isAttackOngoing = false;
+            lineRenderer.positionCount = 0;
+        }
     }
 
     private void FixedUpdate()
     {
         if (_locked)
         {
+            // If an attack animation is ongoing, reset the lineRenderer
+            if (_isAttackOngoing)
+            {
+                _isAttackOngoing = false;
+                lineRenderer.positionCount = 0;
+            }
+            _locked = false;
             TargetStar();
         }
 
         if (_attack)
         {
             _attack = false;
-            PerformAttack();
+            if (_selectedStars.Count > 0) PerformAttack();
         }
     }
 }

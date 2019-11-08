@@ -8,15 +8,16 @@ public class Grappler : MonoBehaviour
 {
     public HangingEffect hangingEffect;
     private CharacterController2D _controller;
-    private Locker _locker;
+    public Locker locker;
     private Rigidbody2D _rb;
     private bool _hook;
     private DistanceJoint2D _joint;
+    
+    public GameObject activeIcon;
 
     private void Awake()
     {
         _controller = GetComponent<CharacterController2D>();
-        _locker = GetComponent<Locker>();
         _rb = GetComponent<Rigidbody2D>();
     }
 
@@ -45,34 +46,42 @@ public class Grappler : MonoBehaviour
         _joint = null;
     }
     
-    // Update is called once per frame
     void Update()
     {
         HookInput();
-        // If the player is hanged to a star and either he's not pressing the hook button or he's touching the ground,
-        // destroy the joint
-        if (_joint != null)
+        
+        if (_joint)
         {
             if (!_hook || _controller.IsGrounded())
             {
                 DestroyJoint();
-                _locker.SetHanging(false);
+                activeIcon.SetActive(false);
                 hangingEffect.StopEffect();
             }
         }
-        // If the player is locking a star, he's not touching the ground, he's pressing the hook button
-        // and the joint does not exist yet, then create it
         else
         {
-            if (_locker.IsLocked() && !_controller.IsGrounded() && _hook)
+            if (_hook)
             {
-                _joint = gameObject.AddComponent<DistanceJoint2D>();
-                Rigidbody2D otherRb = _locker.GetTarget().GetComponent<Rigidbody2D>();
-                _joint.distance = (_rb.position - otherRb.position).magnitude;
-                _joint.connectedBody = otherRb;
-                _locker.GetTarget().layer = 0;
-                _locker.SetHanging(true);
-                hangingEffect.StartEffect(otherRb.transform);
+                Star selectedStar = locker.GetTargetedStar();
+
+                if (selectedStar)
+                {
+                    activeIcon.SetActive(true);
+                    activeIcon.transform.position = selectedStar.transform.position;
+                    if (!_controller.IsGrounded())
+                    {
+                        _joint = gameObject.AddComponent<DistanceJoint2D>();
+                        Rigidbody2D otherRb = selectedStar.GetComponent<Rigidbody2D>();
+                        _joint.distance = (_rb.position - otherRb.position).magnitude;
+                        _joint.connectedBody = otherRb;
+                        hangingEffect.StartEffect(otherRb.transform);
+                    }
+                }
+            }
+            else
+            {
+                activeIcon.SetActive(false);
             }
         }
     }
