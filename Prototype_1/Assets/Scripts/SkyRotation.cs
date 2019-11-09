@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class SkyRotation : MonoBehaviour
 {
-    public GameObject constellationPrefab;
     public int constellationCount;
 
     private ConstellationSet _constellations;
@@ -21,13 +20,11 @@ public class SkyRotation : MonoBehaviour
 
     private void GenerateConstellations()
     {
-        // For now, it simply takes a prefab and instantiate new objects of that.
-        // We may think about writing a constellation generator
-        // Of course, we must also add gods' constellations to the set, when needed
+        //We must also add gods' constellations to the set, when needed
         for (int i = 0; i < constellationCount; i++)
         {
-            //GameObject newObject = Instantiate(constellationPrefab);
             GameObject newObject = ConstellationGenerator.Instance.GenerateConstellation();
+            //GameObject newObject = ConstellationGenerator.Instance.GenerateDebuggingConstellation();
             newObject.transform.SetParent(GetComponent<Transform>());
             
             // The objects are first set to active to call method Awake and initialize its parameters to the

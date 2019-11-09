@@ -6,6 +6,7 @@ using UnityEngine.Experimental.PlayerLoop;
 
 public class ConstellationGenerator : MonoBehaviour
 {
+    public GameObject debugConstellation;
     public GameObject emptyConstellationPrefab;
     public GameObject starPrefab;
 
@@ -97,5 +98,12 @@ public class ConstellationGenerator : MonoBehaviour
 
 
         return constellation;
+    }
+    
+    // This method is thought to be useful for debugging purposes. It simply instantiate a pre-built constellation
+    // As a result, when this method is called to generate the sky, it will contain many copies of the same constellation
+    public GameObject GenerateDebuggingConstellation()
+    {
+        return Instantiate(debugConstellation);
     }
 }

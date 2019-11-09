@@ -323,6 +323,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1effa024aa325245ac2f470ce7deea6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugConstellation: {fileID: 7523639732081862155, guid: ed817043462f7874c9e420277ec89c03,
+    type: 3}
   emptyConstellationPrefab: {fileID: 7523639732081862155, guid: 826b909d3b519a846b5c6e2101470697,
     type: 3}
   starPrefab: {fileID: 2139226338370669811, guid: 4177fe3858a9e4f689ca45d923951143,
@@ -455,8 +457,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 893ef525a6488184e93284c75fd9a65f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  constellationPrefab: {fileID: 7523639732081862155, guid: ed817043462f7874c9e420277ec89c03,
-    type: 3}
   constellationCount: 100
   _speed: 5
 --- !u!4 &470390164
