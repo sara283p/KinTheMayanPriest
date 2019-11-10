@@ -10,16 +10,20 @@ namespace CustomPhysics
     {
         public HangingEffect hangingEffect;
         private CharacterController2D _controller;
-        private CustomLocker _locker;
+        public CustomLocker locker;
         private Rigidbody2D _rb;
+        private bool _wantToHook;
         private bool _hook;
         private DistanceJoint2D _joint;
         private FrictionJoint2D _friction;
 
+        private float _maxStarDistance = 5f;
+
+        public GameObject activeIcon;
+
         private void Awake()
         {
             _controller = GetComponent<CharacterController2D>();
-            _locker = GetComponent<CustomLocker>();
             _rb = GetComponent<Rigidbody2D>();
         }
 
@@ -27,12 +31,18 @@ namespace CustomPhysics
         {
             if (Input.GetButtonDown("LockStarHang"))
             {
-                _hook = true;
+                _wantToHook = true;
             }
             else if (Input.GetButtonUp("LockStarHang"))
             {
-                _hook = false;
+                _wantToHook = false;
             }
+
+            if (Input.GetButtonDown("Jump"))
+            {
+                _hook = true;
+            }
+
         }
 
         private void DestroyJoint()
@@ -44,39 +54,56 @@ namespace CustomPhysics
             _joint = null;
         }
 
-        // Update is called once per frame
         void Update()
         {
             HookInput();
-            // If the player is hanged to a star and either he's not pressing the hook button or he's touching the ground,
-            // destroy the joint
-            if (_joint != null)
+
+            // If there is joint and either hook button is released or Kin is on the ground, destroy it
+            if (_joint)
             {
-                if (!_hook || _controller.IsGrounded())
+                if (!_wantToHook || _controller.IsGrounded())
                 {
                     DestroyJoint();
-                    _locker.SetHanging(false);
-                    //hangingEffect.StopEffect();
+                    activeIcon.SetActive(false);
+                    hangingEffect.StopEffect();
                 }
             }
-            // If the player is locking a star, he's not touching the ground, he's pressing the hook button
-            // and the joint does not exist yet, then create it
             else
             {
-                if (_locker.IsLocked() && !_controller.IsGrounded() && _hook)
+                // If there is not a joint and hook is pressed...
+                if (_wantToHook)
                 {
-                    _joint = gameObject.AddComponent<DistanceJoint2D>();
-                    _friction = gameObject.AddComponent<FrictionJoint2D>();
-                    _rb.isKinematic = false;
-                    Rigidbody2D otherRb = _locker.GetTarget().GetComponent<Rigidbody2D>();
-                    _joint.distance = (_rb.position - otherRb.position).magnitude;
-                    _joint.connectedBody = otherRb;
-                    _friction.maxForce = 1f;
-                    _locker.GetTarget().layer = 0;
-                    _locker.SetHanging(true);
-                    //hangingEffect.StartEffect(otherRb.transform);
+                    Star selectedStar = locker.GetTargetedStar();
+
+                    if (selectedStar)
+                    {
+                        // First of all, illuminate the star
+                        activeIcon.SetActive(true);
+                        activeIcon.transform.position = selectedStar.transform.position;
+
+                        // If Kin is NOT the ground and meanwhile jump is pressed assume that the hang has to be accomplished.
+                        // Create a joint, start the effect.
+                        if (_hook && !_controller.IsGrounded() &&
+                            ((Vector2) selectedStar.transform.position - _rb.position).magnitude < _maxStarDistance)
+                        {
+                            _joint = gameObject.AddComponent<DistanceJoint2D>();
+                            _friction = gameObject.AddComponent<FrictionJoint2D>();
+                            Rigidbody2D otherRb = selectedStar.GetComponent<Rigidbody2D>();
+                            _joint.distance = (_rb.position - otherRb.position).magnitude;
+                            _joint.connectedBody = otherRb;
+                            _rb.isKinematic = false;
+                            hangingEffect.StartEffect(otherRb.transform);
+                        }
+                    }
+                }
+                // Hook has been released: de-illuminate the star.
+                else
+                {
+                    activeIcon.SetActive(false);
                 }
             }
+
+            _hook = false;
         }
     }
 }

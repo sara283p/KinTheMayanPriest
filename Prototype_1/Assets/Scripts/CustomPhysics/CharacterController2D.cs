@@ -45,7 +45,6 @@ namespace CustomPhysics
             }
 
             Vector2 velocity = new Vector2(x, y);
-            //_currentVelocity = velocity + mass * Time.deltaTime * Physics2D.gravity;
             _currentVelocity = velocity;
         }
         
@@ -74,11 +73,8 @@ namespace CustomPhysics
 
         private void FixedUpdate()
         {
-            _currentVelocity += mass * Time.fixedDeltaTime * Physics2D.gravity;
-            /*if (_cm.IsGrounded() && _currentVelocity.y < 0)
-            {
-                _currentVelocity.y = 0;
-            }*/
+            if(_rb.isKinematic)
+                _currentVelocity += mass * Time.fixedDeltaTime * Physics2D.gravity;
             Move();
         }
         
@@ -95,7 +91,6 @@ namespace CustomPhysics
                 for (int i = 0; i < count; i++)
                 {
                     // Increase mass to avoid rocket jump at the end of ramps
-                    mass = 3;
                     _raycastList.Add(_raycastBuffer[i]);
                 }
             
@@ -107,6 +102,7 @@ namespace CustomPhysics
                     {
                         _grounded = true;
                         _isJumping = false;
+                        mass = 3;
 
                         if (yMovement)
                         {
@@ -131,7 +127,7 @@ namespace CustomPhysics
                 }
             }
 
-            if (!_rb.isKinematic)
+            if (!_rb.isKinematic && yMovement)
                 distance = 0;
             _rb.position = _rb.position + move.normalized * distance;
         }
