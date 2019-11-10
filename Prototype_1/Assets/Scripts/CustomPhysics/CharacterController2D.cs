@@ -101,6 +101,7 @@ namespace CustomPhysics
                     if (currentNormal.y > minGroundNormal)
                     {
                         _grounded = true;
+                        _currentVelocity.y = 0;
                         _isJumping = false;
                         mass = 3;
 
@@ -118,7 +119,9 @@ namespace CustomPhysics
                         _currentVelocity = _currentVelocity - projection * currentNormal;
                     }
 
-                    if (_raycastList[i].collider.CompareTag("FixedObstacle"))
+                    // If player is already on the ground and the script is performing vertical movement or
+                    // the hit collider is a fixed obstacle, then modify the distance (if needed)
+                    if ((_grounded && yMovement) || _raycastList[i].collider.CompareTag("FixedObstacle"))
                     {
                         float modifiedDistance = _raycastList[i].distance - shellRadius;
 
