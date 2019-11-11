@@ -5,11 +5,10 @@ using UnityEngine;
 
 public class SkyRotation : MonoBehaviour
 {
-    public GameObject constellationPrefab;
     public int constellationCount;
 
     private ConstellationSet _constellations;
-    private Queue<Rigidbody2D> _activeConstellations;
+    private Queue<Transform> _activeConstellations;
     private float _height;
     private float _margin;
     private float _minDistance;
@@ -21,12 +20,13 @@ public class SkyRotation : MonoBehaviour
 
     private void GenerateConstellations()
     {
-        // For now, it simply takes a prefab and instantiate new objects of that.
-        // We may think about writing a constellation generator
-        // Of course, we must also add gods' constellations to the set, when needed
+        //We must also add gods' constellations to the set, when needed
         for (int i = 0; i < constellationCount; i++)
         {
-            GameObject newObject = Instantiate(constellationPrefab);
+            GameObject newObject = ConstellationGenerator.Instance.GenerateConstellation();
+            //GameObject newObject = ConstellationGenerator.Instance.GenerateDebuggingConstellation();
+            newObject.transform.SetParent(GetComponent<Transform>());
+            
             // The objects are first set to active to call method Awake and initialize its parameters to the
             // desired values, then they are set to false to make them invisible until they are spawned
             // NOTE: without this, the parameters of the constellations not spawned in the Start method
@@ -58,9 +58,9 @@ public class SkyRotation : MonoBehaviour
         float newPos;
 
         _constellations = ScriptableObject.CreateInstance<ConstellationSet>();
-        _activeConstellations = new Queue<Rigidbody2D>();
+        _activeConstellations = new Queue<Transform>();
         _height = 5f;
-        _margin = 17f;
+        _margin = 7f;
         _minDistance = 4f;
         _rightMargin = 53f;
         Camera mainCamera = Camera.main;
@@ -94,7 +94,7 @@ public class SkyRotation : MonoBehaviour
             GameObject toRender = constellation.gameObject;
             toRender.GetComponent<Transform>().position = position;
             toRender.SetActive(true);
-            _activeConstellations.Enqueue(toRender.GetComponent<Rigidbody2D>());
+            _activeConstellations.Enqueue(toRender.GetComponent<Transform>());
             newPos = constellation.GetRightBound() + constellation.GetExtent() + _minDistance;
 
         } while (newPos < _rightMargin);
@@ -108,8 +108,8 @@ public class SkyRotation : MonoBehaviour
         RotateInput();
         if (_rotate)
         {
-            Vector2 delta = new Vector2(- _speed * Time.deltaTime, 0);
-            foreach (Rigidbody2D constellation in _activeConstellations)
+            Vector3 delta = new Vector3(- _speed * Time.deltaTime, 0);
+            foreach (Transform constellation in _activeConstellations)
             {
                 constellation.position += delta;
             }
@@ -124,7 +124,7 @@ public class SkyRotation : MonoBehaviour
                 toRender.GetComponent<Transform>().position = position;
                 toRender.SetActive(true);
                 _rightMostConstRBound = constellation.GetRightBound();
-                _activeConstellations.Enqueue(toRender.GetComponent<Rigidbody2D>());
+                _activeConstellations.Enqueue(toRender.GetComponent<Transform>());
             }
         }
     }

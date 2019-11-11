@@ -8,7 +8,19 @@ public class Constellation : MonoBehaviour
     private float _extent;
     private BoxCollider2D _collider;
     private Transform _tr;
+    private float _width = 19.51202f;
+    private float _height = 5.681824f;
 
+    public float GetWidth()
+    {
+        return _width;
+    }
+
+    public float GetHeight()
+    {
+        return _height;
+    }
+    
     public float GetLeftBound()
     {
         return _tr.position.x - _extent;
@@ -29,7 +41,7 @@ public class Constellation : MonoBehaviour
     {
         _tr = GetComponent<Transform>();
         // Value of the extent computed as BoxCollider2D's width divided by 2
-        _extent = 19.51202f / 2f;
+        _extent = _width / 2f;
     }
     
     
