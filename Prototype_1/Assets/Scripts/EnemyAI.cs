@@ -24,6 +24,7 @@ public class EnemyAI : MonoBehaviour
     private int currentWaypoint = 0;
     
     [HideInInspector] public bool isPathOver = false;
+    private bool isSearchingPlayer = false;
     
     //the max distance from a waypoint to trigger the enemy to move towards the next waypoint in the path
     public float nextWaypointDistance = 3f;
@@ -35,7 +36,12 @@ public class EnemyAI : MonoBehaviour
 
         if (target == null)
         {
-            Debug.LogError("No player found!");
+            if (!isSearchingPlayer)
+            {
+                isSearchingPlayer = true;
+                StartCoroutine(playerSearch());
+            }
+            
             return;
         }
 
@@ -49,7 +55,12 @@ public class EnemyAI : MonoBehaviour
     {
         if (target == null)
         {
-            //playerSearch();
+            if (!isSearchingPlayer)
+            {
+                isSearchingPlayer = true;
+                StartCoroutine(playerSearch());
+            }
+            
             yield return false;
         }
         
@@ -78,7 +89,12 @@ public class EnemyAI : MonoBehaviour
     {
         if (target == null)
         {
-            //playerSearch();
+            if (!isSearchingPlayer)
+            {
+                isSearchingPlayer = true;
+                StartCoroutine(playerSearch());
+            }
+            
             return;
         }
 
@@ -109,6 +125,23 @@ public class EnemyAI : MonoBehaviour
         {
             currentWaypoint++;
             return;
+        }
+    }
+
+    IEnumerator playerSearch()
+    {
+        GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+        if (playerObject == null)
+        {
+            yield return new WaitForSeconds(0.5f);
+            StartCoroutine(playerSearch());
+        }
+        else
+        {
+            target = playerObject.transform;
+            isSearchingPlayer = false;
+            StartCoroutine(UpdatePath());
+            yield return false;
         }
     }
 }
