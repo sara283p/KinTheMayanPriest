@@ -3,16 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour
+public class NewPlayerMovement : MonoBehaviour
 {
-    public CharacterController2D controller;
+    public NewCharacterController controller;
     public Animator animator;
 
     private float horizontalMove = 0f;
-    private float runSpeed = 40f;
+    private float runSpeed = 400f;
     private bool jump = false;
     private bool crouch = false;
-    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -24,7 +24,7 @@ public class PlayerMovement : MonoBehaviour
     {
         horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
         
-        animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
+        //animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
 
         if (Input.GetButtonDown("Jump"))
         {
