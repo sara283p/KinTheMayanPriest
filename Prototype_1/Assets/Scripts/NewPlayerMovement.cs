@@ -8,10 +8,10 @@ public class NewPlayerMovement : MonoBehaviour
     public NewCharacterController controller;
     public Animator animator;
 
-    private float horizontalMove = 0f;
-    private float runSpeed = 400f;
-    private bool jump = false;
-    private bool crouch = false;
+    private float _horizontalMove = 0f;
+    public float runSpeed = 300f;
+    private bool _jump = false;
+    private bool _crouch = false;
 
     // Start is called before the first frame update
     void Start()
@@ -22,22 +22,22 @@ public class NewPlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
+        _horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
         
-        //animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
+        //animator.SetFloat("Speed", Mathf.Abs(_horizontalMove));
 
         if (Input.GetButtonDown("Jump"))
         {
-            jump = true;
+            _jump = true;
             //animator.SetBool("isJumping", true);
         }
 
         if (Input.GetButtonDown("Crouch"))
         {
-            crouch = true;
+            _crouch = true;
         } else if (Input.GetButtonUp("Crouch"))
         {
-            crouch = false;
+            _crouch = false;
         }
 
     }
@@ -54,7 +54,7 @@ public class NewPlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        controller.Move(horizontalMove * Time.fixedDeltaTime, crouch, jump);
-        jump = false;
+        controller.Move(_horizontalMove * Time.fixedDeltaTime, _crouch, _jump);
+        _jump = false;
     }
 }
