@@ -41,9 +41,9 @@ public class Attack : MonoBehaviour
 
         if (targetedStar)
         {
-            if (targetedStar.IsSelected() == false && !targetedStar.isInCooldown)
+            if (targetedStar.IsSelectedForAttack() == false && !targetedStar.isInCooldown)
             {
-                targetedStar.Select();
+                targetedStar.SelectForAttack();
                 _selectedStars.Add(targetedStar);
 
                 lineRenderer.positionCount++;
@@ -55,7 +55,7 @@ public class Attack : MonoBehaviour
         {
             foreach (Star star in _selectedStars)
             {
-                star.Deselect();
+                star.DeselectForAttack();
             }
             
             lineRenderer.positionCount = 0;
@@ -84,7 +84,7 @@ public class Attack : MonoBehaviour
         
         foreach (var star in _selectedStars)
         {
-            star.Deselect();
+            star.DeselectForAttack();
         }
         _selectedStars.Clear();
         
