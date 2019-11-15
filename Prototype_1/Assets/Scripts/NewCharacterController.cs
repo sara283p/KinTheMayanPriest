@@ -5,11 +5,12 @@ using UnityEngine.Events;
 public class NewCharacterController : MonoBehaviour
 
 {
-	public Transform _leftJumpCheck;											// Position markings used to check when the character has landed after jumps
+	public Transform _leftJumpCheck;											// Position marking used to check when the character has landed after jumps
 	public Transform _rightJumpCheck;
 	public Transform floorCheck;												// A position marking used to check the direction of the floor in front of the character
 
-	
+
+	[SerializeField] private float _jumpCheckRadius;
 	[SerializeField] private float _jumpForce = 400f;							// Amount of force added when the player jumps.
 	[Range(0, .3f)] [SerializeField] private float m_MovementSmoothing = .05f;	// How much to smooth out the movement
 	[SerializeField] private bool _airControl = false;							// Whether or not a player can steer while jumping;
@@ -27,7 +28,7 @@ public class NewCharacterController : MonoBehaviour
 	private bool _facingRight = true; 											// For determining which way the player is currently facing.
 	private Vector3 _velocity = Vector3.zero;									// Velocity computed by SmoothDamp method
 	[SerializeField] private bool _jumping;										// Whether or not the player has jumped
-	
+
 	private void Awake()
 	{
 		_rb = GetComponent<Rigidbody2D>();
@@ -37,25 +38,24 @@ public class NewCharacterController : MonoBehaviour
 	private void FixedUpdate()
 	{
 		_grounded = false;
-		
+
 		// Check if player has landed after jumping
-		RaycastHit2D hit = Physics2D.Raycast(_leftJumpCheck.position, Vector2.down, 0.015f, _whatIsGround);
-		Vector2 newPos = _rb.position;
+		RaycastHit2D hit = Physics2D.Raycast(_leftJumpCheck.position, Vector2.down, _jumpCheckRadius, _whatIsGround);
 		if (hit.collider)
 		{
 			_jumping = false;
 		}
 		else
 		{
-			hit = Physics2D.Raycast(_rightJumpCheck.position, Vector2.down, 0.015f, _whatIsGround);
+			hit = Physics2D.Raycast(_rightJumpCheck.position, Vector2.down, _jumpCheckRadius, _whatIsGround);
 			if (hit.collider)
 			{
 				_jumping = false;
-
 			}
 		}
 		// Check whether the player is on the ground
-		hit = Physics2D.Raycast(_groundCheck.position, Vector2.down, _groundedRadius, _whatIsGround);
+		hit = Physics2D.CircleCast(_groundCheck.position, _groundedRadius, Vector2.down, _groundedRadius, _whatIsGround);
+		//hit = Physics2D.Raycast(_groundCheck.position, Vector2.down, _groundedRadius, _whatIsGround);
 		if (hit.collider)
 		{
 			_grounded = true;
@@ -82,8 +82,11 @@ public class NewCharacterController : MonoBehaviour
 		Gizmos.color = Color.red;
 		Gizmos.DrawRay(floorCheck.position, Vector2.down * Mathf.Infinity);
 		Gizmos.color = Color.green;
-		Gizmos.DrawRay(_leftJumpCheck.position, 0.015f * Vector2.down);
-		//Gizmos.DrawSphere(_groundCheck.position, _groundedRadius);
+		Gizmos.DrawRay(_leftJumpCheck.position, _jumpCheckRadius * Vector2.down);
+		Gizmos.color = Color.yellow;
+		Gizmos.DrawRay(_rightJumpCheck.position, _jumpCheckRadius * Vector2.down);
+		//Gizmos.DrawRay(_groundCheck.position, _groundedRadius * Vector2.down);
+		Gizmos.DrawSphere(_groundCheck.position, _groundedRadius);
 	}
 	/*END OF GIZMOS SECTION */ 
 
@@ -102,8 +105,11 @@ public class NewCharacterController : MonoBehaviour
 				targetVelocity = new Vector2(move, _rb.velocity.y);
 				if (!_jumping && !_grounded && targetVelocity.y > 0.01)
 				{
-					targetVelocity.y = -_rb.velocity.y;
-					
+					Vector2 newVelocity = _rb.velocity;
+					newVelocity.y *= -1;
+					_rb.velocity = newVelocity;
+					targetVelocity.y = newVelocity.y;
+
 				}
 			}
 			// ... otherwise...
