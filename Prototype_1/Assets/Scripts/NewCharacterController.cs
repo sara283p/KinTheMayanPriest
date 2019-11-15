@@ -102,17 +102,29 @@ public class NewCharacterController : MonoBehaviour
 			{
 				Vector2 moveAlongGround = new Vector2(_groundNormal.y, - _groundNormal.x);
 				groundDir = moveAlongGround;   // Used for debugging purposes
-				targetVelocity = new Vector2(move, _rb.velocity.y);
-				if (!_jumping && !_grounded && targetVelocity.y > 0.01)
+
+				// If the player is moving along a ramp...
+				if (_grounded && !_jumping && (moveAlongGround.y < -0.01 || moveAlongGround.y > 0.01))
+				{
+					targetVelocity = move * moveAlongGround;
+				}
+				// ... otherwise...
+				else
+				{
+					targetVelocity = new Vector2(move, _rb.velocity.y);
+					
+				}
+				
+				// If the player is not jumping, but the character is not grounded... (Reduces jumps at the end of ramps)
+				if (!_jumping && !_grounded)
 				{
 					Vector2 newVelocity = _rb.velocity;
-					newVelocity.y *= -1;
+					newVelocity.y = -5;
 					_rb.velocity = newVelocity;
 					targetVelocity.y = newVelocity.y;
-
 				}
 			}
-			// ... otherwise...
+			// ... otherwise, if player is hanged to a star...
 			else
 			{
 				targetVelocity = _rb.velocity;
@@ -146,13 +158,12 @@ public class NewCharacterController : MonoBehaviour
 		// If the player should jump...
 		if (_grounded && jump)
 		{
-				// If the player is not on a plain platform and wants to jump avoid rocket jump
-				if (_rb.velocity.y > 0.01)
-					_rb.velocity = new Vector2(_rb.velocity.x, 0);
-				_jumping = true;
-				_grounded = false;
-				// Add a vertical force to the player.
-				_rb.AddForce(new Vector2(0f, _jumpForce));
+			// Before applying the vertical force, re-initialize vertical speed to 0
+			_rb.velocity = new Vector2(_rb.velocity.x, 0);
+			_jumping = true;
+			_grounded = false;
+			// Add a vertical force to the player.
+			_rb.AddForce(new Vector2(0f, _jumpForce));
 		}
 	}
 
