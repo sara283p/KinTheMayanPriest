@@ -9,7 +9,6 @@ public class NewCharacterController : MonoBehaviour
 	public Transform _rightJumpCheck;
 	public Transform floorCheck;												// A position marking used to check the direction of the floor in front of the character
 
-
 	[SerializeField] private float _jumpCheckRadius;
 	[SerializeField] private float _jumpForce = 400f;							// Amount of force added when the player jumps.
 	[Range(0, .3f)] [SerializeField] private float m_MovementSmoothing = .05f;	// How much to smooth out the movement
@@ -28,7 +27,7 @@ public class NewCharacterController : MonoBehaviour
 	private bool _facingRight = true; 											// For determining which way the player is currently facing.
 	private Vector3 _velocity = Vector3.zero;									// Velocity computed by SmoothDamp method
 	[SerializeField] private bool _jumping;										// Whether or not the player has jumped
-
+	
 	private void Awake()
 	{
 		_rb = GetComponent<Rigidbody2D>();
@@ -54,8 +53,8 @@ public class NewCharacterController : MonoBehaviour
 			}
 		}
 		// Check whether the player is on the ground
-		Collider2D collider = Physics2D.OverlapCircle(_groundCheck.position, _groundedRadius, _whatIsGround);
-		if(collider)
+		Collider2D groundCollider = Physics2D.OverlapCircle(_groundCheck.position, _groundedRadius, _whatIsGround);
+		if(groundCollider)
 		{
 			_grounded = true;
 		}
@@ -91,6 +90,7 @@ public class NewCharacterController : MonoBehaviour
 
 	public void Move(float move, bool crouch, bool jump)
 	{
+		_rb.gravityScale = 1;
 		//only control the player if grounded or airControl is turned on
 		if (_grounded || _airControl)
 		{
@@ -103,9 +103,10 @@ public class NewCharacterController : MonoBehaviour
 				groundDir = moveAlongGround;   // Used for debugging purposes
 
 				// If the player is moving along a ramp...
-				if (_grounded && !_jumping && (moveAlongGround.y < -0.01 || moveAlongGround.y > 0.01))
+				if (_grounded && !_jumping && Math.Abs(moveAlongGround.y) > 0.01)
 				{
 					targetVelocity = move * moveAlongGround;
+					_rb.gravityScale = 0;
 				}
 				// ... otherwise...
 				else
@@ -157,6 +158,7 @@ public class NewCharacterController : MonoBehaviour
 		// If the player should jump...
 		if (_grounded && jump)
 		{
+			_rb.gravityScale = 1;
 			// Before applying the vertical force, re-initialize vertical speed to 0
 			_rb.velocity = new Vector2(_rb.velocity.x, 0);
 			_jumping = true;
