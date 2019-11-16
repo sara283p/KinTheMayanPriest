@@ -64,6 +64,16 @@ public class NewGrappler : MonoBehaviour
         // If there is joint and either hook button is released or Kin is on the ground, destroy it
         if (_joint)
         {
+            Vector2 starCenteredRelativePosition = _rb.position - _joint.connectedBody.position;
+            
+            if (starCenteredRelativePosition.y <= -_joint.distance + 0.05f)
+            {
+                _friction.maxForce = 0;
+            }
+            else
+            {
+                _friction.maxForce = 1f;
+            }
             if (!_wantToHook || _controller.IsGrounded())
             {
                 DestroyJoint();

@@ -9,7 +9,7 @@ public class NewCharacterController : MonoBehaviour
 	public Transform _rightJumpCheck;
 	public Transform floorCheck;												// A position marking used to check the direction of the floor in front of the character
 
-	[SerializeField] private float _jumpCheckRadius;
+	[SerializeField] private float _jumpCheckRadius;							// Distance from ground at which the jump is considered to be ended
 	[SerializeField] private float _jumpForce = 400f;							// Amount of force added when the player jumps.
 	[Range(0, .3f)] [SerializeField] private float m_MovementSmoothing = .05f;	// How much to smooth out the movement
 	[SerializeField] private bool _airControl = false;							// Whether or not a player can steer while jumping;
