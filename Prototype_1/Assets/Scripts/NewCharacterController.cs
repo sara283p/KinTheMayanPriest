@@ -54,9 +54,8 @@ public class NewCharacterController : MonoBehaviour
 			}
 		}
 		// Check whether the player is on the ground
-		hit = Physics2D.CircleCast(_groundCheck.position, _groundedRadius, Vector2.down, _groundedRadius, _whatIsGround);
-		//hit = Physics2D.Raycast(_groundCheck.position, Vector2.down, _groundedRadius, _whatIsGround);
-		if (hit.collider)
+		Collider2D collider = Physics2D.OverlapCircle(_groundCheck.position, _groundedRadius, _whatIsGround);
+		if(collider)
 		{
 			_grounded = true;
 		}
