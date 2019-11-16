@@ -196,4 +196,14 @@ public class NewCharacterController : MonoBehaviour
 			_starPosition = Vector2.zero;
 		}
 	}
+
+	public void StopJump()
+	{
+		Vector2 velocity = _rb.velocity;
+		if (_jumping && velocity.y > 0)
+		{
+			velocity.y *= 0.5f;
+			_rb.velocity = velocity;
+		}
+	}
 }

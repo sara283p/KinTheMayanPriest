@@ -31,6 +31,10 @@ public class NewPlayerMovement : MonoBehaviour
             _jump = true;
             //animator.SetBool("isJumping", true);
         }
+        else if (Input.GetButtonUp("Jump"))
+        {
+            controller.StopJump();
+        }
 
         if (Input.GetButtonDown("Crouch"))
         {
