@@ -66,14 +66,18 @@ public class NewGrappler : MonoBehaviour
         {
             Vector2 starCenteredRelativePosition = _rb.position - _joint.connectedBody.position;
             
+            // If the character is hanged to the star and is not moving, disable friction if remainder movement is very little, in 
+            // order to make it do little oscillations around the center of the hanging ray...
             if (starCenteredRelativePosition.y <= -_joint.distance + 0.05f)
             {
                 _friction.maxForce = 0;
             }
+            // ... otherwise re-enable friction to slow character down when the player is not moving
             else
             {
                 _friction.maxForce = 1f;
             }
+            
             if (!_wantToHook || _controller.IsGrounded())
             {
                 DestroyJoint();

@@ -128,10 +128,11 @@ public class NewCharacterController : MonoBehaviour
 			else
 			{
 				targetVelocity = _rb.velocity;
-				// If player is moving horizontally, increase oscillation...
-				if(Math.Abs(move) > 0.01f && !(targetVelocity.y < 0 && targetVelocity.x * move < 0))
+				// If player is moving horizontally, increase oscillation... (second term of the conjunction is needed to avoid stalls when the player keeps a button pressed.
+				// E.g. if player keeps "D" pressed, character won't stall to the right while hanged to the star)
+				if(Math.Abs(move) > 0.01f && !(targetVelocity.y < 0 && targetVelocity.x * move < 0 && Math.Abs(targetVelocity.x) < 2))
 						targetVelocity.x += Math.Sign(move) * _oscillationDelta;
-
+				
 				//... but if oscillation speed is too high, set it to a maximum speed to avoid performing entire circles
 				if (Math.Abs(targetVelocity.x) > _oscillationSpeed)
 					targetVelocity.x = _oscillationSpeed * Math.Sign(targetVelocity.x);
