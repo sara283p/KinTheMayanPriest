@@ -129,7 +129,7 @@ public class NewCharacterController : MonoBehaviour
 			{
 				targetVelocity = _rb.velocity;
 				// If player is moving horizontally, increase oscillation...
-				if(Math.Abs(move) > 0.01f)
+				if(Math.Abs(move) > 0.01f && !(targetVelocity.y < 0 && targetVelocity.x * move < 0))
 						targetVelocity.x += Math.Sign(move) * _oscillationDelta;
 
 				//... but if oscillation speed is too high, set it to a maximum speed to avoid performing entire circles
