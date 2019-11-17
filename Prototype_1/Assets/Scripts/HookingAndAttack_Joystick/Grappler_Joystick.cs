@@ -8,6 +8,8 @@ using UnityEngine;
 public class Grappler_Joystick : MonoBehaviour
 {
     public HangingEffect hangingEffect;
+    public LayerMask obstacleLayerMask;
+    
     private CharacterController2D _controller;
     public Locker_Joystick locker;
     private Rigidbody2D _rb;
@@ -67,12 +69,34 @@ public class Grappler_Joystick : MonoBehaviour
         SwitchToKinematic();
         Destroy(_joint);
         _joint = null;
+        hangingEffect.StopEffect();
+
     }
-    
+
+    /*private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawRay(_rb.position, _selectedStar.GetComponent<Rigidbody2D>().position - _rb.position);
+    }*/
+
     void Update()
     {
         HookInput();
 
+        if (_selectedStar)
+        {
+            Vector2 relativePosition = _selectedStar.GetComponent<Rigidbody2D>().position - _rb.position;
+            RaycastHit2D hit = Physics2D.Raycast(_rb.position, relativePosition, relativePosition.magnitude, obstacleLayerMask);
+            if (hit.collider)
+            {
+                if (_joint)
+                {
+                    DestroyJoint();
+                }
+                activeIcon.SetActive(false);
+                return;
+            }
+        }
         // If there is joint and either hook button is released or Kin is on the ground, destroy it
         if (_joint)
         {
@@ -80,7 +104,6 @@ public class Grappler_Joystick : MonoBehaviour
             {
                 DestroyJoint();
                 activeIcon.SetActive(false);
-                hangingEffect.StopEffect();
             }
         }
         else
@@ -88,7 +111,7 @@ public class Grappler_Joystick : MonoBehaviour
             // If there is not a joint and hook is pressed...
             if (_wantToHook)
             {
-                if (_availableStars.Count == 0) return;
+                if (_availableStars.Count == 0 || !_selectedStar) return;
         
                 var pointedStar = locker.GetAvailableStarByRaycast(_selectedStar.transform);
                 if (pointedStar)

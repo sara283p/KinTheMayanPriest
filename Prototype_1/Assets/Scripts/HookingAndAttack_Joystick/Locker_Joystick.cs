@@ -8,6 +8,8 @@ using UnityEngine;
 public class Locker_Joystick : MonoBehaviour
 {
 	public float selectionDelay = 0.4f;
+	public LayerMask obstacleLayerMask;
+	
 	private bool _selectingWait;
 	
 	public LayerMask starLayerMask;
@@ -73,7 +75,14 @@ public class Locker_Joystick : MonoBehaviour
 			.ToArray();
 
 		if (stars.Length == 0) return null;
-		return stars[Array.IndexOf(distances, distances.Min())];
+		
+		var selectedStar = stars[Array.IndexOf(distances, distances.Min())];
+		Vector2 relativePosition = selectedStar.transform.position - kin.position;
+		RaycastHit2D hit = Physics2D.Raycast(kin.position, relativePosition, relativePosition.magnitude, obstacleLayerMask);
+		if (hit.collider)
+			return null;
+		
+		return selectedStar;
 	}
 
 	public Star GetAvailableStarByRaycast(Transform origin)
@@ -96,7 +105,14 @@ public class Locker_Joystick : MonoBehaviour
 	        if (stars.Length > 0)
 	        {
 		        StartCoroutine(SelectionWait());
-		        return stars[0];
+		        var selectedStar = stars[0];
+		        Vector2 relativePosition = selectedStar.transform.position - origin.position;
+		        RaycastHit2D groundHit = Physics2D.Raycast(origin.position, direction, relativePosition.magnitude, obstacleLayerMask);
+		        if (groundHit.collider)
+		        {
+			        return null;
+		        }
+		        return selectedStar;
 	        }
         }
 

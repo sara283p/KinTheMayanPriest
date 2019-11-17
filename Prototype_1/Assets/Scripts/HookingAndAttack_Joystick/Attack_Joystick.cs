@@ -9,6 +9,7 @@ public class Attack_Joystick : MonoBehaviour
     public Locker_Joystick locker;
 
     public LineRenderer lineRenderer;
+    public LayerMask obstacleLayerMask;
 
     public float selectionDelay = 0.4f;
 
@@ -22,7 +23,9 @@ public class Attack_Joystick : MonoBehaviour
     private bool _selectingWait;
 
     private Star _targetStar;
+    private Star _firstStar;
     private Enemy _targetEnemy;
+    private Transform _tr;
     
     private List<Star> _selectedStars = new List<Star>();
 
@@ -32,6 +35,7 @@ public class Attack_Joystick : MonoBehaviour
     // Initialize the attack effect
     {
         lineRenderer.positionCount = 0;
+        _tr = GetComponent<Transform>();
     }
 
     void Update()
@@ -50,6 +54,20 @@ public class Attack_Joystick : MonoBehaviour
             _attacking = false;
             Abort();
             if (!_isAttackOngoing) lineRenderer.positionCount = 0;
+        }
+
+        if (_firstStar)
+        {
+            Vector2 relativePosition = _firstStar.transform.position - _tr.position;
+            Debug.DrawRay(_tr.position, relativePosition, Color.red);
+            RaycastHit2D hit = Physics2D.Raycast(_tr.position, relativePosition, relativePosition.magnitude, obstacleLayerMask);
+            if (hit.collider)
+            {
+                Abort();
+                _attacking = true;
+                if (!_isAttackOngoing) lineRenderer.positionCount = 0;
+                return;
+            }
         }
         
         if (_attacking)
@@ -109,6 +127,7 @@ public class Attack_Joystick : MonoBehaviour
     {
         _attacking = false;
         _targetStar = null;
+        _firstStar = null;
         _targetEnemy = null;
 
         _selectedStars.ForEach(x => x.DeselectForAttack());
@@ -124,6 +143,7 @@ public class Attack_Joystick : MonoBehaviour
         if (!_targetStar)
         {
             _targetStar = locker.GetNearestAvailableStar();
+            _firstStar = _targetStar;
             if (!_targetStar) return;
             viewfinder.DisplayViewfinder(true);
             viewfinder.gameObject.transform.position = _targetStar.transform.position;
