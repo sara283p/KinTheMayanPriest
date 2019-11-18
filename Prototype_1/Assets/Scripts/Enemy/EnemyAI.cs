@@ -18,14 +18,12 @@ public class EnemyAI : MonoBehaviour
     private Path foundPath; 
     
     public float enemySpeed = 1000f;
-    public ForceMode2D forcemode;
-    
+
     //the waypoint the enemy is currently moving towards
     private int currentWaypoint = 0;
     
     [HideInInspector] public bool isPathOver = false;
-    private bool isSearchingPlayer = false;
-    
+
     //the max distance from a waypoint to trigger the enemy to move towards the next waypoint in the path
     public float nextWaypointDistance = 3f;
 
@@ -34,43 +32,20 @@ public class EnemyAI : MonoBehaviour
         seeker = GetComponent<Seeker>();
         rigidbody = GetComponent<Rigidbody2D>();
 
-        if (target == null)
-        {
-            if (!isSearchingPlayer)
-            {
-                isSearchingPlayer = true;
-                StartCoroutine(playerSearch());
-            }
-            
-            return;
-        }
-
-        //search and begin a path starting from the enemy towards the target, and return the result to the function OnPathEnd()
-        seeker.StartPath(transform.position, target.position, OnPathEnd);
-
-        StartCoroutine(UpdatePath());
+        //start iteratively searching for the quickest path towards the target
+        InvokeRepeating("updatePath", 0f, .5f);
     }
 
-    IEnumerator UpdatePath()
+    void updatePath()
     {
-        if (target == null)
+        if (seeker.IsDone())
         {
-            if (!isSearchingPlayer)
-            {
-                isSearchingPlayer = true;
-                StartCoroutine(playerSearch());
-            }
-            
-            yield return false;
+            //search and begin a path starting from the enemy towards the target, and return the result to the function OnPathEnd()
+            seeker.StartPath(transform.position, target.position, OnPathEnd);
         }
-        
-        seeker.StartPath(transform.position, target.position, OnPathEnd);
-        
-        yield return new WaitForSeconds(1f/updateRate);
-        
-        StartCoroutine(UpdatePath());
     }
-    
+
+    //managing the behaviour upon the calculation of the quickest path (or not)
     public void OnPathEnd(Path path)
     {
         if (!path.error)
@@ -87,61 +62,44 @@ public class EnemyAI : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (target == null)
-        {
-            if (!isSearchingPlayer)
-            {
-                isSearchingPlayer = true;
-                StartCoroutine(playerSearch());
-            }
-            
-            return;
-        }
-
         if (foundPath == null)
         {
             return;
         }
 
+        //if the enemy has reached the end of the path
         if (currentWaypoint >= foundPath.vectorPath.Count)
         {
-            if (isPathOver)
-            {
-                return;
-            }
-
             isPathOver = true;
             return;
         }
+        
+        else
+        {
+            isPathOver = false;
+        }
 
-        isPathOver = false;
-
-        Vector3 direction = (foundPath.vectorPath[currentWaypoint] - transform.position).normalized;
-        direction *= enemySpeed * Time.fixedDeltaTime;
-        rigidbody.AddForce(direction, forcemode);
+        //apply the right force to move the enemy towards the path
+        Vector2 direction = ((Vector2)foundPath.vectorPath[currentWaypoint] - rigidbody.position).normalized;
+        Vector2 force = direction * enemySpeed * Time.deltaTime;
+        rigidbody.AddForce(force);
             
-        float distance = Vector3.Distance(transform.position, foundPath.vectorPath[currentWaypoint]);
+        //if the enemy enters into the radius into which it's cvonsidered to be moving towards the next waypoint,
+        //the waypoint counter is increased
+        float distance = Vector2.Distance(transform.position, foundPath.vectorPath[currentWaypoint]);
         if (distance < nextWaypointDistance)
         {
             currentWaypoint++;
-            return;
         }
-    }
-
-    IEnumerator playerSearch()
-    {
-        GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-        if (playerObject == null)
+        
+        //managing the way the enemy always faces the direction it's moving towards
+        if (force.x >= 0.01f)
         {
-            yield return new WaitForSeconds(0.5f);
-            StartCoroutine(playerSearch());
+            transform.localScale = new Vector3(-1f, 1f, 1f);
         }
-        else
+        else if (force.x <= -0.01f)
         {
-            target = playerObject.transform;
-            isSearchingPlayer = false;
-            StartCoroutine(UpdatePath());
-            yield return false;
+            transform.localScale = new Vector3(1f, 1f, 1f);
         }
     }
 }
