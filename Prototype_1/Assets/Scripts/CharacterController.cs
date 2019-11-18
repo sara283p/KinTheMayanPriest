@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-public class NewCharacterController : MonoBehaviour
+public class CharacterController : MonoBehaviour
 
 {
 	public Transform _leftJumpCheck;											// Position marking used to check when the character has landed after jumps
