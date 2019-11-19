@@ -11,8 +11,6 @@ public class Attack_Joystick : MonoBehaviour
     public LineRenderer lineRenderer;
     public LayerMask obstacleLayerMask;
 
-    public float selectionDelay = 0.4f;
-
     enum TargetType {Star, Enemy}
 
     private TargetType _targetType = TargetType.Star;
@@ -27,7 +25,7 @@ public class Attack_Joystick : MonoBehaviour
     private Enemy _targetEnemy;
     private Transform _tr;
     
-    private List<Star> _selectedStars = new List<Star>();
+    private readonly List<Star> _selectedStars = new List<Star>();
 
     public MoveStarViewfinder_Joystick viewfinder;
 
@@ -162,7 +160,7 @@ public class Attack_Joystick : MonoBehaviour
             }
             else
             {
-                var pointedEnemy = locker.GetEnemyByRaycast();
+                var pointedEnemy = locker.GetAvailableEnemyByRaycast(viewfinder.transform, _selectedStars.Select(x => x.transform.position).LastOrDefault());
                 if (pointedEnemy)
                 {
                     _targetType = TargetType.Enemy;

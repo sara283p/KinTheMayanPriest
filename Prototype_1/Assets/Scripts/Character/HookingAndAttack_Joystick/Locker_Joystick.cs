@@ -7,7 +7,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class Locker_Joystick : MonoBehaviour
 {
-	public float selectionDelay = 0.4f;
+	public float selectionDelay = 0.5f;
 	public LayerMask obstacleLayerMask;
 	
 	private bool _selectingWait;
@@ -68,78 +68,77 @@ public class Locker_Joystick : MonoBehaviour
 
 	public Star GetNearestAvailableStar()
 	{
-		Star[] stars = FindObjectsOfType<Star>();
-		stars = stars.Where(x => !x.isInCooldown).ToArray();
-		var distances = stars
-			.Select(x => (kin.position - x.transform.position).magnitude)
+		var kinPosition = kin.position;
+		var stars = Physics2D.OverlapCircleAll(kinPosition, 50f, starLayerMask)
+			.Select(x => x.GetComponent<Star>())
+			.Where(x => !x.isInCooldown)
+			.Where(x => !Physics2D.Raycast(kin.position, x.transform.position - kinPosition, (x.transform.position - kinPosition).magnitude, obstacleLayerMask))
+			.OrderBy(x => (kinPosition - x.transform.position).sqrMagnitude)
 			.ToArray();
 
-		if (stars.Length == 0) return null;
-		
-		var selectedStar = stars[Array.IndexOf(distances, distances.Min())];
-		Vector2 relativePosition = selectedStar.transform.position - kin.position;
-		RaycastHit2D hit = Physics2D.Raycast(kin.position, relativePosition, relativePosition.magnitude, obstacleLayerMask);
-		if (hit.collider)
+		if (stars.Length == 0)
+		{
 			return null;
-		
-		return selectedStar;
+		}
+		return stars[0];
 	}
 
 	public Star GetAvailableStarByRaycast(Transform origin)
 	{
 		if (_selectingWait) return null;
-		
+
+		var originPosition = origin.position;
 		var horizontalMove = Input.GetAxisRaw("StarViewfinderHorizontal");
 		var verticalMove = Input.GetAxisRaw("StarViewfinderVertical");
 		var direction = new Vector3(horizontalMove, verticalMove);
 		
-		RaycastHit2D[] hit = Physics2D.RaycastAll(origin.position, direction, Mathf.Infinity, starLayerMask);
-        Debug.DrawRay(origin.position, direction * 5.0f, Color.green);
-
-        if (hit.Length > 0)
-        {
-	        var stars = hit
-		        .Select(x => x.transform.GetComponent<Star>())
-		        .Where(x => !x.isInCooldown)
-		        .ToArray();
-	        if (stars.Length > 0)
-	        {
-		        StartCoroutine(SelectionWait());
-		        var selectedStar = stars[0];
-		        Vector2 relativePosition = selectedStar.transform.position - origin.position;
-		        RaycastHit2D groundHit = Physics2D.Raycast(origin.position, direction, relativePosition.magnitude, obstacleLayerMask);
-		        if (groundHit.collider)
-		        {
-			        return null;
-		        }
-		        return selectedStar;
-	        }
-        }
-
-        return null;
-	}
-	
-	public Enemy GetEnemyByRaycast()
-	{
-		if (_selectingWait) return null;
+		Debug.DrawRay(originPosition, direction * 5.0f, Color.green);
 		
-		var horizontalMove = Input.GetAxisRaw("StarViewfinderHorizontal");
-		var verticalMove = Input.GetAxisRaw("StarViewfinderVertical");
-		var direction = new Vector3(horizontalMove, verticalMove);
-		
-		RaycastHit2D hit = Physics2D.Raycast(viewfinder.position, direction, Mathf.Infinity, enemyLayerMask);
-		Debug.DrawRay(viewfinder.position, direction * 5.0f, Color.green);
+		var stars = Physics2D.RaycastAll(originPosition, direction, Mathf.Infinity, starLayerMask)
+			.Select(x => x.transform.GetComponent<Star>())
+			.Where(x => !x.isInCooldown)
+			.Where(x => !Physics2D.Raycast(origin.position, direction, (x.transform.position - originPosition).magnitude, obstacleLayerMask))
+			.OrderBy(x => (origin.position - x.transform.position).sqrMagnitude)
+			.ToArray();
 
-		if (hit)
+		if (stars.Length > 0)
 		{
 			StartCoroutine(SelectionWait());
-			return hit.transform.GetComponent<Enemy>();
-		}
-		else
-		{
-			return null;
+			return stars[0];
 		}
 
+		return null;
+	}
+	
+	public Enemy GetAvailableEnemyByRaycast(Transform origin, Vector3 lastSelectedStar)
+	{
+		if (_selectingWait) return null;
+
+		var originPosition = origin.position;
+		var horizontalMove = Input.GetAxisRaw("StarViewfinderHorizontal");
+		var verticalMove = Input.GetAxisRaw("StarViewfinderVertical");
+		var direction = new Vector3(horizontalMove, verticalMove);
+
+		Debug.DrawRay(originPosition, direction * 5.0f, Color.green);
+		
+		var enemies = Physics2D.RaycastAll(originPosition, direction, Mathf.Infinity, enemyLayerMask)
+			.Select(x => x.transform.GetComponent<Enemy>())
+			.Where(x =>
+			{
+				var position = x.transform.position;
+				var relativeDirection = x.transform.position - lastSelectedStar;
+				return !Physics2D.Raycast(lastSelectedStar, relativeDirection, (position - lastSelectedStar).magnitude, obstacleLayerMask);
+			})
+			.OrderBy(x => (origin.position - x.transform.position).sqrMagnitude)
+			.ToArray();
+
+		if (enemies.Length > 0)
+		{
+			StartCoroutine(SelectionWait());
+			return enemies[0];
+		}
+
+		return null;
 	}
 	
 	public Enemy GetNearestEnemy()
@@ -155,9 +154,10 @@ public class Locker_Joystick : MonoBehaviour
 
 	public List<Star> GetStarsInRange(float maxStarDistance)
 	{
-		return FindObjectsOfType<Star>()
+		var kinPosition = kin.position;
+		return Physics2D.OverlapCircleAll(kinPosition, maxStarDistance, starLayerMask)
+			.Select(x => x.GetComponent<Star>())
 			.Where(x => !x.isInCooldown)
-			.Where(x => (x.transform.position - kin.position).magnitude < maxStarDistance)
 			.ToList();
 	}
 	

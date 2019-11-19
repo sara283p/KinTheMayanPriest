@@ -42,9 +42,6 @@ public class Grappler_Joystick : MonoBehaviour
         if (Input.GetButtonDown("LockStarHang"))
         {
             _wantToHook = true;
-            
-            _availableStars = locker.GetStarsInRange(_maxStarDistance);
-            _availableStars.ForEach( x => x.HighlightStar());
             _selectedStar = locker.GetNearestAvailableStar();
         }
         
@@ -139,6 +136,15 @@ public class Grappler_Joystick : MonoBehaviour
             // If there is not a joint and hook is pressed...
             if (_wantToHook)
             {
+                var temp = locker.GetStarsInRange(_maxStarDistance);
+                _availableStars
+                    .ForEach(x =>
+                    {
+                        if (!temp.Contains(x)) x.DeHighlightStar();
+                    });
+
+                _availableStars = temp;
+                _availableStars.ForEach( x => x.HighlightStar());
                 if (_availableStars.Count == 0 || !_selectedStar) return;
         
                 var pointedStar = locker.GetAvailableStarByRaycast(_selectedStar.transform);
