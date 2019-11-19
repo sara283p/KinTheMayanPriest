@@ -27,6 +27,7 @@ public class CharacterController : MonoBehaviour
 	private bool _facingRight = true; 											// For determining which way the player is currently facing.
 	private Vector3 _velocity = Vector3.zero;									// Velocity computed by SmoothDamp method
 	[SerializeField] private bool _jumping;										// Whether or not the player has jumped
+	[SerializeField] private int _startingJumpDirection;							// Right -> 1; Left -> -1; None -> 0
 	private float _coyoteDuration = 0.2f;
 	private float _coyoteTime;
 	private float _minVerticalSpeed = 8;
@@ -132,15 +133,42 @@ public class CharacterController : MonoBehaviour
 					targetVelocity.y = newVelocity.y;
 				}
 
+				// If the player jumped
 				if (_jumping)
 				{
 					Vector2 newVelocity = _rb.velocity;
-
+				
+					// When the vertical velocity drops down a certain threshold, just set it to a minimum value to increase starting falling speed
 					if(newVelocity.y < 2 && newVelocity.y > - _minVerticalSpeed)
 					{
 						newVelocity.y = -_minVerticalSpeed;
 						_rb.velocity = newVelocity;
 						targetVelocity.y = newVelocity.y;
+					}
+
+					// If player changes direction, reduce air control of the character
+					if (targetVelocity.x * newVelocity.x < 0)
+					{
+						if (Math.Abs(newVelocity.x) > 0.5f)
+						{
+							targetVelocity.x = newVelocity.x * 0.8f;
+						}
+						else
+						{
+							targetVelocity.x += 0.5f * Math.Sign(targetVelocity.x);
+						}
+					}
+
+					// If character horizontal move drops to 0 (e.g. changes direction while on air), permanently reduce air control
+					if (Math.Abs(targetVelocity.x) <= 0.01)
+					{
+						_startingJumpDirection = 0;
+					}
+					
+					// If player jumps without moving or the character changed direction while on air, reduce air control
+					if (_startingJumpDirection == 0)
+					{
+						targetVelocity.x = 0.5f * targetVelocity.x;
 					}
 				}
 			}
@@ -183,6 +211,7 @@ public class CharacterController : MonoBehaviour
 			// Before applying the vertical force, re-initialize vertical speed to 0
 			_rb.velocity = new Vector2(_rb.velocity.x, _minVerticalSpeed);
 			_jumping = true;
+			_startingJumpDirection = Math.Sign(move);
 			_grounded = false;
 			// Add a vertical force to the player.
 			_rb.AddForce(new Vector2(0f, _jumpForce));
