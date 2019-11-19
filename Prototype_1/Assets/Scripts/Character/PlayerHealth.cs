@@ -8,12 +8,18 @@ public class PlayerHealth : MonoBehaviour
     public float max_health = 100f;
     public float cur_health = 0f;
     public bool alive = true;
+
+    private Renderer rend;
+    private Color c;
     
     // Start is called before the first frame update
     void Start()
     {
         alive = true;
         cur_health = max_health;
+
+        rend = GetComponent<Renderer>();
+        c = rend.material.color;
     }
 
     // Update is called once per frame
@@ -38,6 +44,18 @@ public class PlayerHealth : MonoBehaviour
         else
         {
             cur_health -= amount;
+            StartCoroutine("GetInvulnerable");
         }
+    }
+
+    IEnumerator GetInvulnerable()
+    {
+        Physics2D.IgnoreLayerCollision(9, 11, true);
+        c.a = 0.5f;
+        rend.material.color = c;
+        yield return new WaitForSeconds(3f);
+        Physics2D.IgnoreLayerCollision(9, 11, false);
+        c.a = 1f;
+        rend.material.color = c;
     }
 }
