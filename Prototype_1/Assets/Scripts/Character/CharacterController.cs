@@ -29,6 +29,7 @@ public class CharacterController : MonoBehaviour
 	[SerializeField] private bool _jumping;										// Whether or not the player has jumped
 	private float _coyoteDuration = 0.2f;
 	private float _coyoteTime;
+	private float _minVerticalSpeed = 8;
 	
 	private void Awake()
 	{
@@ -130,6 +131,18 @@ public class CharacterController : MonoBehaviour
 					_rb.velocity = newVelocity;
 					targetVelocity.y = newVelocity.y;
 				}
+
+				if (_jumping)
+				{
+					Vector2 newVelocity = _rb.velocity;
+
+					if(newVelocity.y < 2 && newVelocity.y > - _minVerticalSpeed)
+					{
+						newVelocity.y = -_minVerticalSpeed;
+						_rb.velocity = newVelocity;
+						targetVelocity.y = newVelocity.y;
+					}
+				}
 			}
 			// ... otherwise, if player is hanged to a star...
 			else
@@ -168,7 +181,7 @@ public class CharacterController : MonoBehaviour
 		{
 			_rb.gravityScale = 1;
 			// Before applying the vertical force, re-initialize vertical speed to 0
-			_rb.velocity = new Vector2(_rb.velocity.x, 0);
+			_rb.velocity = new Vector2(_rb.velocity.x, _minVerticalSpeed);
 			_jumping = true;
 			_grounded = false;
 			// Add a vertical force to the player.
