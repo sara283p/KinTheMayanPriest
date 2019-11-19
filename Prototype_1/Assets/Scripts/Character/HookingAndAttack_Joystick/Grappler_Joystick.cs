@@ -17,6 +17,7 @@ public class Grappler_Joystick : MonoBehaviour
     private bool _hook;
     private DistanceJoint2D _joint;
     private FrictionJoint2D _friction;
+    private bool _skyIsMoving;
 
     private float _maxStarDistance = 10f;
     
@@ -60,6 +61,15 @@ public class Grappler_Joystick : MonoBehaviour
         if (Input.GetButtonDown("Jump"))
         {
             _hook = true;
+        }
+
+        if (Input.GetButtonDown("RotateSky"))
+        {
+            _skyIsMoving = true;
+        }
+        else if (Input.GetButtonUp("RotateSky"))
+        {
+            _skyIsMoving = false;
         }
        
     }
@@ -116,7 +126,7 @@ public class Grappler_Joystick : MonoBehaviour
                 _friction.maxForce = 1f;
             }
             
-            if (!_wantToHook || _controller.IsGrounded())
+            if (!_wantToHook || _controller.IsGrounded() || _skyIsMoving)
             {
                 DestroyJoint();
                 activeIcon.SetActive(false);
