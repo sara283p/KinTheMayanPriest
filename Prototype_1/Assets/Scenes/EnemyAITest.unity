@@ -285,6 +285,28 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &714708467 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2275776361876956458, guid: 3f3478b7bed0c3e46aa496ebf2b4b0a2,
+    type: 3}
+  m_PrefabInstance: {fileID: 2275776362061773426}
+  m_PrefabAsset: {fileID: 0}
+--- !u!58 &714708474
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 714708467}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.96
 --- !u!1 &721080678
 GameObject:
   m_ObjectHideFlags: 0
@@ -2657,12 +2679,23 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2275776361876956459, guid: 3f3478b7bed0c3e46aa496ebf2b4b0a2,
+        type: 3}
+      propertyPath: m_Constraints
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2275776361876956460, guid: 3f3478b7bed0c3e46aa496ebf2b4b0a2,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2275776361876956462, guid: 3f3478b7bed0c3e46aa496ebf2b4b0a2,
         type: 3}
       propertyPath: target
       value: 
       objectReference: {fileID: 1119143167}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2275776361876956460, guid: 3f3478b7bed0c3e46aa496ebf2b4b0a2, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 3f3478b7bed0c3e46aa496ebf2b4b0a2, type: 3}
 --- !u!1001 &8218468154748077812
 PrefabInstance:
@@ -2679,12 +2712,12 @@ PrefabInstance:
     - target: {fileID: 8455295465295335712, guid: 238d9da2bc4409244973d1b704ed06a8,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 9.26
+      value: 8.048
       objectReference: {fileID: 0}
     - target: {fileID: 8455295465295335712, guid: 238d9da2bc4409244973d1b704ed06a8,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 6.3
+      value: 2.087
       objectReference: {fileID: 0}
     - target: {fileID: 8455295465295335712, guid: 238d9da2bc4409244973d1b704ed06a8,
         type: 3}

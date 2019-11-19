@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
@@ -93,13 +94,16 @@ public class EnemyAI : MonoBehaviour
         }
         
         //managing the way the enemy always faces the direction it's moving towards
+        Vector3 newLocalScale = transform.localScale;
         if (force.x >= 0.01f)
         {
-            transform.localScale = new Vector3(-1f, 1f, 1f);
+            newLocalScale.x = -Math.Abs(newLocalScale.x);
         }
         else if (force.x <= -0.01f)
         {
-            transform.localScale = new Vector3(1f, 1f, 1f);
+            newLocalScale.x = Math.Abs(newLocalScale.x);
         }
+        transform.localScale = newLocalScale;
+
     }
 }
