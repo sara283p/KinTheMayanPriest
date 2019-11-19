@@ -19,6 +19,7 @@ public class Attack_Joystick : MonoBehaviour
 
     private bool _attacking;
     private bool _isAttackOngoing;
+    private bool _skyIsRotating;
 
     private bool _selectingWait;
 
@@ -40,6 +41,15 @@ public class Attack_Joystick : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetButtonDown("RotateSky"))
+        {
+            _skyIsRotating = true;
+        }
+        else if (Input.GetButtonUp("RotateSky"))
+        {
+            _skyIsRotating = false;
+        }
+        
         // If the LockAttack button is kept pressed, enter in mode "Attack"
         // In this mode you can move through available (not in cooldown) stars, select them for attack,
         // deselect them if you change your mind, move to an enemy and cast the attack.
@@ -49,7 +59,7 @@ public class Attack_Joystick : MonoBehaviour
             _attacking = true;
         }
 
-        if (Input.GetButtonUp("LockAttack"))
+        if (Input.GetButtonUp("LockAttack") || _skyIsRotating)
         {
             _attacking = false;
             Abort();
