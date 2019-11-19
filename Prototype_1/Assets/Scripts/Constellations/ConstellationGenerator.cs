@@ -13,7 +13,7 @@ public class ConstellationGenerator : MonoBehaviour
     private static ConstellationGenerator _instance;
     private Constellation _emptyConstellation;
     private float _minDistance = 3f;
-    private float _initialRadius = 0.2f;
+    private float _initialRadius = 1;
     private int _maxStarNumber = 7;
     private static ContactFilter2D _contactFilter;
     private static System.Random _rand;
