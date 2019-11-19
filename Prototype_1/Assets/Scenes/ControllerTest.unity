@@ -2804,16 +2804,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4667618409703333898, guid: 4177fe3858a9e4f689ca45d923951143,
-        type: 3}
-      propertyPath: isInCooldown
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4667618409703333898, guid: 4177fe3858a9e4f689ca45d923951143,
-        type: 3}
-      propertyPath: damagePoints
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4177fe3858a9e4f689ca45d923951143, type: 3}
 --- !u!1 &1716742807
@@ -2961,7 +2951,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1765799768}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.224228, y: 1.0500004, z: -14.324219}
+  m_LocalPosition: {x: -4.2332163, y: 1.0500004, z: -14.324219}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1716742808}
@@ -3040,5 +3030,15 @@ PrefabInstance:
       propertyPath: activeIcon
       value: 
       objectReference: {fileID: 625636804}
+    - target: {fileID: 1635278335770408279, guid: a1240e1e33e94e14e8875613a27c1351,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 39.026783
+      objectReference: {fileID: 0}
+    - target: {fileID: 1635278335770408279, guid: a1240e1e33e94e14e8875613a27c1351,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.66000044
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a1240e1e33e94e14e8875613a27c1351, type: 3}
