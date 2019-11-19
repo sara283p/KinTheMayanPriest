@@ -28,6 +28,9 @@ public class Enemy : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        other.gameObject.GetComponent<PlayerHealth>().TakeDamage(damageToPlayer);
+        if (other.CompareTag("Player") && other.isTrigger)
+        {
+            other.gameObject.GetComponent<PlayerHealth>().TakeDamage(damageToPlayer);
+        }
     }
 }

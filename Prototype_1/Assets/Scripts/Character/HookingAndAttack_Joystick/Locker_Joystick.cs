@@ -11,6 +11,7 @@ public class Locker_Joystick : MonoBehaviour
 	public LayerMask obstacleLayerMask;
 	
 	private bool _selectingWait;
+	private float _maxDistance = 5;
 	
 	public LayerMask starLayerMask;
 	public LayerMask enemyLayerMask;
