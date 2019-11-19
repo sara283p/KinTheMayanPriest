@@ -13,7 +13,7 @@ public class ConstellationGenerator : MonoBehaviour
     private static ConstellationGenerator _instance;
     private Constellation _emptyConstellation;
     private float _minDistance = 3f;
-    private float _initialRadius = 1;
+    private float _initialRadius = 0.2f;
     private int _maxStarNumber = 7;
     private static ContactFilter2D _contactFilter;
     private static System.Random _rand;
@@ -55,6 +55,7 @@ public class ConstellationGenerator : MonoBehaviour
         Constellation constellationComponent = constellation.GetComponent<Constellation>();
         float width = constellationComponent.GetWidth();
         float height = constellationComponent.GetHeight();
+        float prefabRadius = starPrefab.GetComponent<CircleCollider2D>().radius;
         Collider2D[] overlapBuffer = new Collider2D[1];
 
         for (int i = 0; i < _maxStarNumber; i++)
@@ -91,7 +92,7 @@ public class ConstellationGenerator : MonoBehaviour
                 j++;
             }
             print("i: " + i + "j: " + j);
-            collider.radius = _initialRadius;
+            collider.radius = prefabRadius;
             addedStars.Add(star);
 
         }
