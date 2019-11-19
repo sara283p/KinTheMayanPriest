@@ -27,6 +27,8 @@ public class CharacterController : MonoBehaviour
 	private bool _facingRight = true; 											// For determining which way the player is currently facing.
 	private Vector3 _velocity = Vector3.zero;									// Velocity computed by SmoothDamp method
 	[SerializeField] private bool _jumping;										// Whether or not the player has jumped
+	private float _coyoteDuration = 0.2f;
+	private float _coyoteTime;
 	
 	private void Awake()
 	{
@@ -67,6 +69,11 @@ public class CharacterController : MonoBehaviour
 		else
 		{
 			_groundNormal = new Vector2(0, 1);
+		}
+
+		if (_grounded)
+		{
+			_coyoteTime = Time.time + _coyoteDuration;
 		}
 	}
 
@@ -157,7 +164,7 @@ public class CharacterController : MonoBehaviour
 		}
 
 		// If the player should jump...
-		if (_grounded && jump)
+		if (jump && (_grounded || Time.time < _coyoteTime))
 		{
 			_rb.gravityScale = 1;
 			// Before applying the vertical force, re-initialize vertical speed to 0

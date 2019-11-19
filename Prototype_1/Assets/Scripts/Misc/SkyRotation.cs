@@ -9,12 +9,12 @@ public class SkyRotation : MonoBehaviour
 
     private ConstellationSet _constellations;
     private Queue<Transform> _activeConstellations;
-    private float _height;
-    private float _margin;
-    private float _minDistance;
-    private float _rightMargin;
+    [SerializeField] private float _height;
+    [SerializeField] private float _margin;
+    [SerializeField] private float _minDistance;
+    [SerializeField] private float _rightMargin;
     private bool _rotate;
-    public float _speed;
+    [SerializeField] public float _speed;
     private float _rightMostConstRBound;
 
 
@@ -59,10 +59,11 @@ public class SkyRotation : MonoBehaviour
 
         _constellations = ScriptableObject.CreateInstance<ConstellationSet>();
         _activeConstellations = new Queue<Transform>();
-        _height = 5f;
+        // Values used for testing
+        /*_height = 5f;
         _margin = 7f;
         _minDistance = 4f;
-        _rightMargin = 53f;
+        _rightMargin = 53f;*/
         Camera mainCamera = Camera.main;
         Vector2 screenBottomLeft = mainCamera.ScreenToWorldPoint(Vector3.zero);
         _rightMostConstRBound = screenBottomLeft.x + _margin;
