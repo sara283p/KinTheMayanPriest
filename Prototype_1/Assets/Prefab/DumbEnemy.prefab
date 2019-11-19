@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 480537067791430277}
   - component: {fileID: 480537067791430281}
   - component: {fileID: 7748246341636378950}
-  m_Layer: 0
+  - component: {fileID: 1522205781}
+  m_Layer: 11
   m_Name: DumbEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -71,7 +72,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 20
   m_Sprite: {fileID: 21300000, guid: cad8f044682f8b7d499dc24be1bb2a00, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -116,7 +117,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28f17b9baece4704a9e45c5b7931c50b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 10
+  moveSpeed: 5
 --- !u!58 &7748246341636378950
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -133,3 +134,17 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.96
+--- !u!114 &1522205781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 480537067791430274}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c67aae39e78beccc499e2a845c79a9f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 100
+  damageToPlayer: 20
