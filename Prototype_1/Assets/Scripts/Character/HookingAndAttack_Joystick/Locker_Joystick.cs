@@ -11,6 +11,7 @@ public class Locker_Joystick : MonoBehaviour
 	public LayerMask obstacleLayerMask;
 	
 	private bool _selectingWait;
+	private float _maxDistance = 5;
 	
 	public LayerMask starLayerMask;
 	public LayerMask enemyLayerMask;
@@ -93,7 +94,7 @@ public class Locker_Joystick : MonoBehaviour
 		var verticalMove = Input.GetAxisRaw("StarViewfinderVertical");
 		var direction = new Vector3(horizontalMove, verticalMove);
 		
-		RaycastHit2D[] hit = Physics2D.RaycastAll(origin.position, direction, Mathf.Infinity, starLayerMask);
+		RaycastHit2D[] hit = Physics2D.RaycastAll(origin.position, direction, _maxDistance, starLayerMask);
         Debug.DrawRay(origin.position, direction * 5.0f, Color.green);
 
         if (hit.Length > 0)
