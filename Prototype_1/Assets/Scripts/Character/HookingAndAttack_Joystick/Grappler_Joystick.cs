@@ -104,6 +104,7 @@ public class Grappler_Joystick : MonoBehaviour
                 if (_joint)
                 {
                     DestroyJoint();
+                    _controller.ToggleHook();
                 }
                 activeIcon.SetActive(false);
                 return;
