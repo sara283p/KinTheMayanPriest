@@ -8,15 +8,20 @@ public class PlayerHealth : MonoBehaviour
     public float max_health = 100f;
     public float cur_health = 0f;
     public bool alive = true;
+    
+    [SerializeField] private Transform reSpawnPoint;
 
     private Renderer rend;
     private Color c;
+
+    [SerializeField] private float invulnerabilityTime = 3f;
+    [SerializeField] private int playerLayer = 9;
+    [SerializeField] private int enemyLayer = 11;
     
     // Start is called before the first frame update
     void Start()
     {
-        alive = true;
-        cur_health = max_health;
+        Spawn();
 
         rend = GetComponent<Renderer>();
         c = rend.material.color;
@@ -39,7 +44,7 @@ public class PlayerHealth : MonoBehaviour
         {
             cur_health = 0;
             alive = false;
-            gameObject.SetActive(false);
+            Spawn();
         }
         else
         {
@@ -48,13 +53,21 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
+    private void Spawn()
+    {
+        transform.position = reSpawnPoint.transform.position;
+        cur_health = max_health;
+        alive = true;
+        
+    }
+    
     IEnumerator GetInvulnerable()
     {
-        Physics2D.IgnoreLayerCollision(9, 11, true);
+        Physics2D.IgnoreLayerCollision(playerLayer, enemyLayer, true);
         c.a = 0.5f;
         rend.material.color = c;
-        yield return new WaitForSeconds(3f);
-        Physics2D.IgnoreLayerCollision(9, 11, false);
+        yield return new WaitForSeconds(invulnerabilityTime);
+        Physics2D.IgnoreLayerCollision(playerLayer, enemyLayer, false);
         c.a = 1f;
         rend.material.color = c;
     }
