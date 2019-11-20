@@ -53,6 +53,11 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
+    public void Die()
+    {
+        TakeDamage(max_health);
+    }
+
     private void Spawn()
     {
         transform.position = reSpawnPoint.transform.position;
