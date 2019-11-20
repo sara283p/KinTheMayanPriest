@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -17,20 +18,15 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private float invulnerabilityTime = 3f;
     [SerializeField] private int playerLayer = 9;
     [SerializeField] private int enemyLayer = 11;
-    
+
+    public UnityEvent onDeath;
+
     // Start is called before the first frame update
     void Start()
     {
         Spawn();
-
         rend = GetComponent<Renderer>();
         c = rend.material.color;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public void TakeDamage(float amount)
@@ -44,7 +40,8 @@ public class PlayerHealth : MonoBehaviour
         {
             cur_health = 0;
             alive = false;
-            Spawn();
+            //event listened by SpawnManager, that will manage the respawn of the player
+            onDeath.Invoke();
         }
         else
         {
@@ -53,26 +50,39 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
+    //to be called when the player should die no matter how healthy he is (for example when he falls)
     public void Die()
     {
         TakeDamage(max_health);
     }
 
-    private void Spawn()
+    public void Spawn()
     {
+        //move the player to the respawn point
         transform.position = reSpawnPoint.transform.position;
         cur_health = max_health;
         alive = true;
         
     }
     
+    //to be called when the player gets hit by an enemy, to make him invulnerable for a little interval of time
     IEnumerator GetInvulnerable()
     {
         Physics2D.IgnoreLayerCollision(playerLayer, enemyLayer, true);
+        //make the player semitransparent
         c.a = 0.5f;
         rend.material.color = c;
+        //wait for the invulnerability time before making the player vulnerable again
         yield return new WaitForSeconds(invulnerabilityTime);
+        GetVulnerable();
+    }
+
+    //make the player vulnerable again. Used also by SpawnManager to make the player vulnerable after respawn,
+    //in case he died while he was invulnerable (for example falling)
+    public void GetVulnerable()
+    {
         Physics2D.IgnoreLayerCollision(playerLayer, enemyLayer, false);
+        //make the player no more semitrasparent
         c.a = 1f;
         rend.material.color = c;
     }
