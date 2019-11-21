@@ -38,7 +38,7 @@ public class CharacterController : MonoBehaviour
 		_groundNormal = new Vector2(0, 1);
 	}
 
-	private void FixedUpdate()
+	void Update()
 	{
 		_grounded = false;
 
