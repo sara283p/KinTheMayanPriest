@@ -10,6 +10,8 @@ public class Attack_Joystick : MonoBehaviour
 
     public LineRenderer lineRenderer;
     public LayerMask obstacleLayerMask;
+    
+    public float maxAllowedDistance = 10f; // Max distance at which the first star selected can be
 
     enum TargetType {Star, Enemy}
 
@@ -17,12 +19,10 @@ public class Attack_Joystick : MonoBehaviour
 
     private bool _attacking;
     private bool _isAttackOngoing;
-    private bool _skyIsRotating;
-
-    private bool _selectingWait;
+    private bool _selecting;
+    private bool _readyToSelect = true;
 
     private Star _targetStar;
-    private Star _firstStar;
     private Enemy _targetEnemy;
     private Transform _tr;
     
@@ -39,62 +39,114 @@ public class Attack_Joystick : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetButtonDown("RotateSky"))
+        // Move viewfinder when not doing anything
+        if (!_attacking)
         {
-            _skyIsRotating = true;
-        }
-        else if (Input.GetButtonUp("RotateSky"))
-        {
-            _skyIsRotating = false;
-        }
-        
-        // If the LockAttack button is kept pressed, enter in mode "Attack"
-        // In this mode you can move through available (not in cooldown) stars, select them for attack,
-        // deselect them if you change your mind, move to an enemy and cast the attack.
-        // If, in every of these moments, the LockAttack button is released, exit from mode "Attack".
-        if (Input.GetButtonDown("LockAttack"))
-        {
-            _attacking = true;
-        }
-
-        if (Input.GetButtonUp("LockAttack") || _skyIsRotating)
-        {
-            _attacking = false;
-            Abort();
-            if (!_isAttackOngoing) lineRenderer.positionCount = 0;
-        }
-
-        if (_firstStar)
-        {
-            Vector2 relativePosition = _firstStar.transform.position - _tr.position;
-            Debug.DrawRay(_tr.position, relativePosition, Color.red);
-            RaycastHit2D hit = Physics2D.Raycast(_tr.position, relativePosition, relativePosition.magnitude, obstacleLayerMask);
-            if (hit.collider)
+            var target = locker.GetNearestAvailableStar();
+            if (target)
             {
-                Abort();
-                _attacking = true;
-                if (!_isAttackOngoing) lineRenderer.positionCount = 0;
-                return;
+                viewfinder.DisplayViewfinder(true);
+                viewfinder.gameObject.transform.position = target.transform.position;
             }
+            else viewfinder.DisplayViewfinder(false);
         }
         
-        if (_attacking)
+        // Move stars and effects if the sky is rotating
+        if (Input.GetButton("RotateSky"))
         {
-            // This if is just for the animation of the attack.
+            var positions = _selectedStars.Select(x => x.transform.position).ToList();
+            positions.Insert(0, _tr.position);
+            lineRenderer.SetPositions(positions.ToArray());
+        }
+
+        // If the player moves the viewfinder or selects a star or press select button, go in attack mode
+        IsSelectPressed();
+        if ((Input.GetAxisRaw("StarViewfinderHorizontal") > 0f || Input.GetAxisRaw("StarViewfinderVertical") > 0f || _selecting) && !_attacking)
+        {
+            _selecting = false;
+            if (!locker.GetNearestAvailableStarInRange(maxAllowedDistance)) return;
             if (_isAttackOngoing)
             {
                 _isAttackOngoing = false;
                 lineRenderer.positionCount = 0;
             }
+            _attacking = true;
+            _targetType = TargetType.Star;
+            lineRenderer.positionCount++;
+        }
+
+        if (Input.GetButtonDown("ChangeSelection") && _attacking)
+        {
+            if (_targetType == TargetType.Star)
+            {
+                var pointedEnemy = locker.GetNearestAvailableEnemyInRange(_selectedStars.Select(x => x.transform.position).LastOrDefault(), maxAllowedDistance);
+                if (pointedEnemy)
+                {
+                    _targetType = TargetType.Enemy;
+                    _targetEnemy = pointedEnemy;
+                    viewfinder.gameObject.transform.position = pointedEnemy.transform.position;
+                }
+                
+            }
+            else
+            {
+                _targetType = TargetType.Star;
+                viewfinder.gameObject.transform.position = _selectedStars.Select(x => x.transform.position).LastOrDefault();
+            }
+        }
+
+        if (Input.GetButtonDown("ExitAttack"))
+        {
+            lineRenderer.positionCount = 0;
+            Abort();
+        }
+
+        if (_attacking && _selectedStars.Count > 0)
+        {
+            if ((_selectedStars.First().transform.position - transform.position).magnitude > maxAllowedDistance)
+            {
+                lineRenderer.positionCount = 0;
+                Abort();
+                return;
+            }
             
-            Target();
+            Vector2 relativePosition = _selectedStars.First().transform.position - _tr.position;
+            Debug.DrawRay(_tr.position, relativePosition, Color.red);
+            RaycastHit2D hit = Physics2D.Raycast(_tr.position, relativePosition, relativePosition.magnitude, obstacleLayerMask);
+            if (hit.collider)
+            {
+                lineRenderer.positionCount = 0;
+                Abort();
+            }
+        }
+        
+        if (_attacking && _targetType == TargetType.Enemy && _targetEnemy)
+        {
+            viewfinder.gameObject.transform.position = _targetEnemy.transform.position;
+        }
+        
+        if (_attacking)
+        {
+            lineRenderer.SetPosition(0, _tr.position);
             
+            if (_targetType == TargetType.Star)
+            {
+                TargetStar();
+            }
+            
+            if (_targetType == TargetType.Enemy && _selectedStars.Count > 0)
+            {
+                TargetEnemy();
+            }
+
             // If the Select button is pressed, there are three possibilities:
             // 1) The player wants to select a star for attack
             // 2) The player wants to deselect a star for attack
             // 3) The player wants to cast an attack to an enemy
-            if (Input.GetButtonDown("Select"))
+            IsSelectPressed();
+            if (_selecting)
             {
+                _selecting = false;
                 if (_targetType == TargetType.Star)
                 {
                     SelectStar();
@@ -105,6 +157,19 @@ public class Attack_Joystick : MonoBehaviour
                     PerformAttack();
                 }
             }
+        }
+    }
+
+    private void IsSelectPressed()
+    {
+        if (Input.GetAxisRaw("Select") > 0.7f && _readyToSelect)
+        {
+            _selecting = true;
+            _readyToSelect = false;
+        } 
+        if (Input.GetAxisRaw("Select") == 0)
+        {
+            _readyToSelect = true;
         }
     }
 
@@ -119,14 +184,16 @@ public class Attack_Joystick : MonoBehaviour
                 _targetStar.SelectForAttack();
                 _selectedStars.Add(_targetStar);
                 lineRenderer.positionCount++;
-                lineRenderer.SetPosition(_selectedStars.Count - 1, _targetStar.transform.position);
+                lineRenderer.SetPosition(_selectedStars.Count, _targetStar.transform.position);
             }
             else
             {
                 _targetStar.DeselectForAttack();
                 _selectedStars.Remove(_targetStar);
                 lineRenderer.positionCount--;
-                lineRenderer.SetPositions(_selectedStars.Select( x => x.transform.position).ToArray());
+                var positions = _selectedStars.Select(x => x.transform.position).ToList();
+                positions.Insert(0, _tr.position);
+                lineRenderer.SetPositions(positions.ToArray());
             }
         }
     }
@@ -134,49 +201,58 @@ public class Attack_Joystick : MonoBehaviour
     private void Abort()
     {
         _attacking = false;
+        _selecting = false;
         _targetStar = null;
-        _firstStar = null;
         _targetEnemy = null;
+        _targetType = TargetType.Star;
 
         _selectedStars.ForEach(x => x.DeselectForAttack());
         _selectedStars.Clear();
         
-        viewfinder.DisplayViewfinder(false);
     }
 
-    private void Target()
+    private void TargetStar()
     {
-        // Then branch: the user has just entered Attack mode.
+        // Then branch: the user has just entered Star target mode.
         // Just move to the nearest available star.
         if (!_targetStar)
         {
-            _targetStar = locker.GetNearestAvailableStar();
-            _firstStar = _targetStar;
+            _targetStar = locker.GetNearestAvailableStarInRange(maxAllowedDistance);
             if (!_targetStar) return;
-            viewfinder.DisplayViewfinder(true);
             viewfinder.gameObject.transform.position = _targetStar.transform.position;
-            _targetType = TargetType.Star;
         }
         else
         // The first star has already been choosen: try to understand if the user is targeting a star or an enemy
         // and act accordingly.
         {
-            var pointedStar = locker.GetAvailableStarByRaycast(viewfinder.transform);
+            var pointedStar = locker.GetAvailableStarByRaycastInRange(viewfinder.transform, maxAllowedDistance);
             if (pointedStar)
             {
-                _targetType = TargetType.Star;
                 _targetStar = pointedStar;
                 viewfinder.gameObject.transform.position = pointedStar.transform.position;
             }
-            else
+        }
+    }
+
+    private void TargetEnemy()
+    {
+        // Then branch: the user has just entered Enemy target mode.
+        // Just move to the nearest available enemy.
+        if (!_targetEnemy)
+        {
+            _targetEnemy =
+                locker.GetNearestAvailableEnemyInRange(_selectedStars.Select(x => x.transform.position).LastOrDefault(), maxAllowedDistance);
+            if (!_targetEnemy) return;
+            viewfinder.gameObject.transform.position = _targetEnemy.transform.position;
+        }
+        else
+        {
+            var pointedEnemy = locker.GetAvailableEnemyByRaycastInRange(viewfinder.transform,
+                _selectedStars.Select(x => x.transform.position).LastOrDefault(), maxAllowedDistance);
+            if (pointedEnemy)
             {
-                var pointedEnemy = locker.GetAvailableEnemyByRaycast(viewfinder.transform, _selectedStars.Select(x => x.transform.position).LastOrDefault());
-                if (pointedEnemy)
-                {
-                    _targetType = TargetType.Enemy;
-                    _targetEnemy = pointedEnemy;
-                    viewfinder.gameObject.transform.position = pointedEnemy.transform.position;
-                }
+                _targetEnemy = pointedEnemy;
+                viewfinder.gameObject.transform.position = pointedEnemy.transform.position;
             }
         }
     }
@@ -204,7 +280,7 @@ public class Attack_Joystick : MonoBehaviour
     {
         _isAttackOngoing = true;
         lineRenderer.positionCount++;
-        lineRenderer.SetPosition(_selectedStars.Count, enemy.transform.position);
+        lineRenderer.SetPosition(_selectedStars.Count + 1, enemy.transform.position);
 
         yield return new WaitForSeconds(2f);
         

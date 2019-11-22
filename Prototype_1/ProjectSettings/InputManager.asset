@@ -214,13 +214,13 @@ InputManager:
     axis: 0
     joyNum: 0
   - serializedVersion: 3
-    m_Name: LockAttack
+    m_Name: ChangeSelection
     descriptiveName: 
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: joystick button 5
     altNegativeButton: 
-    altPositiveButton: 
+    altPositiveButton: joystick button 4
     gravity: 0
     dead: 0.19
     sensitivity: 1
@@ -234,7 +234,7 @@ InputManager:
     descriptiveName: 
     descriptiveNegativeName: 
     negativeButton: 
-    positiveButton: joystick button 4
+    positiveButton: 
     altNegativeButton: 
     altPositiveButton: 
     gravity: 0
@@ -242,7 +242,7 @@ InputManager:
     sensitivity: 1
     snap: 0
     invert: 0
-    type: 0
+    type: 2
     axis: 5
     joyNum: 0
   - serializedVersion: 3
@@ -250,9 +250,25 @@ InputManager:
     descriptiveName: 
     descriptiveNegativeName: 
     negativeButton: 
-    positiveButton: joystick button 1
+    positiveButton: 
     altNegativeButton: 
     altPositiveButton: 
+    gravity: 0
+    dead: 0.19
+    sensitivity: 1
+    snap: 0
+    invert: 0
+    type: 2
+    axis: 2
+    joyNum: 0
+  - serializedVersion: 3
+    m_Name: ExitAttack
+    descriptiveName: 
+    descriptiveNegativeName: 
+    negativeButton: 
+    positiveButton: joystick button 2
+    altNegativeButton: 
+    altPositiveButton: joystick button 1
     gravity: 1000
     dead: 0.001
     sensitivity: 1000

@@ -7,7 +7,7 @@ public class MoveStarViewfinder_Joystick : MonoBehaviour
     void Awake()
     {
         _this = GetComponent<SpriteRenderer>();
-        _this.enabled = false;
+//        _this.enabled = false;
     }
 
     public void DisplayViewfinder(bool val)

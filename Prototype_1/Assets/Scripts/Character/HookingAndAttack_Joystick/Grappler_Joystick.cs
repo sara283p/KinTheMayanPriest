@@ -39,13 +39,13 @@ public class Grappler_Joystick : MonoBehaviour
 
     private void HookInput()
     {
-        if (Input.GetButtonDown("LockStarHang"))
+        if (Input.GetAxis("LockStarHang") > 0.6f)
         {
             _wantToHook = true;
             _selectedStar = locker.GetNearestAvailableStar();
         }
         
-        if(Input.GetButtonUp("LockStarHang"))
+        if(Input.GetAxis("LockStarHang") < 0.1f)
         {
             _wantToHook = false;
             
