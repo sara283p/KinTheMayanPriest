@@ -10,7 +10,7 @@ public class Grappler_Joystick : MonoBehaviour
     public HangingEffect hangingEffect;
     public LayerMask obstacleLayerMask;
     
-    private CustomPlayerMovement _controller;
+    private CharacterController _controller;
     public Locker_Joystick locker;
     private Rigidbody2D _rb;
     private bool _wantToHook;
@@ -28,7 +28,7 @@ public class Grappler_Joystick : MonoBehaviour
 
     private void Awake()
     {
-        _controller = GetComponent<CustomPlayerMovement>();
+        _controller = GetComponent<CharacterController>();
         _rb = GetComponent<Rigidbody2D>();
     }
 

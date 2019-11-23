@@ -134,7 +134,7 @@ public class CharacterController : MonoBehaviour
 				}
 
 				// If the player jumped
-				if (_jumping)
+				/*if (_jumping)
 				{
 					Vector2 newVelocity = _rb.velocity;
 				
@@ -170,7 +170,7 @@ public class CharacterController : MonoBehaviour
 					{
 						targetVelocity.x = 0.5f * targetVelocity.x;
 					}
-				}
+				}*/
 			}
 			// ... otherwise, if player is hanged to a star...
 			else
@@ -209,7 +209,7 @@ public class CharacterController : MonoBehaviour
 		{
 			_rb.gravityScale = 1;
 			// Before applying the vertical force, re-initialize vertical speed to 0
-			_rb.velocity = new Vector2(_rb.velocity.x, _minVerticalSpeed);
+			_rb.velocity = new Vector2(_rb.velocity.x, 0);
 			_jumping = true;
 			_startingJumpDirection = Math.Sign(move);
 			_grounded = false;
