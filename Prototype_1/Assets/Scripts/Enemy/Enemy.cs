@@ -3,18 +3,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class Enemy : Health
 {
-    public int health = 100;
+    private float _maxHealth = 100;
+    private float _curHealth;
     public float damageToPlayer = 20f;
 
+    void Awake()
+    {
+        _curHealth = _maxHealth;
+    }
+    
     //public GameObject deathEffect;
 
     public void TakeDamage(int damage)
     {
-        health -= damage;
+        _curHealth -= damage;
 
-        if (health <= 0)
+        if (_curHealth <= 0)
         {
             Die();
         }
@@ -32,5 +38,15 @@ public class Enemy : MonoBehaviour
         {
             other.gameObject.GetComponent<PlayerHealth>().TakeDamage(damageToPlayer);
         }
+    }
+
+    public override float GetHealth()
+    {
+        return _curHealth;
+    }
+
+    public override float GetMaxHealth()
+    {
+        return _maxHealth;
     }
 }

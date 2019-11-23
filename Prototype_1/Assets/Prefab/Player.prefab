@@ -427,7 +427,7 @@ MonoBehaviour:
   _rightJumpCheck: {fileID: 1635278335214696001}
   floorCheck: {fileID: 1635278335687538369}
   _jumpCheckRadius: 0.05
-  _jumpForce: 10
+  _jumpForce: 300
   m_MovementSmoothing: 0.05
   _airControl: 1
   _whatIsGround:
@@ -515,6 +515,7 @@ MonoBehaviour:
   obstacleLayerMask:
     serializedVersion: 2
     m_Bits: 256
+  maxAllowedDistance: 10
   viewfinder: {fileID: 1635278334211474296}
 --- !u!114 &2018781787280271629
 MonoBehaviour:
@@ -528,8 +529,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 318edf6349bdc664f912bc2dc3445da9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  max_health: 100
-  cur_health: 0
   alive: 0
   reSpawnPoint: {fileID: 4235660737739846712}
   invulnerabilityTime: 3

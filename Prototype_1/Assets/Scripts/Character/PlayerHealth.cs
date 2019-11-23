@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class PlayerHealth : MonoBehaviour
+public class PlayerHealth : Health
 {
 
-    public float max_health = 100f;
-    public float cur_health = 0f;
+    private float _maxHealth = 100f;
+    private float _curHealth = 0f;
     public bool alive = true;
     
     [SerializeField] private Transform reSpawnPoint;
@@ -36,16 +36,16 @@ public class PlayerHealth : MonoBehaviour
             return;
         }
 
-        if (cur_health - amount <= 0)
+        if (_curHealth - amount <= 0)
         {
-            cur_health = 0;
+            _curHealth = 0;
             alive = false;
             //event listened by SpawnManager, that will manage the respawn of the player
             onDeath.Invoke();
         }
         else
         {
-            cur_health -= amount;
+            _curHealth -= amount;
             StartCoroutine("GetInvulnerable");
         }
     }
@@ -53,14 +53,14 @@ public class PlayerHealth : MonoBehaviour
     //to be called when the player should die no matter how healthy he is (for example when he falls)
     public void Die()
     {
-        TakeDamage(max_health);
+        TakeDamage(_maxHealth);
     }
 
     public void Spawn()
     {
         //move the player to the respawn point
         transform.position = reSpawnPoint.transform.position;
-        cur_health = max_health;
+        _curHealth = _maxHealth;
         alive = true;
         
     }
@@ -85,5 +85,15 @@ public class PlayerHealth : MonoBehaviour
         //make the player no more semitrasparent
         c.a = 1f;
         rend.material.color = c;
+    }
+
+    public override float GetHealth()
+    {
+        return _curHealth;
+    }
+
+    public override float GetMaxHealth()
+    {
+        return _maxHealth;
     }
 }
