@@ -12,6 +12,7 @@ public class PlayerMovement : MonoBehaviour
     public float runSpeed = 300f;
     private bool _jump = false;
     private bool _crouch = false;
+    private static readonly int Speed = Animator.StringToHash("Speed");
 
     // Start is called before the first frame update
     void Start()
@@ -24,7 +25,7 @@ public class PlayerMovement : MonoBehaviour
     {
         _horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
         
-        animator.SetFloat("Speed", Mathf.Abs(_horizontalMove));
+        animator.SetFloat(Speed, Mathf.Abs(_horizontalMove));
 
         if (Input.GetButtonDown("Jump"))
         {

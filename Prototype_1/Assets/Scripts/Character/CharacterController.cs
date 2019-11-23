@@ -5,6 +5,8 @@ using UnityEngine.Events;
 public class CharacterController : MonoBehaviour
 
 {
+	private static readonly int Jumping = Animator.StringToHash("Jumping");
+	
 	public Transform _leftJumpCheck;											// Position marking used to check when the character has landed after jumps
 	public Transform _rightJumpCheck;
 	public Transform floorCheck;												// A position marking used to check the direction of the floor in front of the character
@@ -31,10 +33,12 @@ public class CharacterController : MonoBehaviour
 	private float _coyoteDuration = 0.2f;
 	private float _coyoteTime;
 	private float _minVerticalSpeed = 8;
+	private Animator _animator;
 	
 	private void Awake()
 	{
 		_rb = GetComponent<Rigidbody2D>();
+		_animator = GetComponent<Animator>();
 		_groundNormal = new Vector2(0, 1);
 	}
 
@@ -47,6 +51,7 @@ public class CharacterController : MonoBehaviour
 		if (hit.collider)
 		{
 			_jumping = false;
+			_animator.SetBool(Jumping, false);
 		}
 		else
 		{
@@ -54,6 +59,7 @@ public class CharacterController : MonoBehaviour
 			if (hit.collider)
 			{
 				_jumping = false;
+				_animator.SetBool(Jumping, false);
 			}
 		}
 		// Check whether the player is on the ground
@@ -213,6 +219,7 @@ public class CharacterController : MonoBehaviour
 			_jumping = true;
 			_startingJumpDirection = Math.Sign(move);
 			_grounded = false;
+			_animator.SetBool(Jumping, true);
 			// Add a vertical force to the player.
 			_rb.AddForce(new Vector2(0f, _jumpForce));
 		}
