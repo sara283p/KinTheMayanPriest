@@ -76,6 +76,7 @@ public class Grappler_Joystick : MonoBehaviour
         Destroy(_friction);
         _joint = null;
         hangingEffect.StopEffect();
+        _selectedStar = null;
 
     }
 
@@ -88,6 +89,17 @@ public class Grappler_Joystick : MonoBehaviour
     void Update()
     {
         HookInput();
+
+        if (_wantToHook && !_selectedStar)
+        {
+            _selectedStar = locker.GetTargetedStar();
+        }
+
+        if (_wantToHook && _selectedStar)
+        {
+            var target = locker.GetAvailableStarByRaycast(viewfinder.transform);
+            if (target) viewfinder.gameObject.transform.position = target.transform.position;
+        }
 
         if (_selectedStar)
         {
@@ -102,10 +114,6 @@ public class Grappler_Joystick : MonoBehaviour
                 }
                 return;
             }
-        }
-        else
-        {
-            _selectedStar = locker.GetTargetedStar();
         }
         // If there is joint and either hook button is released or Kin is on the ground, destroy it
         if (_joint)
@@ -145,21 +153,9 @@ public class Grappler_Joystick : MonoBehaviour
                 _availableStars = temp;
                 _availableStars.ForEach( x => x.HighlightStar());
                 if (_availableStars.Count == 0 || !_selectedStar) return;
-        
-                var pointedStar = locker.GetAvailableStarByRaycast(_selectedStar.transform);
-                if (pointedStar)
-                {
-                    if (_availableStars.Contains(pointedStar))
-                    {
-                        _selectedStar = pointedStar;
-                    }
-                }
 
                 if (_selectedStar)
                 {
-                    // First of all, illuminate the star
-                    viewfinder.gameObject.transform.position = _selectedStar.transform.position;
-                    
                     // If Kin is NOT the ground and meanwhile jump is pressed assume that the hang has to be accomplished.
                     // Create a joint, start the effect.
                     if (!_controller.IsGrounded() && ((Vector2) _selectedStar.transform.position - _rb.position).magnitude < _maxStarDistance )
