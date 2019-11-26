@@ -427,7 +427,7 @@ MonoBehaviour:
   _rightJumpCheck: {fileID: 1635278335214696001}
   floorCheck: {fileID: 1635278335687538369}
   _jumpCheckRadius: 0.05
-  _jumpForce: 300
+  _jumpForce: 400
   m_MovementSmoothing: 0.05
   _airControl: 1
   _whatIsGround:
@@ -439,6 +439,10 @@ MonoBehaviour:
   _grounded: 0
   _jumping: 0
   _startingJumpDirection: 0
+  _coyoteDuration: 0.2
+  _minVerticalSpeed: 1
+  _maxVerticalSpeed: 25
+  _antiRampJump: 5
   groundDir: {x: 0, y: 0}
 --- !u!70 &1635278333857860271
 CapsuleCollider2D:
