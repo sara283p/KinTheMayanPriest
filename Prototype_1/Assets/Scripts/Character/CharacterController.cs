@@ -29,10 +29,12 @@ public class CharacterController : MonoBehaviour
 	private bool _facingRight = true; 											// For determining which way the player is currently facing.
 	private Vector3 _velocity = Vector3.zero;									// Velocity computed by SmoothDamp method
 	[SerializeField] private bool _jumping;										// Whether or not the player has jumped
-	[SerializeField] private int _startingJumpDirection;							// Right -> 1; Left -> -1; None -> 0
-	private float _coyoteDuration = 0.2f;
+	[SerializeField] private int _startingJumpDirection;						// Right -> 1; Left -> -1; None -> 0
+	[SerializeField] private float _coyoteDuration = 0.2f;
 	private float _coyoteTime;
-	private float _minVerticalSpeed = 8;
+	[SerializeField] private float _minVerticalSpeed = 1;
+	[SerializeField] private float _maxVerticalSpeed = 25;
+	[SerializeField] private float _antiRampJump = 5;
 	private Animator _animator;
 	
 	private void Awake()
@@ -134,13 +136,13 @@ public class CharacterController : MonoBehaviour
 				if (!_jumping && !_grounded)
 				{
 					Vector2 newVelocity = _rb.velocity;
-					newVelocity.y = -5;
+					newVelocity.y = - _antiRampJump;
 					_rb.velocity = newVelocity;
 					targetVelocity.y = newVelocity.y;
 				}
 
 				// If the player jumped
-				/*if (_jumping)
+				if (_jumping)
 				{
 					Vector2 newVelocity = _rb.velocity;
 				
@@ -153,7 +155,7 @@ public class CharacterController : MonoBehaviour
 					}
 
 					// If player changes direction, reduce air control of the character
-					if (targetVelocity.x * newVelocity.x < 0)
+					/*if (targetVelocity.x * newVelocity.x < 0)
 					{
 						if (Math.Abs(newVelocity.x) > 0.5f)
 						{
@@ -175,8 +177,17 @@ public class CharacterController : MonoBehaviour
 					if (_startingJumpDirection == 0)
 					{
 						targetVelocity.x = 0.5f * targetVelocity.x;
+					}*/
+				}
+
+				if (!_grounded)
+				{
+					_animator.SetBool(Jumping, true);
+					if (targetVelocity.y < -_maxVerticalSpeed)
+					{
+						targetVelocity.y = -_maxVerticalSpeed;
 					}
-				}*/
+				}
 			}
 			// ... otherwise, if player is hanged to a star...
 			else
@@ -219,7 +230,6 @@ public class CharacterController : MonoBehaviour
 			_jumping = true;
 			_startingJumpDirection = Math.Sign(move);
 			_grounded = false;
-			_animator.SetBool(Jumping, true);
 			// Add a vertical force to the player.
 			_rb.AddForce(new Vector2(0f, _jumpForce));
 		}
@@ -246,7 +256,7 @@ public class CharacterController : MonoBehaviour
 		if (_hooked)
 		{
 			_starPosition = _rb.GetComponent<DistanceJoint2D>().connectedBody.position;
-			_oscillationSpeed = _baseOscillationSpeed * (_rb.position - _starPosition).magnitude  * 0.75f;
+			_oscillationSpeed = _baseOscillationSpeed * (_rb.position - _starPosition).magnitude * 0.8f ;
 		}
 		else
 		{
