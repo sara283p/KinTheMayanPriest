@@ -43,14 +43,11 @@ public class Grappler_Joystick : MonoBehaviour
         if (Input.GetAxis("LockStarHang") > 0.6f)
         {
             _wantToHook = true;
-            attackJoystick.isHanging = true;
-
         }
         
         if(Input.GetAxis("LockStarHang") < 0.1f)
         {
             _wantToHook = false;
-            attackJoystick.isHanging = false;
             
             _availableStars.ForEach( x => x.DeHighlightStar());   
             _availableStars.Clear();
@@ -70,6 +67,7 @@ public class Grappler_Joystick : MonoBehaviour
 
     private void DestroyJoint()
     {
+        attackJoystick.SetHanging(false);
         _joint.connectedBody.gameObject.layer = 10;
         SwitchToKinematic();
         Destroy(_joint);
@@ -98,7 +96,11 @@ public class Grappler_Joystick : MonoBehaviour
         if (_wantToHook && _selectedStar)
         {
             var target = locker.GetAvailableStarByRaycast(viewfinder.transform);
-            if (target) viewfinder.gameObject.transform.position = target.transform.position;
+            if (target)
+            {
+                attackJoystick.AutoTargetWorking(false);
+                viewfinder.gameObject.transform.position = target.transform.position;
+            }
         }
 
         if (_selectedStar)
@@ -160,6 +162,7 @@ public class Grappler_Joystick : MonoBehaviour
                     // Create a joint, start the effect.
                     if (!_controller.IsGrounded() && ((Vector2) _selectedStar.transform.position - _rb.position).magnitude < _maxStarDistance )
                     {
+                        attackJoystick.SetHanging(true);
                         _joint = gameObject.AddComponent<DistanceJoint2D>();
                         _friction = gameObject.AddComponent<FrictionJoint2D>();
                         Rigidbody2D otherRb = _selectedStar.GetComponent<Rigidbody2D>();
