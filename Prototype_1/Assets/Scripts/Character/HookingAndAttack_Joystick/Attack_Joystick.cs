@@ -30,6 +30,8 @@ public class Attack_Joystick : MonoBehaviour
 
     public MoveStarViewfinder_Joystick viewfinder;
 
+    public bool isHanging = false;
+
     private void Awake()
     // Initialize the attack effect
     {
@@ -39,6 +41,7 @@ public class Attack_Joystick : MonoBehaviour
 
     void Update()
     {
+        if (isHanging) return;
         // Move viewfinder when not doing anything
         if (!_attacking)
         {

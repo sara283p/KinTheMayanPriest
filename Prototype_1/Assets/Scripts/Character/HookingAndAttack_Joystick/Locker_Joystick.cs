@@ -32,24 +32,19 @@ public class Locker_Joystick : MonoBehaviour
 	
 	public Star GetTargetedStar()
 	{
-		Vector3 kinPosition = kin.position;
-		Vector3 viewfinderPosition = viewfinder.position;
-		Vector3 relativeViewfinderPosition = viewfinderPosition - kinPosition;
-		RaycastHit2D[] hit = Physics2D.RaycastAll(kinPosition, relativeViewfinderPosition, Mathf.Infinity, starLayerMask);
+		var viewfinderPosition = this.viewfinder.position;
+		var stars = Physics2D.OverlapCircleAll(viewfinderPosition, 50f, starLayerMask)
+			.Select(x => x.GetComponent<Star>())
+			.Where(x => !x.isInCooldown)
+			.Where(x => !Physics2D.Raycast(kin.position, x.transform.position - viewfinderPosition, (x.transform.position - viewfinderPosition).magnitude, obstacleLayerMask))
+			.OrderBy(x => (viewfinderPosition - x.transform.position).sqrMagnitude)
+			.ToArray();
 
-		if (hit.Length == 0) return null;
-		if (hit.Length == 1)
+		if (stars.Length == 0)
 		{
-			return (Star) hit[0].rigidbody.gameObject.GetComponent(typeof(Star));
+			return null;
 		}
-		else
-		{
-			var distances = hit
-				.Select(x => (viewfinderPosition - x.transform.position).magnitude)
-				.ToArray();
-			
-			return (Star) hit[Array.IndexOf(distances, distances.Min())].rigidbody.gameObject.GetComponent(typeof(Star));
-		}
+		return stars[0];
 	}
 	
 	public Star GetNearestStar()
