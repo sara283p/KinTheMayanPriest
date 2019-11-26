@@ -124,7 +124,7 @@ public class Grappler_Joystick : MonoBehaviour
                 _friction.maxForce = 1f;
             }
             
-            if (!_wantToHook || _controller.IsGrounded() || _skyIsMoving)
+            if (!_wantToHook || _controller.IsGrounded()) // || _skyIsMoving)
             {
                 DestroyJoint();
                 _controller.ToggleHook();
@@ -169,6 +169,7 @@ public class Grappler_Joystick : MonoBehaviour
                         Rigidbody2D otherRb = _selectedStar.GetComponent<Rigidbody2D>();
                         _joint.distance = (_rb.position - otherRb.position).magnitude;
                         _joint.connectedBody = otherRb;
+                        _joint.autoConfigureDistance = false;
                         _friction.maxForce = 1;
                         hangingEffect.StartEffect(otherRb.transform);
                         _controller.ToggleHook();
