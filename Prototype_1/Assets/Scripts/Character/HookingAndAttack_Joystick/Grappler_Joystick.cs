@@ -40,12 +40,12 @@ public class Grappler_Joystick : MonoBehaviour
 
     private void HookInput()
     {
-        if (Input.GetAxis("LockStarHang") > 0.6f)
+        if (InputManager.GetAxis("RTrigger") > 0.6f)
         {
             _wantToHook = true;
         }
         
-        if(Input.GetAxis("LockStarHang") < 0.1f)
+        if(InputManager.GetAxis("RTrigger") < 0.1f)
         {
             _wantToHook = false;
             
@@ -54,11 +54,11 @@ public class Grappler_Joystick : MonoBehaviour
             _selectedStar = null;
         }
         
-        if (Input.GetButtonDown("RotateSky"))
+        if (InputManager.GetButtonDown("Button2"))
         {
             _skyIsMoving = true;
         }
-        else if (Input.GetButtonUp("RotateSky"))
+        else if (InputManager.GetButtonUp("Button2"))
         {
             _skyIsMoving = false;
         }

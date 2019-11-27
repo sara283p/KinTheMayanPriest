@@ -23,27 +23,27 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        _horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
+        _horizontalMove = InputManager.GetAxisRaw("Horizontal") * runSpeed;
         
         animator.SetFloat(Speed, Mathf.Abs(_horizontalMove));
 
-        if (Input.GetButtonDown("Jump"))
+        if (InputManager.GetButtonDown("Button0"))
         {
             _jump = true;
             //animator.SetBool("isJumping", true);
         }
-        else if (Input.GetButtonUp("Jump"))
+        else if (InputManager.GetButtonUp("Button0"))
         {
             controller.StopJump();
         }
 
-        if (Input.GetButtonDown("Crouch"))
+        /*if (Input.GetButtonDown("Crouch"))
         {
             _crouch = true;
         } else if (Input.GetButtonUp("Crouch"))
         {
             _crouch = false;
-        }
+        }*/
 
     }
 

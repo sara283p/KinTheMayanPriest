@@ -72,11 +72,11 @@ public class SkyRotation : MonoBehaviour
 
     private void RotateInput()
     {
-        if (Input.GetButtonDown("RotateSky"))
+        if (InputManager.GetButtonDown("Button2"))
         {
             _rotate = true;
         }
-        else if (Input.GetButtonUp("RotateSky"))
+        else if (InputManager.GetButtonUp("Button2"))
         {
             _rotate = false;
         }

@@ -73,7 +73,7 @@ public class Attack_Joystick : MonoBehaviour
         }
         
         // Move stars and effects if the sky is rotating
-        if (Input.GetButton("RotateSky"))
+        if (InputManager.GetButton("Button2"))
         {
             var positions = _selectedStars.Select(x => x.transform.position).ToList();
             positions.Insert(0, _tr.position);
@@ -82,7 +82,7 @@ public class Attack_Joystick : MonoBehaviour
 
         // If the player moves the viewfinder or selects a star or press select button, go in attack mode
         IsSelectPressed();
-        if ((Input.GetAxisRaw("StarViewfinderHorizontal") > 0f || Input.GetAxisRaw("StarViewfinderVertical") > 0f || _selecting) && !_attacking)
+        if ((InputManager.GetAxisRaw("RHorizontal") > 0f || InputManager.GetAxisRaw("RVertical") > 0f || _selecting) && !_attacking)
         {
             _autoTarget = false;
             _selecting = false;
@@ -97,7 +97,7 @@ public class Attack_Joystick : MonoBehaviour
             lineRenderer.positionCount++;
         }
 
-        if (Input.GetButtonDown("ChangeSelection") && _attacking)
+        if ((InputManager.GetButtonDown("LB") || InputManager.GetButtonDown("RB")) && _attacking)
         {
             if (_targetType == TargetType.Star)
             {
@@ -117,7 +117,7 @@ public class Attack_Joystick : MonoBehaviour
             }
         }
 
-        if (Input.GetButtonDown("ExitAttack"))
+        if (InputManager.GetButtonDown("Button1"))
         {
             lineRenderer.positionCount = 0;
             Abort();
@@ -184,12 +184,12 @@ public class Attack_Joystick : MonoBehaviour
 
     private void IsSelectPressed()
     {
-        if (Input.GetAxisRaw("Select") > 0.7f && _readyToSelect)
+        if (InputManager.GetAxisRaw("LTrigger") > 0.6f && _readyToSelect)
         {
             _selecting = true;
             _readyToSelect = false;
         } 
-        if (Input.GetAxisRaw("Select") == 0)
+        if (InputManager.GetAxisRaw("LTrigger") <= 0.1f)
         {
             _readyToSelect = true;
         }

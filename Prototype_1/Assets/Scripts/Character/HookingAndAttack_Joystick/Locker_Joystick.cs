@@ -99,8 +99,8 @@ public class Locker_Joystick : MonoBehaviour
 		if (_selectingWait) return null;
 
 		var originPosition = origin.position;
-		var horizontalMove = Input.GetAxisRaw("StarViewfinderHorizontal");
-		var verticalMove = Input.GetAxisRaw("StarViewfinderVertical");
+		var horizontalMove = InputManager.GetAxisRaw("RHorizontal");
+		var verticalMove = InputManager.GetAxisRaw("RVertical");
 		var direction = new Vector3(horizontalMove, verticalMove);
 		
 		Debug.DrawRay(originPosition, direction * 5.0f, Color.green);
@@ -179,8 +179,8 @@ public class Locker_Joystick : MonoBehaviour
 		if (_selectingWait) return null;
 
 		var originPosition = origin.position;
-		var horizontalMove = Input.GetAxisRaw("StarViewfinderHorizontal");
-		var verticalMove = Input.GetAxisRaw("StarViewfinderVertical");
+		var horizontalMove = InputManager.GetAxisRaw("RHorizontal");
+		var verticalMove = InputManager.GetAxisRaw("RVertical");
 		var direction = new Vector3(horizontalMove, verticalMove);
 
 		Debug.DrawRay(originPosition, direction * 5.0f, Color.green);
