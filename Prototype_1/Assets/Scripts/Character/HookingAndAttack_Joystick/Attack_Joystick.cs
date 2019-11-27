@@ -31,6 +31,7 @@ public class Attack_Joystick : MonoBehaviour
     public MoveStarViewfinder_Joystick viewfinder;
 
     public bool isHanging = false;
+    private bool _autoTarget = true;
 
     private void Awake()
     // Initialize the attack effect
@@ -39,11 +40,28 @@ public class Attack_Joystick : MonoBehaviour
         _tr = GetComponent<Transform>();
     }
 
+    public void SetHanging(bool val)
+    {
+        if (val)
+        {
+            isHanging = true;
+            lineRenderer.positionCount = 0;
+            Abort();
+        }
+        else isHanging = false;
+    }
+
+    public void AutoTargetWorking(bool val)
+    {
+        if(!val) _autoTarget = false;
+        print(_autoTarget);
+    }
+
     void Update()
     {
         if (isHanging) return;
         // Move viewfinder when not doing anything
-        if (!_attacking)
+        if (_autoTarget)
         {
             var target = locker.GetNearestAvailableStar();
             if (target)
@@ -66,8 +84,9 @@ public class Attack_Joystick : MonoBehaviour
         IsSelectPressed();
         if ((Input.GetAxisRaw("StarViewfinderHorizontal") > 0f || Input.GetAxisRaw("StarViewfinderVertical") > 0f || _selecting) && !_attacking)
         {
+            _autoTarget = false;
             _selecting = false;
-            if (!locker.GetNearestAvailableStarInRange(maxAllowedDistance)) return;
+            if (!locker.GetNearestAvailableStar(maxAllowedDistance)) return;
             if (_isAttackOngoing)
             {
                 _isAttackOngoing = false;
@@ -82,7 +101,7 @@ public class Attack_Joystick : MonoBehaviour
         {
             if (_targetType == TargetType.Star)
             {
-                var pointedEnemy = locker.GetNearestAvailableEnemyInRange(_selectedStars.Select(x => x.transform.position).LastOrDefault(), maxAllowedDistance);
+                var pointedEnemy = locker.GetNearestAvailableEnemy(_selectedStars.Select(x => x.transform.position).LastOrDefault(), maxAllowedDistance);
                 if (pointedEnemy)
                 {
                     _targetType = TargetType.Enemy;
@@ -203,6 +222,7 @@ public class Attack_Joystick : MonoBehaviour
 
     private void Abort()
     {
+        _autoTarget = true;
         _attacking = false;
         _selecting = false;
         _targetStar = null;
@@ -220,7 +240,7 @@ public class Attack_Joystick : MonoBehaviour
         // Just move to the nearest available star.
         if (!_targetStar)
         {
-            _targetStar = locker.GetNearestAvailableStarInRange(maxAllowedDistance);
+            _targetStar = locker.GetNearestAvailableStar(maxAllowedDistance);
             if (!_targetStar) return;
             viewfinder.gameObject.transform.position = _targetStar.transform.position;
         }
@@ -228,7 +248,7 @@ public class Attack_Joystick : MonoBehaviour
         // The first star has already been choosen: try to understand if the user is targeting a star or an enemy
         // and act accordingly.
         {
-            var pointedStar = locker.GetAvailableStarByRaycastInRange(viewfinder.transform, maxAllowedDistance);
+            var pointedStar = locker.GetAvailableStarByRaycast(viewfinder.transform, maxAllowedDistance);
             if (pointedStar)
             {
                 _targetStar = pointedStar;
@@ -244,13 +264,13 @@ public class Attack_Joystick : MonoBehaviour
         if (!_targetEnemy)
         {
             _targetEnemy =
-                locker.GetNearestAvailableEnemyInRange(_selectedStars.Select(x => x.transform.position).LastOrDefault(), maxAllowedDistance);
+                locker.GetNearestAvailableEnemy(_selectedStars.Select(x => x.transform.position).LastOrDefault(), maxAllowedDistance);
             if (!_targetEnemy) return;
             viewfinder.gameObject.transform.position = _targetEnemy.transform.position;
         }
         else
         {
-            var pointedEnemy = locker.GetAvailableEnemyByRaycastInRange(viewfinder.transform,
+            var pointedEnemy = locker.GetAvailableEnemyByRaycast(viewfinder.transform,
                 _selectedStars.Select(x => x.transform.position).LastOrDefault(), maxAllowedDistance);
             if (pointedEnemy)
             {
