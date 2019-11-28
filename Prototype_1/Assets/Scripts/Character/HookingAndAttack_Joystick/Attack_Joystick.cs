@@ -13,7 +13,7 @@ public class Attack_Joystick : MonoBehaviour
     
     public float maxAllowedDistance = 10f; // Max distance at which the first star selected can be
 
-    enum TargetType {Star, Enemy}
+    private enum TargetType {Star, Enemy}
 
     private TargetType _targetType = TargetType.Star;
 
@@ -21,6 +21,10 @@ public class Attack_Joystick : MonoBehaviour
     private bool _isAttackOngoing;
     private bool _selecting;
     private bool _readyToSelect = true;
+
+    private const float UpThresholdSelect = 0.5f;
+    private const float DownThresholdSelect = 0.2f;
+    private const float ThresholdViewfinder = 0.3f;
 
     private Star _targetStar;
     private Enemy _targetEnemy;
@@ -30,7 +34,7 @@ public class Attack_Joystick : MonoBehaviour
 
     public MoveStarViewfinder_Joystick viewfinder;
 
-    public bool isHanging = false;
+    public bool isHanging;
     private bool _autoTarget = true;
 
     private void Awake()
@@ -54,7 +58,6 @@ public class Attack_Joystick : MonoBehaviour
     public void AutoTargetWorking(bool val)
     {
         if(!val) _autoTarget = false;
-        print(_autoTarget);
     }
 
     void Update()
@@ -75,6 +78,7 @@ public class Attack_Joystick : MonoBehaviour
         // Move stars and effects if the sky is rotating
         if (InputManager.GetButton("Button2"))
         {
+            if (_targetStar) viewfinder.gameObject.transform.position = _targetStar.transform.position;
             var positions = _selectedStars.Select(x => x.transform.position).ToList();
             positions.Insert(0, _tr.position);
             lineRenderer.SetPositions(positions.ToArray());
@@ -82,7 +86,8 @@ public class Attack_Joystick : MonoBehaviour
 
         // If the player moves the viewfinder or selects a star or press select button, go in attack mode
         IsSelectPressed();
-        if ((InputManager.GetAxisRaw("RHorizontal") > 0f || InputManager.GetAxisRaw("RVertical") > 0f || _selecting) && !_attacking)
+        if ((InputManager.GetAxisRaw("RHorizontal") > ThresholdViewfinder 
+             || InputManager.GetAxisRaw("RVertical") > ThresholdViewfinder || _selecting) && !_attacking)
         {
             _autoTarget = false;
             _selecting = false;
@@ -184,12 +189,12 @@ public class Attack_Joystick : MonoBehaviour
 
     private void IsSelectPressed()
     {
-        if (InputManager.GetAxisRaw("LTrigger") > 0.6f && _readyToSelect)
+        if (InputManager.GetAxisRaw("LTrigger") > UpThresholdSelect && _readyToSelect)
         {
             _selecting = true;
             _readyToSelect = false;
         } 
-        if (InputManager.GetAxisRaw("LTrigger") <= 0.1f)
+        if (InputManager.GetAxisRaw("LTrigger") <= DownThresholdSelect)
         {
             _readyToSelect = true;
         }

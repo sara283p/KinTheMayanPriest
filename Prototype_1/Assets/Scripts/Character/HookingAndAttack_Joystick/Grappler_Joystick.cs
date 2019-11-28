@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class Grappler_Joystick : MonoBehaviour
@@ -13,14 +9,18 @@ public class Grappler_Joystick : MonoBehaviour
     private CharacterController _controller;
     public Locker_Joystick locker;
     private Rigidbody2D _rb;
+    private Vector2 _position;
     private bool _wantToHook;
     private DistanceJoint2D _joint;
     private FrictionJoint2D _friction;
     private bool _skyIsMoving;
 
     private float _maxStarDistance = 10f;
+    private const float DownThresholdHang = 0.3f;
+    private const float UpThresholdHang = 0.7f;
     
     private Star _selectedStar;
+    private Star _nextStar;
     private List<Star> _availableStars = new List<Star>();
     
     public MoveStarViewfinder_Joystick viewfinder;
@@ -31,6 +31,7 @@ public class Grappler_Joystick : MonoBehaviour
     {
         _controller = GetComponent<CharacterController>();
         _rb = GetComponent<Rigidbody2D>();
+        _position = _rb.position;
     }
 
     private void SwitchToKinematic()
@@ -40,12 +41,12 @@ public class Grappler_Joystick : MonoBehaviour
 
     private void HookInput()
     {
-        if (InputManager.GetAxis("RTrigger") > 0.6f)
+        if (InputManager.GetAxis("RTrigger") > UpThresholdHang)
         {
             _wantToHook = true;
         }
         
-        if(InputManager.GetAxis("RTrigger") < 0.1f)
+        if(InputManager.GetAxis("RTrigger") < DownThresholdHang)
         {
             _wantToHook = false;
             
@@ -54,14 +55,14 @@ public class Grappler_Joystick : MonoBehaviour
             _selectedStar = null;
         }
         
-        if (InputManager.GetButtonDown("Button2"))
-        {
-            _skyIsMoving = true;
-        }
-        else if (InputManager.GetButtonUp("Button2"))
-        {
-            _skyIsMoving = false;
-        }
+//        if (InputManager.GetButtonDown("Button2"))
+//        {
+//            _skyIsMoving = true;
+//        }
+//        else if (InputManager.GetButtonUp("Button2"))
+//        {
+//            _skyIsMoving = false;
+//        }
        
     }
 
@@ -81,7 +82,7 @@ public class Grappler_Joystick : MonoBehaviour
     /*private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawRay(_rb.position, _selectedStar.GetComponent<Rigidbody2D>().position - _rb.position);
+        Gizmos.DrawRay(_position, _selectedStar.GetComponent<Rigidbody2D>().position - _position);
     }*/
 
     void Update()
@@ -91,6 +92,7 @@ public class Grappler_Joystick : MonoBehaviour
         if (_wantToHook && !_selectedStar)
         {
             _selectedStar = locker.GetTargetedStar();
+            _nextStar = _selectedStar;
         }
 
         if (_wantToHook && _selectedStar)
@@ -98,15 +100,18 @@ public class Grappler_Joystick : MonoBehaviour
             var target = locker.GetAvailableStarByRaycast(viewfinder.transform);
             if (target)
             {
+                _nextStar = target;
                 attackJoystick.AutoTargetWorking(false);
-                viewfinder.gameObject.transform.position = target.transform.position;
             }
+            
+            // Update viewfinder position
+            viewfinder.gameObject.transform.position = _nextStar.transform.position;
         }
 
         if (_selectedStar)
         {
-            Vector2 relativePosition = _selectedStar.GetComponent<Rigidbody2D>().position - _rb.position;
-            RaycastHit2D hit = Physics2D.Raycast(_rb.position, relativePosition, relativePosition.magnitude, obstacleLayerMask);
+            Vector2 relativePosition = _selectedStar.GetComponent<Rigidbody2D>().position - _position;
+            RaycastHit2D hit = Physics2D.Raycast(_position, relativePosition, relativePosition.magnitude, obstacleLayerMask);
             if (hit.collider)
             {
                 if (_joint)
@@ -120,7 +125,7 @@ public class Grappler_Joystick : MonoBehaviour
         // If there is joint and either hook button is released or Kin is on the ground, destroy it
         if (_joint)
         {
-            Vector2 starCenteredRelativePosition = _rb.position - _joint.connectedBody.position;
+            Vector2 starCenteredRelativePosition = _position - _joint.connectedBody.position;
             
             // If the character is hanged to the star and is not moving, disable friction if remainder movement is very little, in 
             // order to make it do little oscillations around the center of the hanging ray...
@@ -160,13 +165,13 @@ public class Grappler_Joystick : MonoBehaviour
                 {
                     // If Kin is NOT the ground and meanwhile jump is pressed assume that the hang has to be accomplished.
                     // Create a joint, start the effect.
-                    if (!_controller.IsGrounded() && ((Vector2) _selectedStar.transform.position - _rb.position).magnitude < _maxStarDistance )
+                    if (!_controller.IsGrounded() && ((Vector2) _selectedStar.transform.position - _position).magnitude < _maxStarDistance )
                     {
                         attackJoystick.SetHanging(true);
                         _joint = gameObject.AddComponent<DistanceJoint2D>();
                         _friction = gameObject.AddComponent<FrictionJoint2D>();
                         Rigidbody2D otherRb = _selectedStar.GetComponent<Rigidbody2D>();
-                        _joint.distance = (_rb.position - otherRb.position).magnitude;
+                        _joint.distance = (_position - otherRb.position).magnitude;
                         _joint.connectedBody = otherRb;
                         _joint.autoConfigureDistance = false;
                         _friction.maxForce = 1;

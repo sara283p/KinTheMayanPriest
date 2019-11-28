@@ -8,11 +8,13 @@ using UnityEngine;
 public class Locker_Joystick : MonoBehaviour
 {
 	public float selectionDelay = 0.5f;
+	private const float MaxSearchRadius = 30f;
+	private const float DeadZone = 0.2f;
+
 	public LayerMask obstacleLayerMask;
 	
 	private bool _selectingWait;
-	private float _maxDistance = 5;
-	
+
 	public LayerMask starLayerMask;
 	public LayerMask enemyLayerMask;
 
@@ -72,7 +74,7 @@ public class Locker_Joystick : MonoBehaviour
 			.ToList();
 	}
 	
-	public Star GetNearestAvailableStar(float range = 30f)
+	public Star GetNearestAvailableStar(float range = MaxSearchRadius)
 	{
 		var kinPosition = kin.position;
 		var stars = Physics2D.OverlapCircleAll(kinPosition, range, starLayerMask)
@@ -94,13 +96,16 @@ public class Locker_Joystick : MonoBehaviour
 		return stars[0];
 	}
 	
-	public Star GetAvailableStarByRaycast(Transform origin, float range = 30f)
+	public Star GetAvailableStarByRaycast(Transform origin, float range = MaxSearchRadius)
 	{
 		if (_selectingWait) return null;
 
 		var originPosition = origin.position;
 		var horizontalMove = InputManager.GetAxisRaw("RHorizontal");
 		var verticalMove = InputManager.GetAxisRaw("RVertical");
+
+		if (Mathf.Abs(verticalMove) < DeadZone && Mathf.Abs(horizontalMove) < DeadZone) return null;
+		
 		var direction = new Vector3(horizontalMove, verticalMove);
 		
 		Debug.DrawRay(originPosition, direction * 5.0f, Color.green);
@@ -152,7 +157,7 @@ public class Locker_Joystick : MonoBehaviour
 		return enemy[Array.IndexOf(distances, distances.Min())];
 	}
 	
-	public Enemy GetNearestAvailableEnemy(Vector2 lastSelectedStar, float range = 30f)
+	public Enemy GetNearestAvailableEnemy(Vector2 lastSelectedStar, float range = MaxSearchRadius)
 	{
 		var enemies = Physics2D.OverlapCircleAll(lastSelectedStar, range, enemyLayerMask)
 			.Select(x => x.transform.GetComponent<Enemy>())
@@ -174,13 +179,16 @@ public class Locker_Joystick : MonoBehaviour
 		return null;
 	}
 	
-	public Enemy GetAvailableEnemyByRaycast(Transform origin, Vector3 lastSelectedStar, float range = 30f)
+	public Enemy GetAvailableEnemyByRaycast(Transform origin, Vector3 lastSelectedStar, float range = MaxSearchRadius)
 	{
 		if (_selectingWait) return null;
 
 		var originPosition = origin.position;
 		var horizontalMove = InputManager.GetAxisRaw("RHorizontal");
 		var verticalMove = InputManager.GetAxisRaw("RVertical");
+		
+		if (Mathf.Abs(verticalMove) < DeadZone && Mathf.Abs(horizontalMove) < DeadZone) return null;
+		
 		var direction = new Vector3(horizontalMove, verticalMove);
 
 		Debug.DrawRay(originPosition, direction * 5.0f, Color.green);
