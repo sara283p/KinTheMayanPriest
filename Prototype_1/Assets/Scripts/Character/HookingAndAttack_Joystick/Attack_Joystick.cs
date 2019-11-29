@@ -130,14 +130,15 @@ public class Attack_Joystick : MonoBehaviour
 
         if (_attacking && _selectedStars.Count > 0)
         {
-            if ((_selectedStars.First().transform.position - transform.position).magnitude > maxAllowedDistance)
+            Vector2 relativePosition = _selectedStars.First().transform.position - _tr.position;
+
+            if (relativePosition.magnitude > maxAllowedDistance)
             {
                 lineRenderer.positionCount = 0;
                 Abort();
                 return;
             }
             
-            Vector2 relativePosition = _selectedStars.First().transform.position - _tr.position;
             Debug.DrawRay(_tr.position, relativePosition, Color.red);
             RaycastHit2D hit = Physics2D.Raycast(_tr.position, relativePosition, relativePosition.magnitude, obstacleLayerMask);
             if (hit.collider)
