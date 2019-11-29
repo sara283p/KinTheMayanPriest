@@ -27,7 +27,7 @@ public class Attack_Joystick : MonoBehaviour
     private const float ThresholdViewfinder = 0.3f;
 
     private Star _targetStar;
-    private Enemy _targetEnemy;
+    private IDamageable _targetEnemy;
     private Transform _tr;
     
     private readonly List<Star> _selectedStars = new List<Star>();
@@ -107,11 +107,11 @@ public class Attack_Joystick : MonoBehaviour
             if (_targetType == TargetType.Star)
             {
                 var pointedEnemy = locker.GetNearestAvailableEnemy(_selectedStars.Select(x => x.transform.position).LastOrDefault(), maxAllowedDistance);
-                if (pointedEnemy)
+                if (pointedEnemy != null)
                 {
                     _targetType = TargetType.Enemy;
                     _targetEnemy = pointedEnemy;
-                    viewfinder.gameObject.transform.position = pointedEnemy.transform.position;
+                    viewfinder.gameObject.transform.position = pointedEnemy.GetPosition();
                 }
                 
             }
@@ -148,9 +148,9 @@ public class Attack_Joystick : MonoBehaviour
             }
         }
         
-        if (_attacking && _targetType == TargetType.Enemy && _targetEnemy)
+        if (_attacking && _targetType == TargetType.Enemy && _targetEnemy != null)
         {
-            viewfinder.gameObject.transform.position = _targetEnemy.transform.position;
+            viewfinder.gameObject.transform.position = _targetEnemy.GetPosition();
         }
         
         if (_attacking)
@@ -267,28 +267,28 @@ public class Attack_Joystick : MonoBehaviour
     {
         // Then branch: the user has just entered Enemy target mode.
         // Just move to the nearest available enemy.
-        if (!_targetEnemy)
+        if (_targetEnemy == null)
         {
             _targetEnemy =
                 locker.GetNearestAvailableEnemy(_selectedStars.Select(x => x.transform.position).LastOrDefault(), maxAllowedDistance);
-            if (!_targetEnemy) return;
-            viewfinder.gameObject.transform.position = _targetEnemy.transform.position;
+            if (_targetEnemy == null) return;
+            viewfinder.gameObject.transform.position = _targetEnemy.GetPosition();
         }
         else
         {
             var pointedEnemy = locker.GetAvailableEnemyByRaycast(viewfinder.transform,
                 _selectedStars.Select(x => x.transform.position).LastOrDefault(), maxAllowedDistance);
-            if (pointedEnemy)
+            if (pointedEnemy != null)
             {
                 _targetEnemy = pointedEnemy;
-                viewfinder.gameObject.transform.position = pointedEnemy.transform.position;
+                viewfinder.gameObject.transform.position = pointedEnemy.GetPosition();
             }
         }
     }
 
     private void PerformAttack()
     {
-        if (_targetEnemy)
+        if (_targetEnemy != null)
         {
             StartCoroutine(AttackEffect(_targetEnemy));
             var damage = _selectedStars.Select(x => x.damagePoints).Sum();
@@ -305,11 +305,11 @@ public class Attack_Joystick : MonoBehaviour
         Abort();
     }
 
-    IEnumerator AttackEffect(Enemy enemy)
+    IEnumerator AttackEffect(IDamageable enemy)
     {
         _isAttackOngoing = true;
         lineRenderer.positionCount++;
-        lineRenderer.SetPosition(_selectedStars.Count + 1, enemy.transform.position);
+        lineRenderer.SetPosition(_selectedStars.Count + 1, enemy.GetPosition());
 
         yield return new WaitForSeconds(2f);
         

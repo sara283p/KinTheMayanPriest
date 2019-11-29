@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : Health
+public class Enemy : Health, IDamageable
 {
     private float _maxHealth = 100;
     private float _curHealth;
@@ -24,6 +24,11 @@ public class Enemy : Health
         {
             Die();
         }
+    }
+
+    public Vector2 GetPosition()
+    {
+        return transform.position;
     }
 
     void Die()

@@ -128,7 +128,7 @@ public class Locker_Joystick : MonoBehaviour
 	
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	/////////////////////////////////            ENEMIES            ////////////////////////////////////////////////////
+	/////////////////////////////////      ENEMIES & OBSTACLES      ////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public Enemy GetTargetedEnemy(Star star)
@@ -157,17 +157,18 @@ public class Locker_Joystick : MonoBehaviour
 		return enemy[Array.IndexOf(distances, distances.Min())];
 	}
 	
-	public Enemy GetNearestAvailableEnemy(Vector2 lastSelectedStar, float range = MaxSearchRadius)
+	public IDamageable GetNearestAvailableEnemy(Vector2 lastSelectedStar, float range = MaxSearchRadius)
 	{
+		
 		var enemies = Physics2D.OverlapCircleAll(lastSelectedStar, range, enemyLayerMask)
-			.Select(x => x.transform.GetComponent<Enemy>())
 			.Where(x =>
 			{
-				var position = x.GetComponent<Rigidbody2D>().position;
-				var relativeDirection = position - lastSelectedStar;
-				return !Physics2D.Raycast(lastSelectedStar, relativeDirection, (position - lastSelectedStar).magnitude, obstacleLayerMask);
+				var position = x.GetComponent<Transform>().position;
+				var relativeDirection = (Vector2) position - lastSelectedStar;
+				return !Physics2D.Raycast(lastSelectedStar, relativeDirection, relativeDirection.magnitude, obstacleLayerMask);
 			})
-			.OrderBy(x => (lastSelectedStar - x.GetComponent<Rigidbody2D>().position).sqrMagnitude)
+			.OrderBy(x => (lastSelectedStar - (Vector2) x.GetComponent<Transform>().position).sqrMagnitude)
+			.Select(x => x.GetComponent<IDamageable>())
 			.ToArray();
 
 		if (enemies.Length > 0)
@@ -179,7 +180,7 @@ public class Locker_Joystick : MonoBehaviour
 		return null;
 	}
 	
-	public Enemy GetAvailableEnemyByRaycast(Transform origin, Vector3 lastSelectedStar, float range = MaxSearchRadius)
+	public IDamageable GetAvailableEnemyByRaycast(Transform origin, Vector3 lastSelectedStar, float range = MaxSearchRadius)
 	{
 		if (_selectingWait) return null;
 
@@ -194,15 +195,15 @@ public class Locker_Joystick : MonoBehaviour
 		Debug.DrawRay(originPosition, direction * 5.0f, Color.green);
 		
 		var enemies = Physics2D.RaycastAll(originPosition, direction, Mathf.Infinity, enemyLayerMask)
-			.Select(x => x.transform.GetComponent<Enemy>())
 			.Where(x =>
 			{
 				var position = x.transform.position;
-				var relativeDirection = x.transform.position - lastSelectedStar;
-				return !Physics2D.Raycast(lastSelectedStar, relativeDirection, (position - lastSelectedStar).magnitude, obstacleLayerMask);
+				var relativeDirection = position - lastSelectedStar;
+				return !Physics2D.Raycast(lastSelectedStar, relativeDirection, relativeDirection.magnitude, obstacleLayerMask);
 			})
 			.Where(x => (lastSelectedStar - x.transform.position).magnitude < range)
 			.OrderBy(x => (origin.position - x.transform.position).sqrMagnitude)
+			.Select(x => x.transform.GetComponent<IDamageable>())
 			.ToArray();
 
 		if (enemies.Length > 0)
