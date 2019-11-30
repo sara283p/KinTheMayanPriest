@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,12 +12,14 @@ public class Star : MonoBehaviour
     public GameObject selectedForAttack;
     private Color _color;
     private Renderer _renderer;
+    private bool _isMovable;
     
     void Start()
     {
         selectedForAttack.SetActive(false);
         _renderer = GetComponent<Renderer>();
         _color = _renderer.material.color;
+        _isMovable = GetComponent<MovableStar>();
     }
 
     public void SelectForAttack()
@@ -41,6 +44,7 @@ public class Star : MonoBehaviour
 
     public void DarkenStar()
     {
+        isInCooldown = true;
         Color newColor = _color;
         newColor.a = coolDownOpacity;
         
@@ -54,20 +58,14 @@ public class Star : MonoBehaviour
         newColor.a = 1;
         
         _renderer.material.color = newColor;
-        
+        isInCooldown = false;
     }
     
     IEnumerator CoolDown()
     {
-        isInCooldown = true;
-
         DarkenStar();
-        
         yield return new WaitForSeconds(coolDownTime);
-
         BrightenStar();
-
-        isInCooldown = false;
     }
     
     public void HighlightStar()
@@ -82,5 +80,21 @@ public class Star : MonoBehaviour
         Color newColor = _color;
        _renderer.material.color = newColor;
         
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (_isMovable && other.CompareTag("Star"))
+        {
+            DarkenStar();
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (_isMovable && other.CompareTag("Star"))
+        {
+            BrightenStar();
+        }
     }
 }

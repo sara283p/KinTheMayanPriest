@@ -93,6 +93,7 @@ GameObject:
   - component: {fileID: 1968237496256620230}
   - component: {fileID: 4667618409703333898}
   - component: {fileID: -8604608504319499118}
+  - component: {fileID: 6433377637392119763}
   m_Layer: 10
   m_Name: Star
   m_TagString: Star
@@ -152,7 +153,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1462816967
-  m_SortingLayer: 2
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: d61389bfcf49a9646abe02d152aafbd3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -219,6 +220,18 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 1
+--- !u!114 &6433377637392119763
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2139226338370669811}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: edfa67b4fd52f954392f66854733ef94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7801256022744289210
 GameObject:
   m_ObjectHideFlags: 0
@@ -317,7 +330,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1462816967
-  m_SortingLayer: 2
+  m_SortingLayer: 1
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: d19b012cb8d8f4845984a5e83fa6f331, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
