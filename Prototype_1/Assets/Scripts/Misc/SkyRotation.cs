@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class SkyRotation : MonoBehaviour
@@ -9,10 +10,11 @@ public class SkyRotation : MonoBehaviour
 
     private ConstellationSet _constellations;
     private Queue<Transform> _activeConstellations;
-    [SerializeField] private float _height;
-    [SerializeField] private float _margin;
+    private float _firstRowHeight;
+    private float _leftLimit;
     [SerializeField] private float _minDistance;
-    [SerializeField] private float _rightMargin;
+    private float _rightLimit;
+    private float _bottomLimit;
     private bool _rotate;
     [SerializeField] public float _speed;
     private float _rightMostConstRBound;
@@ -59,14 +61,18 @@ public class SkyRotation : MonoBehaviour
 
         _constellations = ScriptableObject.CreateInstance<ConstellationSet>();
         _activeConstellations = new Queue<Transform>();
+        _rightLimit = GetComponentInChildren<SkyRightLimit>().GetComponent<Transform>().position.x;
+        _leftLimit = GetComponentInChildren<SkyLeftLimit>().GetComponent<Transform>().position.x;
+        _bottomLimit = GetComponentInChildren<SkyBottomLimit>().GetComponent<Transform>().position.y;
+        _firstRowHeight = GetComponentInChildren<SkyFirstRowHeight>().GetComponent<Transform>().position.y;
         // Values used for testing
         /*_height = 5f;
         _margin = 7f;
         _minDistance = 4f;
-        _rightMargin = 53f;*/
+        _rightMargin = 53f;
         Camera mainCamera = Camera.main;
-        Vector2 screenBottomLeft = mainCamera.ScreenToWorldPoint(Vector3.zero);
-        _rightMostConstRBound = screenBottomLeft.x + _margin;
+        Vector2 screenBottomLeft = mainCamera.ScreenToWorldPoint(Vector3.zero);*/
+        _rightMostConstRBound = _leftLimit;
 
     }
 
@@ -86,20 +92,27 @@ public class SkyRotation : MonoBehaviour
     void Start()
     {
         GenerateConstellations();
-        float newPos = _rightMostConstRBound;
+        float newX = _rightMostConstRBound;
+        float newY = _firstRowHeight;
         Constellation constellation;
+
         do
         {
-            Vector2 position = new Vector2(newPos, _height);
-            constellation = _constellations.GetRandomConstellation();
-            GameObject toRender = constellation.gameObject;
-            toRender.GetComponent<Transform>().position = position;
-            toRender.SetActive(true);
-            _activeConstellations.Enqueue(toRender.GetComponent<Transform>());
-            newPos = constellation.GetRightBound() + constellation.GetExtent() + _minDistance;
+            do
+            {
+                Vector2 position = new Vector2(newX, newY);
+                constellation = _constellations.GetRandomConstellation();
+                GameObject toRender = constellation.gameObject;
+                toRender.GetComponent<Transform>().position = position;
+                toRender.SetActive(true);
+                _activeConstellations.Enqueue(toRender.GetComponent<Transform>());
+                newY = constellation.GetBottomBound() - constellation.GetVerticalExtent() - _minDistance;
+            } while (newY > _bottomLimit);
 
-        } while (newPos < _rightMargin);
-
+            newY = _firstRowHeight;
+            newX = constellation.GetRightBound() + constellation.GetHorizontalExtent() + _minDistance;
+        } while (newX < _rightLimit);
+       
         _rightMostConstRBound = constellation.GetRightBound();
     }
 
@@ -110,22 +123,32 @@ public class SkyRotation : MonoBehaviour
         if (_rotate)
         {
             Vector3 delta = new Vector3(- _speed * Time.deltaTime, 0);
-            foreach (Transform constellation in _activeConstellations)
+
+            foreach(Transform constellation in _activeConstellations)
             {
                 constellation.position += delta;
-            }
+            };
             _rightMostConstRBound += delta.x;
 
-            Vector2 position = new Vector2(_rightMostConstRBound + _minDistance, _height);
-            if (position.x < _rightMargin)
+            Vector2 position = new Vector2(_rightMostConstRBound + _minDistance, _firstRowHeight);
+            if (position.x < _rightLimit)
             {
-                Constellation constellation = _constellations.GetRandomConstellation();
-                GameObject toRender = constellation.gameObject;
-                position = position + new Vector2(constellation.GetExtent(), 0);
-                toRender.GetComponent<Transform>().position = position;
-                toRender.SetActive(true);
-                _rightMostConstRBound = constellation.GetRightBound();
-                _activeConstellations.Enqueue(toRender.GetComponent<Transform>());
+                bool firstRow = true;
+                while (position.y > _bottomLimit)
+                {
+                    Constellation constellation = _constellations.GetRandomConstellation();
+                    GameObject toRender = constellation.gameObject;
+                    if (firstRow)
+                    {
+                        position = position + new Vector2(constellation.GetHorizontalExtent(), 0);
+                        firstRow = false;
+                    }
+                    toRender.GetComponent<Transform>().position = position;
+                    toRender.SetActive(true);
+                    _rightMostConstRBound = constellation.GetRightBound();
+                    _activeConstellations.Enqueue(toRender.GetComponent<Transform>());
+                    position.y = constellation.GetBottomBound() - constellation.GetVerticalExtent() - _minDistance;
+                }
             }
         }
     }

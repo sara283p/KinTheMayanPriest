@@ -5,7 +5,8 @@ using UnityEngine;
 
 public class Constellation : MonoBehaviour
 {
-    private float _extent;
+    private float _horizontalExtent;
+    private float _verticalExtent;
     private BoxCollider2D _collider;
     private Transform _tr;
     private float _width = 19.51202f;
@@ -23,17 +24,27 @@ public class Constellation : MonoBehaviour
     
     public float GetLeftBound()
     {
-        return _tr.position.x - _extent;
+        return _tr.position.x - _horizontalExtent;
     }
 
     public float GetRightBound()
     {
-        return _tr.position.x + _extent;
+        return _tr.position.x + _horizontalExtent;
     }
 
-    public float GetExtent()
+    public float GetHorizontalExtent()
     {
-        return _extent;
+        return _horizontalExtent;
+    }
+
+    public float GetVerticalExtent()
+    {
+        return _verticalExtent;
+    }
+
+    public float GetBottomBound()
+    {
+        return _tr.position.y - _verticalExtent;
     }
 
     
@@ -41,7 +52,8 @@ public class Constellation : MonoBehaviour
     {
         _tr = GetComponent<Transform>();
         // Value of the extent computed as BoxCollider2D's width divided by 2
-        _extent = _width / 2f;
+        _horizontalExtent = _width / 2f;
+        _verticalExtent = _height / 2f;
     }
     
     

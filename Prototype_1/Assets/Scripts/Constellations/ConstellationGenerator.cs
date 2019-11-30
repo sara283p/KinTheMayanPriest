@@ -90,8 +90,12 @@ public class ConstellationGenerator : MonoBehaviour
                 }
 
                 j++;
+                if (j > 1000)
+                {
+                    print("Exiting stuck loop");
+                    break;
+                }
             }
-            print("i: " + i + "j: " + j);
             collider.radius = prefabRadius;
             addedStars.Add(star);
 
