@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Star : MonoBehaviour
@@ -13,6 +14,12 @@ public class Star : MonoBehaviour
     private Color _color;
     private Renderer _renderer;
     private bool _isMovable;
+    private CircleCollider2D _collider;
+    private float _starRadius = 0.385f;
+    public LayerMask _foregroundLayerMask;
+    private Rigidbody2D _rb;
+    [SerializeField] private Vector2[] _containmentCheck = new Vector2[4];
+    private bool _starContact;
     
     void Start()
     {
@@ -20,6 +27,22 @@ public class Star : MonoBehaviour
         _renderer = GetComponent<Renderer>();
         _color = _renderer.material.color;
         _isMovable = GetComponent<MovableStar>();
+        _collider = GetComponent<CircleCollider2D>();
+        _rb = GetComponent<Rigidbody2D>();
+        UpdateContainmentCheck();
+    }
+
+    private void UpdateContainmentCheck()
+    {
+        for (int i = 0; i < _containmentCheck.Length; i++)
+        {
+            _containmentCheck[i] = _rb.position;
+        }
+
+        _containmentCheck[0].x -= _starRadius;
+        _containmentCheck[1].x += _starRadius;
+        _containmentCheck[2].y -= _starRadius;
+        _containmentCheck[3].y += _starRadius;
     }
 
     public void SelectForAttack()
@@ -86,13 +109,38 @@ public class Star : MonoBehaviour
     {
         if (_isMovable && other.CompareTag("Star"))
         {
-            DarkenStar();
+            _starContact = true;
         }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
         if (_isMovable && other.CompareTag("Star"))
+        {
+            _starContact = false;
+        }
+    }
+    
+    private void Update()
+    {
+        if (_renderer.isVisible)
+        {
+            _collider.enabled = true;
+        }
+        else
+        {
+            _collider.enabled = false;
+            return;
+        }
+
+        UpdateContainmentCheck();
+        if (_starContact || _containmentCheck
+                                .Select(pos => Physics2D.OverlapCircle(pos, 0.01f, _foregroundLayerMask))
+                                .Aggregate(true, (res, coll) => res && coll))
+        {
+            DarkenStar();
+        }
+        else
         {
             BrightenStar();
         }
