@@ -17,7 +17,7 @@ public class Grappler_Joystick : MonoBehaviour
     private bool _skyIsMoving;
     [SerializeField] private bool _waitTillGrounded;
 
-    private float _minHangDistance = 3;
+    private float _minHangDistance = 5;
     private float _maxStarDistance = 10f;
     private const float DownThresholdHang = 0.3f;
     private const float UpThresholdHang = 0.7f;
