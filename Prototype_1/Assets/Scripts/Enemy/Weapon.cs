@@ -25,9 +25,5 @@ public class Weapon : MonoBehaviour
             yield return new WaitForSeconds(firingInterval);
         }
     }
-    
-    void SSShootdd()
-    {
-        Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
-    }
+
 }
