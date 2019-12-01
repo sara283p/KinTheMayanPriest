@@ -100,7 +100,7 @@ public class Locker_Joystick : MonoBehaviour
 	{
 		if (_selectingWait) return null;
 
-		var originPosition = origin.position;
+		Vector2 originPosition = origin.position;
 		var horizontalMove = InputManager.GetAxisRaw("RHorizontal");
 		var verticalMove = InputManager.GetAxisRaw("RVertical");
 
@@ -113,7 +113,7 @@ public class Locker_Joystick : MonoBehaviour
 		var stars = Physics2D.RaycastAll(originPosition, direction, range, starLayerMask)
 			.Select(x => x.transform.GetComponent<Star>())
 			.Where(x => !x.isInCooldown)
-			.Where(x => !Physics2D.Raycast(origin.position, direction, (x.transform.position - originPosition).magnitude, obstacleLayerMask))
+			.Where(x => !Physics2D.Raycast(origin.position, direction, ((Vector2) x.transform.position - originPosition).magnitude, obstacleLayerMask))
 			.OrderBy(x => (origin.position - x.transform.position).sqrMagnitude)
 			.ToArray();
 
@@ -180,7 +180,7 @@ public class Locker_Joystick : MonoBehaviour
 		return null;
 	}
 	
-	public IDamageable GetAvailableEnemyByRaycast(Transform origin, Vector3 lastSelectedStar, float range = MaxSearchRadius)
+	public IDamageable GetAvailableEnemyByRaycast(Transform origin, Vector2 lastSelectedStar, float range = MaxSearchRadius)
 	{
 		if (_selectingWait) return null;
 
@@ -197,11 +197,11 @@ public class Locker_Joystick : MonoBehaviour
 		var enemies = Physics2D.RaycastAll(originPosition, direction, Mathf.Infinity, enemyLayerMask)
 			.Where(x =>
 			{
-				var position = x.transform.position;
-				var relativeDirection = position - lastSelectedStar;
-				return !Physics2D.Raycast(lastSelectedStar, relativeDirection, relativeDirection.magnitude, obstacleLayerMask);
+				Vector2 position = x.transform.position;
+				Vector2 relativeDirection = position - (Vector2) lastSelectedStar;
+				return !Physics2D.Raycast(lastSelectedStar, relativeDirection, relativeDirection.magnitude, obstacleLayerMask).collider;
 			})
-			.Where(x => (lastSelectedStar - x.transform.position).magnitude < range)
+			.Where(x => (lastSelectedStar - (Vector2) x.transform.position).magnitude < range)
 			.OrderBy(x => (origin.position - x.transform.position).sqrMagnitude)
 			.Select(x => x.transform.GetComponent<IDamageable>())
 			.ToArray();
