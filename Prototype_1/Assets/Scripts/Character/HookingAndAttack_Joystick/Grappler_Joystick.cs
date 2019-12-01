@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Grappler_Joystick : MonoBehaviour
@@ -14,6 +15,7 @@ public class Grappler_Joystick : MonoBehaviour
     private DistanceJoint2D _joint;
     private FrictionJoint2D _friction;
     private bool _skyIsMoving;
+    [SerializeField] private bool _waitTillGrounded;
 
     private float _maxStarDistance = 10f;
     private const float DownThresholdHang = 0.3f;
@@ -31,7 +33,6 @@ public class Grappler_Joystick : MonoBehaviour
     {
         _controller = GetComponent<CharacterController>();
         _rb = GetComponent<Rigidbody2D>();
-        _position = _rb.position;
     }
 
     private void SwitchToKinematic()
@@ -87,8 +88,14 @@ public class Grappler_Joystick : MonoBehaviour
 
     void Update()
     {
+        _position = _rb.position;
         HookInput();
 
+        if (_controller.IsGrounded())
+        {
+            _waitTillGrounded = false;
+        }
+        
         if (_wantToHook && !_selectedStar)
         {
             _selectedStar = locker.GetTargetedStar();
@@ -117,6 +124,7 @@ public class Grappler_Joystick : MonoBehaviour
                 if (_joint)
                 {
                     DestroyJoint();
+                    _waitTillGrounded = true;
                     _controller.ToggleHook();
                 }
                 return;
@@ -138,9 +146,10 @@ public class Grappler_Joystick : MonoBehaviour
             {
                 _friction.maxForce = 1f;
             }
-            
+
             if (!_wantToHook || _controller.IsGrounded()) // || _skyIsMoving)
             {
+                _waitTillGrounded = false;
                 DestroyJoint();
                 _controller.ToggleHook();
             }
@@ -165,7 +174,7 @@ public class Grappler_Joystick : MonoBehaviour
                 {
                     // If Kin is NOT the ground and meanwhile jump is pressed assume that the hang has to be accomplished.
                     // Create a joint, start the effect.
-                    if (!_controller.IsGrounded() && ((Vector2) _selectedStar.transform.position - _position).magnitude < _maxStarDistance )
+                    if (!_controller.IsGrounded() && ((Vector2) _selectedStar.transform.position - _position).magnitude < _maxStarDistance && !_waitTillGrounded)
                     {
                         attackJoystick.SetHanging(true);
                         _joint = gameObject.AddComponent<DistanceJoint2D>();
@@ -174,6 +183,7 @@ public class Grappler_Joystick : MonoBehaviour
                         _joint.distance = (_position - otherRb.position).magnitude;
                         _joint.connectedBody = otherRb;
                         _joint.autoConfigureDistance = false;
+                        _joint.enableCollision = true;
                         _friction.maxForce = 1;
                         hangingEffect.StartEffect(otherRb.transform);
                         _controller.ToggleHook();
