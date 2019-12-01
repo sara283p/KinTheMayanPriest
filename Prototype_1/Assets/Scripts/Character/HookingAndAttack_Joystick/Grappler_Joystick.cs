@@ -17,6 +17,7 @@ public class Grappler_Joystick : MonoBehaviour
     private bool _skyIsMoving;
     [SerializeField] private bool _waitTillGrounded;
 
+    private float _minHangDistance = 3;
     private float _maxStarDistance = 10f;
     private const float DownThresholdHang = 0.3f;
     private const float UpThresholdHang = 0.7f;
@@ -181,6 +182,7 @@ public class Grappler_Joystick : MonoBehaviour
                         _friction = gameObject.AddComponent<FrictionJoint2D>();
                         Rigidbody2D otherRb = _selectedStar.GetComponent<Rigidbody2D>();
                         _joint.distance = (_position - otherRb.position).magnitude;
+                        _joint.maxDistanceOnly = _joint.distance < _minHangDistance;
                         _joint.connectedBody = otherRb;
                         _joint.autoConfigureDistance = false;
                         _joint.enableCollision = true;
