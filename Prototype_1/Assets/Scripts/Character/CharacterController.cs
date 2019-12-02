@@ -255,8 +255,9 @@ public class CharacterController : MonoBehaviour
 		// If player is hanging to a star, set the maximum oscillation speed according to the distance from the star
 		if (_hooked)
 		{
-			_starPosition = _rb.GetComponent<DistanceJoint2D>().connectedBody.position;
-			_oscillationSpeed = _baseOscillationSpeed * (_rb.position - _starPosition).magnitude * 0.8f ;
+			DistanceJoint2D joint = _rb.GetComponent<DistanceJoint2D>();
+			_starPosition = joint.connectedBody.position;
+			_oscillationSpeed = _baseOscillationSpeed * joint.distance * 0.8f ;
 		}
 		else
 		{
