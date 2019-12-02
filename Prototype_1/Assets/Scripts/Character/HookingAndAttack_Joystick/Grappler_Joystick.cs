@@ -187,6 +187,7 @@ public class Grappler_Joystick : MonoBehaviour
                         _joint.autoConfigureDistance = false;
                         _joint.enableCollision = true;
                         _friction.maxForce = 1;
+                        _friction.enableCollision = true;
                         hangingEffect.StartEffect(otherRb.transform);
                         _controller.ToggleHook();
                     }
