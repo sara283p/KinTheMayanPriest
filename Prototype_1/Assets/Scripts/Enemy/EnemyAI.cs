@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
+using UnityEngine.UIElements;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Seeker))]
@@ -27,11 +28,16 @@ public class EnemyAI : MonoBehaviour
 
     //the max distance from a waypoint to trigger the enemy to move towards the next waypoint in the path
     public float nextWaypointDistance = 3f;
+    //distance within which the enemy will start attacking/following the player
+    public float aggroRange = 15f;
+    //the enemy's initial position
+    private Vector3 enemySpawnPoint;
 
     void Start()
     {
         seeker = GetComponent<Seeker>();
         rigidbody = GetComponent<Rigidbody2D>();
+        enemySpawnPoint = transform.position;
 
         //start iteratively searching for the quickest path towards the target
         InvokeRepeating("updatePath", 0f, .5f);
@@ -39,10 +45,21 @@ public class EnemyAI : MonoBehaviour
 
     void updatePath()
     {
-        if (seeker.IsDone())
+        //if the player is within the aggro range
+        if (Vector3.Distance(transform.position, target.position) <= aggroRange)
         {
-            //search and begin a path starting from the enemy towards the target, and return the result to the function OnPathEnd()
-            seeker.StartPath(transform.position, target.position, OnPathEnd);
+            //if a path has been found...
+            if (seeker.IsDone())
+            {
+                //...begin said path starting from the enemy towards the target, and return the result to the function OnPathEnd()
+                seeker.StartPath(transform.position, target.position, OnPathEnd);
+            }
+        }
+
+        //if the player gets out of the enemy aggro range, the enemy returns at its initial position
+        else
+        {
+            seeker.StartPath(transform.position, enemySpawnPoint, OnPathEnd);
         }
     }
 
