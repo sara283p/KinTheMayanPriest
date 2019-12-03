@@ -37,7 +37,7 @@ public class Locker_Joystick : MonoBehaviour
 		var viewfinderPosition = (Vector2) viewfinder.position;
 		var stars = Physics2D.OverlapCircleAll(viewfinderPosition, 2f, starLayerMask)
 			.Select(x => x.GetComponent<Star>())
-			.Where(x => !x.isInCooldown)
+			.Where(x => !x.isDisabled)
 			.Where(x =>
 			{
 				var xPosition = x.GetComponent<Rigidbody2D>().position;
@@ -70,7 +70,7 @@ public class Locker_Joystick : MonoBehaviour
 		var kinPosition = kin.position;
 		return Physics2D.OverlapCircleAll(kinPosition, maxStarDistance, starLayerMask)
 			.Select(x => x.GetComponent<Star>())
-			.Where(x => !x.isInCooldown)
+			.Where(x => !x.isDisabled)
 			.ToList();
 	}
 	
@@ -79,7 +79,7 @@ public class Locker_Joystick : MonoBehaviour
 		var kinPosition = kin.position;
 		var stars = Physics2D.OverlapCircleAll(kinPosition, range, starLayerMask)
 			.Select(x => x.GetComponent<Star>())
-			.Where(x => !x.isInCooldown)
+			.Where(x => !x.isDisabled)
 			.Where(x =>
 			{
 				var xPosition = x.GetComponent<Rigidbody2D>().position;
@@ -112,7 +112,7 @@ public class Locker_Joystick : MonoBehaviour
 		
 		var stars = Physics2D.RaycastAll(originPosition, direction, range, starLayerMask)
 			.Select(x => x.transform.GetComponent<Star>())
-			.Where(x => !x.isInCooldown)
+			.Where(x => !x.isDisabled)
 			.Where(x => !Physics2D.Raycast(origin.position, direction, ((Vector2) x.transform.position - originPosition).magnitude, obstacleLayerMask))
 			.OrderBy(x => (origin.position - x.transform.position).sqrMagnitude)
 			.ToArray();
