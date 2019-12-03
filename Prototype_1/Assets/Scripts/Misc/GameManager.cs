@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
     public float characterMaxHealth;
     public float obstacleMaxHealth;
     public float enemyPerStarDamage;
-    public float obstaclePerStarDamage;
+    public float starCooldownTime;
     
     private static GameManager _manager;
     

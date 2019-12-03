@@ -23,6 +23,7 @@ public class PlayerHealth : Health
     // Start is called before the first frame update
     void Start()
     {
+        _maxHealth = GameManager.Instance.characterMaxHealth;
         Spawn();
         rend = GetComponent<Renderer>();
         c = rend.material.color;

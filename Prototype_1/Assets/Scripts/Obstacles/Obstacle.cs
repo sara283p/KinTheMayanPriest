@@ -10,7 +10,7 @@ public class Obstacle : Health, IDamageable
 
     private void Awake()
     {
-        _maxHealth = 1;
+        _maxHealth = GameManager.Instance.obstacleMaxHealth;
         _currentHealth = _maxHealth;
     }
 
@@ -30,7 +30,7 @@ public class Obstacle : Health, IDamageable
         return _maxHealth;
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(float damage)
     {
         _currentHealth -= damage;
         if (_currentHealth <= 0)

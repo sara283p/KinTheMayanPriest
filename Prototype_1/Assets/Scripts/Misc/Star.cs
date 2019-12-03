@@ -8,8 +8,8 @@ public class Star : MonoBehaviour
 {
     public bool isDisabled;
     private bool _isInCooldown;
-    public int damagePoints = 10;
-    public int coolDownTime = 10;
+    public float damagePoints;
+    public float coolDownTime = 10;
     public float coolDownOpacity = 0.3f;
     public GameObject selectedForAttack;
     private Color _color;
@@ -30,6 +30,8 @@ public class Star : MonoBehaviour
         _isMovable = GetComponent<MovableStar>();
         _collider = GetComponent<CircleCollider2D>();
         _rb = GetComponent<Rigidbody2D>();
+        damagePoints = GameManager.Instance.enemyPerStarDamage;
+        coolDownTime = GameManager.Instance.starCooldownTime;
         UpdateContainmentCheck();
     }
 
