@@ -11,7 +11,7 @@ public class Attack_Joystick : MonoBehaviour
     public LineRenderer lineRenderer;
     public LayerMask obstacleLayerMask;
     
-    public float maxAllowedDistance = 10f; // Max distance at which the first star selected can be
+    public float maxAllowedDistance; // Max distance at which the first star selected can be
 
     private enum TargetType {Star, Enemy}
 
@@ -42,6 +42,7 @@ public class Attack_Joystick : MonoBehaviour
     {
         lineRenderer.positionCount = 0;
         _tr = GetComponent<Transform>();
+        maxAllowedDistance = GameManager.Instance.maxStarSelectDistance;
     }
 
     public void SetHanging(bool val)

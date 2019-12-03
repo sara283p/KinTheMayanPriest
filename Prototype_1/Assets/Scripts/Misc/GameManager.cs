@@ -12,6 +12,10 @@ public class GameManager : MonoBehaviour
     public float obstacleMaxHealth;
     public float enemyPerStarDamage;
     public float starCooldownTime;
+    public float maxHangDistance;
+    public float maxStarSelectDistance;
+    public float minHangDistance;
+    public int linkableStars;
     
     private static GameManager _manager;
     

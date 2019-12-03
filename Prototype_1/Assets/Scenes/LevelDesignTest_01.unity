@@ -2825,7 +2825,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1308166078}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.3122456, y: 0.81399965, z: -14.324219}
+  m_LocalPosition: {x: 2.2210844, y: 0.81399965, z: -14.324219}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1962413510}
@@ -3242,12 +3242,17 @@ PrefabInstance:
     - target: {fileID: 1635278335770408279, guid: a1240e1e33e94e14e8875613a27c1351,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 45.572243
+      value: 45.481083
       objectReference: {fileID: 0}
     - target: {fileID: 1635278335770408279, guid: a1240e1e33e94e14e8875613a27c1351,
         type: 3}
       propertyPath: m_LocalPosition.y
       value: -0.5575181
+      objectReference: {fileID: 0}
+    - target: {fileID: 1635278335770408279, guid: a1240e1e33e94e14e8875613a27c1351,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -9.5752125
       objectReference: {fileID: 0}
     - target: {fileID: 1635278333857860267, guid: a1240e1e33e94e14e8875613a27c1351,
         type: 3}
@@ -3263,8 +3268,87 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1635278335770408362, guid: a1240e1e33e94e14e8875613a27c1351,
+        type: 3}
+      propertyPath: near clip plane
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1635278335770408362, guid: a1240e1e33e94e14e8875613a27c1351,
+        type: 3}
+      propertyPath: orthographic size
+      value: 5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a1240e1e33e94e14e8875613a27c1351, type: 3}
+--- !u!1001 &1636743740
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1028636369211190659, guid: 30c6beeef11161349b21f55625bc0da8,
+        type: 3}
+      propertyPath: m_Name
+      value: GameManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028636369211190657, guid: 30c6beeef11161349b21f55625bc0da8,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 6.988627
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028636369211190657, guid: 30c6beeef11161349b21f55625bc0da8,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.6364508
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028636369211190657, guid: 30c6beeef11161349b21f55625bc0da8,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -55.40279
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028636369211190657, guid: 30c6beeef11161349b21f55625bc0da8,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028636369211190657, guid: 30c6beeef11161349b21f55625bc0da8,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028636369211190657, guid: 30c6beeef11161349b21f55625bc0da8,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028636369211190657, guid: 30c6beeef11161349b21f55625bc0da8,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028636369211190657, guid: 30c6beeef11161349b21f55625bc0da8,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028636369211190657, guid: 30c6beeef11161349b21f55625bc0da8,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028636369211190657, guid: 30c6beeef11161349b21f55625bc0da8,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028636369211190657, guid: 30c6beeef11161349b21f55625bc0da8,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 30c6beeef11161349b21f55625bc0da8, type: 3}
 --- !u!1 &1658556936
 GameObject:
   m_ObjectHideFlags: 0
@@ -4975,7 +5059,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccd2c287e34164497955d1239329d07b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isInCooldown: 0
+  isDisabled: 0
   damagePoints: 10
   coolDownTime: 10
   coolDownOpacity: 0.3
@@ -5000,7 +5084,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccd2c287e34164497955d1239329d07b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isInCooldown: 0
+  isDisabled: 0
   damagePoints: 10
   coolDownTime: 10
   coolDownOpacity: 0.3
@@ -5025,7 +5109,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccd2c287e34164497955d1239329d07b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isInCooldown: 0
+  isDisabled: 0
   damagePoints: 10
   coolDownTime: 10
   coolDownOpacity: 0.3
@@ -5050,7 +5134,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccd2c287e34164497955d1239329d07b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isInCooldown: 0
+  isDisabled: 0
   damagePoints: 10
   coolDownTime: 10
   coolDownOpacity: 0.3
@@ -5075,7 +5159,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccd2c287e34164497955d1239329d07b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isInCooldown: 0
+  isDisabled: 0
   damagePoints: 10
   coolDownTime: 10
   coolDownOpacity: 0.3
@@ -5100,7 +5184,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccd2c287e34164497955d1239329d07b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isInCooldown: 0
+  isDisabled: 0
   damagePoints: 10
   coolDownTime: 10
   coolDownOpacity: 0.3
@@ -5125,7 +5209,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccd2c287e34164497955d1239329d07b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isInCooldown: 0
+  isDisabled: 0
   damagePoints: 10
   coolDownTime: 10
   coolDownOpacity: 0.3
