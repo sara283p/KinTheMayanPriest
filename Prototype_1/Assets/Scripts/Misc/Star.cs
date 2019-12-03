@@ -6,7 +6,8 @@ using UnityEngine;
 
 public class Star : MonoBehaviour
 {
-    public bool isInCooldown;
+    public bool isDisabled;
+    private bool _isInCooldown;
     public int damagePoints = 10;
     public int coolDownTime = 10;
     public float coolDownOpacity = 0.3f;
@@ -15,7 +16,7 @@ public class Star : MonoBehaviour
     private Renderer _renderer;
     private bool _isMovable;
     private CircleCollider2D _collider;
-    private float _starRadius = 0.385f;
+    private float _starRadius = 0.285f;
     public LayerMask _foregroundLayerMask;
     private Rigidbody2D _rb;
     [SerializeField] private Vector2[] _containmentCheck = new Vector2[4];
@@ -67,7 +68,7 @@ public class Star : MonoBehaviour
 
     public void DarkenStar()
     {
-        isInCooldown = true;
+        isDisabled = true;
         Color newColor = _color;
         newColor.a = coolDownOpacity;
         
@@ -81,14 +82,16 @@ public class Star : MonoBehaviour
         newColor.a = 1;
         
         _renderer.material.color = newColor;
-        isInCooldown = false;
+        isDisabled = false;
     }
     
     IEnumerator CoolDown()
     {
         DarkenStar();
+        _isInCooldown = true;
         yield return new WaitForSeconds(coolDownTime);
         BrightenStar();
+        _isInCooldown = false;
     }
     
     public void HighlightStar()
@@ -142,7 +145,7 @@ public class Star : MonoBehaviour
         }
         else
         {
-            BrightenStar();
+            if(!_isInCooldown) BrightenStar();
         }
     }
 }
