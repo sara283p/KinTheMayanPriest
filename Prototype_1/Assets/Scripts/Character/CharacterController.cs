@@ -36,12 +36,15 @@ public class CharacterController : MonoBehaviour
 	[SerializeField] private float _maxVerticalSpeed = 25;
 	[SerializeField] private float _antiRampJump = 5;
 	private Animator _animator;
+
+	private Transform _initialParent;
 	
 	private void Awake()
 	{
 		_rb = GetComponent<Rigidbody2D>();
 		_animator = GetComponent<Animator>();
 		_groundNormal = new Vector2(0, 1);
+		_initialParent = transform.parent;
 	}
 
 	void Update()
@@ -69,7 +72,10 @@ public class CharacterController : MonoBehaviour
 		if(groundCollider)
 		{
 			_grounded = true;
+			if(!_jumping)
+				transform.SetParent(groundCollider.CompareTag("MovingPlatform") ? groundCollider.transform : _initialParent);
 		}
+
 		// Compute floor direction
 		hit = Physics2D.Raycast(floorCheck.position, Vector2.down, Mathf.Infinity, _whatIsGround);
 		if (hit.collider)
@@ -230,6 +236,7 @@ public class CharacterController : MonoBehaviour
 			_jumping = true;
 			_startingJumpDirection = Math.Sign(move);
 			_grounded = false;
+			transform.SetParent(_initialParent);
 			// Add a vertical force to the player.
 			_rb.AddForce(new Vector2(0f, _jumpForce));
 		}
