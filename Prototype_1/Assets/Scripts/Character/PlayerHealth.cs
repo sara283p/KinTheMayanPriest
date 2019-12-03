@@ -18,8 +18,7 @@ public class PlayerHealth : Health
     [SerializeField] private float invulnerabilityTime = 3f;
     [SerializeField] private int playerLayer = 9;
     [SerializeField] private int enemyLayer = 11;
-
-    public UnityEvent onDeath;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -40,8 +39,7 @@ public class PlayerHealth : Health
         {
             _curHealth = 0;
             alive = false;
-            //event listened by SpawnManager, that will manage the respawn of the player
-            onDeath.Invoke();
+            EventManager.TriggerEvent("PlayerDeath");
         }
         else
         {

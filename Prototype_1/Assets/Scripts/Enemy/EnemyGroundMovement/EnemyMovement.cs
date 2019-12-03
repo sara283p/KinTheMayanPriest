@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -38,7 +39,7 @@ public class EnemyMovement : MonoBehaviour
     void MoveRight()
     {
         movingRight = true;
-        localScale.x = 1;
+        localScale.x = Math.Abs(localScale.x);
         transform.localScale = localScale;
         rb.velocity = new Vector2(localScale.x * moveSpeed, rb.velocity.y);
     }
@@ -46,7 +47,7 @@ public class EnemyMovement : MonoBehaviour
     void MoveLeft()
     {
         movingRight = false;
-        localScale.x = -1;
+        localScale.x = -Math.Abs(localScale.x);
         transform.localScale = localScale;
         rb.velocity = new Vector2(localScale.x * moveSpeed, rb.velocity.y);
     }

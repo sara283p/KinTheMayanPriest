@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,7 +14,7 @@ public class SpawnManager : MonoBehaviour
         _playerHealth = FindObjectOfType<PlayerHealth>();
     }
 
-    //called when event onDeath arises in PlayerHealth (when the player dies)
+    //called when the player dies ("PlayerDeath")
     public void RespawnPlayer()
     {
         StartCoroutine("RespawnPlayerCoroutine");
@@ -28,5 +29,15 @@ public class SpawnManager : MonoBehaviour
         //to make the player vulnerable again, in case he died while he was invulnerable
         _playerHealth.GetVulnerable();
         _playerHealth.gameObject.SetActive(true);
+    }
+
+    private void OnEnable()
+    {
+        EventManager.StartListening("PlayerDeath", RespawnPlayer);
+    }
+
+    private void OnDisable()
+    {
+        EventManager.StopListening("PlayerDeath", RespawnPlayer);
     }
 }
