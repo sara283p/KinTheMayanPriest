@@ -38,6 +38,7 @@ public class CharacterController : MonoBehaviour
 	private Animator _animator;
 
 	private Transform _initialParent;
+	private float _jointDistance;
 	
 	private void Awake()
 	{
@@ -207,6 +208,15 @@ public class CharacterController : MonoBehaviour
 				//... but if oscillation speed is too high, set it to a maximum speed to avoid performing entire circles
 				if (Math.Abs(targetVelocity.x) > _oscillationSpeed)
 					targetVelocity.x = _oscillationSpeed * Math.Sign(targetVelocity.x);
+
+				// Also check vertical velocity and when the character vertical position is near the hanged star vertical position
+				// and he's going up just reduce the velocity. This is also done in order to reduce possibility to do entire circles
+				// around the star
+				Vector2 starRelativePosition = _starPosition - _rb.position;
+				if (Math.Abs(starRelativePosition.y) < 0.3f && targetVelocity.y > 0)
+				{
+					targetVelocity.y = targetVelocity.y * 0.7f;
+				}
 			}
 			
 			// Set rigidbody velocity to move player
@@ -264,7 +274,8 @@ public class CharacterController : MonoBehaviour
 		{
 			DistanceJoint2D joint = _rb.GetComponent<DistanceJoint2D>();
 			_starPosition = joint.connectedBody.position;
-			_oscillationSpeed = _baseOscillationSpeed * joint.distance * 0.8f ;
+			_jointDistance = joint.distance;
+			_oscillationSpeed = _baseOscillationSpeed * _jointDistance * 0.8f ;
 		}
 		else
 		{

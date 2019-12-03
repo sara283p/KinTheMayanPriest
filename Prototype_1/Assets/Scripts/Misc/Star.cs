@@ -15,7 +15,7 @@ public class Star : MonoBehaviour
     private Renderer _renderer;
     private bool _isMovable;
     private CircleCollider2D _collider;
-    private float _starRadius = 0.385f;
+    private float _starRadius = 0.285f;
     public LayerMask _foregroundLayerMask;
     private Rigidbody2D _rb;
     [SerializeField] private Vector2[] _containmentCheck = new Vector2[4];
