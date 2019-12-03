@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEditor;
@@ -11,33 +12,34 @@ public class EventManager : MonoBehaviour
 
     private static EventManager _manager;
 
-    public static EventManager Instance
-    {
-        get
-        {
-            if (_manager == null)
-            {
-                _manager = FindObjectOfType(typeof(EventManager)) as EventManager;
-
-                if (_manager == null)
-                {
-                    Debug.LogError("There must be an active EventManager!");
-                }
-                else
-                {
-                    _manager.Init();
-                }
-            }
-
-            return _manager;
-        }
-    }
+    private static EventManager Instance => _manager;
 
     void Init()
     {
         if (_events == null)
         {
             _events = new Dictionary<string, UnityEvent>();
+        }
+    }
+
+    private void Awake()
+    {
+        if (_manager == null)
+        {
+            _manager = this;
+
+            if (_manager == null)
+            {
+                Debug.LogError("There must be an active EventManager!");
+            }
+            else
+            {
+                _manager.Init();
+            }
+        }
+        else
+        {
+            Destroy(gameObject);
         }
     }
 

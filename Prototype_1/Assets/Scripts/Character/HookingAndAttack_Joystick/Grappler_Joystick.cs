@@ -34,6 +34,8 @@ public class Grappler_Joystick : MonoBehaviour
     {
         _controller = GetComponent<CharacterController>();
         _rb = GetComponent<Rigidbody2D>();
+        _minHangDistance = GameManager.Instance.minHangDistance;
+        _maxStarDistance = GameManager.Instance.maxHangDistance;
     }
 
     private void SwitchToKinematic()

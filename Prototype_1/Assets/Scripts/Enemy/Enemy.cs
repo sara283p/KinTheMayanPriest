@@ -5,18 +5,19 @@ using UnityEngine;
 
 public class Enemy : Health, IDamageable
 {
-    private float _maxHealth = 100;
+    private float _maxHealth;
     private float _curHealth;
     public float damageToPlayer = 20f;
 
     void Awake()
     {
+        _maxHealth = GameManager.Instance.enemyMaxHealth;
         _curHealth = _maxHealth;
     }
     
     //public GameObject deathEffect;
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(float damage)
     {
         _curHealth -= damage;
 
