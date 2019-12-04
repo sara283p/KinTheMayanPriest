@@ -12,7 +12,27 @@ public class EventManager : MonoBehaviour
 
     private static EventManager _manager;
 
-    private static EventManager Instance => _manager;
+    private static EventManager Instance
+    {
+        get
+        {
+            if (_manager == null)
+            {
+                _manager = FindObjectOfType<EventManager>();
+
+                if (_manager == null)
+                {
+                    Debug.LogError("There must be an active EventManager!");
+                }
+                else
+                {
+                    _manager.Init();
+                }
+            }
+
+            return _manager;
+        }
+    }
 
     void Init()
     {
@@ -22,30 +42,10 @@ public class EventManager : MonoBehaviour
         }
     }
 
-    private void Awake()
-    {
-        if (_manager == null)
-        {
-            _manager = this;
-
-            if (_manager == null)
-            {
-                Debug.LogError("There must be an active EventManager!");
-            }
-            else
-            {
-                _manager.Init();
-            }
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
-
     public static void StartListening(string eventName, UnityAction listener)
     {
         UnityEvent thisEvent = null;
+        EventManager instance = Instance;
         if(Instance._events.TryGetValue(eventName, out thisEvent))
         {
             thisEvent.AddListener(listener);
