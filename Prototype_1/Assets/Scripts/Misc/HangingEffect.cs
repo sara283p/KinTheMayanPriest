@@ -14,6 +14,7 @@ public class HangingEffect : MonoBehaviour
     public void StartEffect(Transform target)
     {
         _star = target;
+        UpdateLineRendererPosition();
         lineRenderer.enabled = true;
     }
 
@@ -22,14 +23,19 @@ public class HangingEffect : MonoBehaviour
         lineRenderer.enabled = false;
     }
 
+    private void UpdateLineRendererPosition()
+    {
+        lineRenderer.SetPosition(0, kin.position);
+        lineRenderer.SetPosition(1, _star.position);
+    }
+
     // Update is called once per frame
     // It's called only if this is enabled. No need for further checks.
     void Update()
     {
         if (lineRenderer.enabled)
         {
-            lineRenderer.SetPosition(0, kin.position);
-            lineRenderer.SetPosition(1, _star.position);
+            UpdateLineRendererPosition();
         }
     }
 
