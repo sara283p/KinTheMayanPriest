@@ -22,7 +22,7 @@ public class CharacterController : MonoBehaviour
 	[SerializeField] private float _baseOscillationSpeed;						// Base oscillation speed used to compute the maximum oscillation speed according to distance from the star
 	private Vector2 _groundNormal;												// Vector in normal direction w.r.t. the ground
 	private Vector2 _starPosition;												// Position of the star the player is hooked to
-	private const float _groundedRadius = 0.2f; 								// Distance from ground at which player is considered to be grounded
+	[SerializeField] private float _groundedRadius = 0.2f; 						// Distance from ground at which player is considered to be grounded
 	[SerializeField] private bool _grounded;            						// Whether or not the player is grounded.
 	private bool _hooked;														// Whether or not the player is hanged to a star
 	private Rigidbody2D _rb;													// Character's rigidbody component
@@ -57,7 +57,6 @@ public class CharacterController : MonoBehaviour
 		if (hit.collider)
 		{
 			_jumping = false;
-			_animator.SetBool(Jumping, false);
 		}
 		else
 		{
@@ -65,16 +64,22 @@ public class CharacterController : MonoBehaviour
 			if (hit.collider)
 			{
 				_jumping = false;
-				_animator.SetBool(Jumping, false);
 			}
 		}
+
 		// Check whether the player is on the ground
 		Collider2D groundCollider = Physics2D.OverlapCircle(_groundCheck.position, _groundedRadius, _whatIsGround);
 		if(groundCollider)
 		{
 			_grounded = true;
-			if(!_jumping)
-				transform.SetParent(groundCollider.CompareTag("MovingPlatform") ? groundCollider.transform : _initialParent);
+			if (!_jumping)
+			{
+				transform.SetParent(groundCollider.CompareTag("MovingPlatform")
+					? groundCollider.transform
+					: _initialParent);
+				
+				_animator.SetBool(Jumping, false);
+			}
 		}
 
 		// Compute floor direction
@@ -146,6 +151,7 @@ public class CharacterController : MonoBehaviour
 					newVelocity.y = - _antiRampJump;
 					_rb.velocity = newVelocity;
 					targetVelocity.y = newVelocity.y;
+					_rb.gravityScale = 1;
 				}
 
 				// If the player jumped
