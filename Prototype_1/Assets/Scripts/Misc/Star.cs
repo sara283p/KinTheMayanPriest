@@ -89,10 +89,44 @@ public class Star : MonoBehaviour
     
     IEnumerator CoolDown()
     {
+        LayerMask starLayer = 1 << LayerMask.NameToLayer("Star");
+        
+        List<Star> inRangeMovableStars;
+        
+        inRangeMovableStars = Physics2D.OverlapCircleAll(_rb.position, _collider.radius, starLayer)
+            .Select(coll => coll.GetComponent<Star>())
+            .Where(s => s._isMovable)
+            .ToList();
+        
         DarkenStar();
+        if (!_isMovable)
+        {
+            foreach (Star star in inRangeMovableStars)
+            {
+                star._starContact = false;
+                star.BrightenStar();
+            }
+        }
+        
         _isInCooldown = true;
         yield return new WaitForSeconds(coolDownTime);
+        
+        inRangeMovableStars = Physics2D.OverlapCircleAll(_rb.position, _collider.radius, starLayer)
+            .Select(coll => coll.GetComponent<Star>())
+            .Where(s => s._isMovable)
+            .ToList();
+        
         BrightenStar();
+        
+        if (!_isMovable)
+        {
+            foreach (Star star in inRangeMovableStars)
+            {
+                star._starContact = true;
+                star.DarkenStar();
+            }
+        }
+
         _isInCooldown = false;
     }
     
@@ -114,7 +148,15 @@ public class Star : MonoBehaviour
     {
         if (_isMovable && other.CompareTag("Star"))
         {
-            _starContact = true;
+            if (!other.GetComponent<Star>().isDisabled)
+            {
+                _starContact = true;
+                print("Disabled");
+            }
+            else
+            {
+                _starContact = false;
+            }
         }
     }
 
