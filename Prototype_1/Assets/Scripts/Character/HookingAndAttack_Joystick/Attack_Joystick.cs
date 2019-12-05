@@ -12,6 +12,7 @@ public class Attack_Joystick : MonoBehaviour
     public LayerMask obstacleLayerMask;
     
     public float maxAllowedDistance; // Max distance at which the first star selected can be
+    public float ThresholdManualAttackDistance;
 
     private enum TargetType {Star, Enemy}
 
@@ -40,6 +41,7 @@ public class Attack_Joystick : MonoBehaviour
     private void Awake()
     // Initialize the attack effect
     {
+//        ThresholdManualAttackDistance = ThresholdManualAttackDistance * ThresholdManualAttackDistance;
         lineRenderer.positionCount = 0;
         _tr = GetComponent<Transform>();
         maxAllowedDistance = GameManager.Instance.maxStarSelectDistance;
@@ -64,6 +66,7 @@ public class Attack_Joystick : MonoBehaviour
     void Update()
     {
         if (isHanging) return;
+        
         // Move viewfinder when not doing anything
         if (_autoTarget)
         {
@@ -74,6 +77,16 @@ public class Attack_Joystick : MonoBehaviour
                 viewfinder.gameObject.transform.position = target.transform.position;
             }
             else viewfinder.DisplayViewfinder(false);
+        }
+        else
+        {
+            // If the player entered in manual target mode and then moves away, come back in autotarget mode
+            if ((viewfinder.transform.position - _tr.position).magnitude > ThresholdManualAttackDistance &&
+                _selectedStars.Count == 0)
+            { 
+                print((viewfinder.transform.position - _tr.position).magnitude);
+                _autoTarget = true;
+            }
         }
         
         // Move stars and effects if the sky is rotating
