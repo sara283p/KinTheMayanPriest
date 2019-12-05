@@ -1,43 +1,59 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using TMPro.Examples;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
+using UnityEngine.SceneManagement;
 
 public class GameOver : MonoBehaviour
 {
-   private bool hasJustStarted = false;
-   private bool isMarker1On;
-   private bool isMarker2On;
-   public GameObject marker1; 
-   public GameObject marker2;
+    private bool isRestartSelected;
+    private bool isExitSelected;
+    private TextMeshProUGUI selectedText;
+    [SerializeField] private GameObject restart;
+    [SerializeField] private GameObject exit;
+    [SerializeField] private GameObject gameOverUI;
 
-   void Start()
-   {
-       hasJustStarted = true;
-   }
+    void Start()
+    {
+        isRestartSelected = true;
+        isExitSelected = false;
+        selectedText = restart.GetComponentInChildren<TextMeshProUGUI>();
+        print(selectedText);
+        selectedText.color = Color.yellow;
+        
+    }
     void Update()
     {
-        if (hasJustStarted)
+        if (isRestartSelected && InputManager.GetAxis("Vertical") < -0.01)
         {
-            hasJustStarted = false;
-            marker2.SetActive(false);
-            isMarker2On = false;
-            isMarker1On = true;
+            isRestartSelected = false;
+            isExitSelected = true;
+            selectedText.color = Color.white;
+            selectedText = exit.GetComponentInChildren<TextMeshProUGUI>();
+            selectedText.color = Color.yellow;
         }
         
-        else if (!isMarker2On && isMarker1On && InputManager.GetAxis("Vertical") < -0.01)
+        else if (isExitSelected && InputManager.GetAxis("Vertical") > 0.01)
         {
-            marker1.SetActive(false);
-            isMarker1On = false;
-            marker2.SetActive(true);
-            isMarker2On = true;
+            isExitSelected = false;
+            isRestartSelected = true;
+            selectedText.color = Color.white;
+            selectedText = restart.GetComponentInChildren<TextMeshProUGUI>();
+            selectedText.color = Color.yellow;
         }
-        
-        else if (!isMarker1On && isMarker2On && InputManager.GetAxis("Vertical") > 0.01)
+
+        if (isRestartSelected && InputManager.GetButtonDown("Button0"))
         {
-            marker2.SetActive(false);
-            isMarker2On = false;
-            marker1.SetActive(true);
-            isMarker1On = true;
+            gameOverUI.SetActive(false);
+            SceneManager.LoadScene("LevelDesignTest_01");
+        }
+
+        if (isExitSelected && InputManager.GetButtonDown("Button0"))
+        {
+            SceneManager.LoadScene("OpeningScreenUI");
         }
     }
 }
