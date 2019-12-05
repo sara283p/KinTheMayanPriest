@@ -83,8 +83,7 @@ public class Attack_Joystick : MonoBehaviour
             // If the player entered in manual target mode and then moves away, come back in autotarget mode
             if ((viewfinder.transform.position - _tr.position).magnitude > ThresholdManualAttackDistance &&
                 _selectedStars.Count == 0)
-            { 
-                print((viewfinder.transform.position - _tr.position).magnitude);
+            {
                 _autoTarget = true;
             }
         }
