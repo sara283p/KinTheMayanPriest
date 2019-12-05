@@ -36,6 +36,14 @@ public class Grappler_Joystick : MonoBehaviour
         _rb = GetComponent<Rigidbody2D>();
         _minHangDistance = GameManager.Instance.minHangDistance;
         _maxStarDistance = GameManager.Instance.maxHangDistance;
+        _joint = GetComponent<DistanceJoint2D>();
+        _friction = GetComponent<FrictionJoint2D>();
+        _joint.autoConfigureDistance = false;
+        _joint.enabled = false;
+        _friction.enabled = false;
+        _friction.enableCollision = true;
+
+
     }
 
     private void SwitchToKinematic()
@@ -75,9 +83,8 @@ public class Grappler_Joystick : MonoBehaviour
         attackJoystick.SetHanging(false);
         _joint.connectedBody.gameObject.layer = 10;
         SwitchToKinematic();
-        Destroy(_joint);
-        Destroy(_friction);
-        _joint = null;
+        _joint.enabled = false;
+        _friction.enabled = false;
         hangingEffect.StopEffect();
         _selectedStar = null;
 
@@ -124,7 +131,7 @@ public class Grappler_Joystick : MonoBehaviour
             RaycastHit2D hit = Physics2D.Raycast(_position, relativePosition, relativePosition.magnitude, obstacleLayerMask);
             if (hit.collider)
             {
-                if (_joint)
+                if (_joint.enabled)
                 {
                     DestroyJoint();
                     _waitTillGrounded = true;
@@ -134,7 +141,7 @@ public class Grappler_Joystick : MonoBehaviour
             }
         }
         // If there is joint and either hook button is released or Kin is on the ground, destroy it
-        if (_joint)
+        if (_joint.enabled)
         {
             Vector2 starCenteredRelativePosition = _position - _joint.connectedBody.position;
             
@@ -180,17 +187,15 @@ public class Grappler_Joystick : MonoBehaviour
                     if (!_controller.IsGrounded() && ((Vector2) _selectedStar.transform.position - _position).magnitude < _maxStarDistance && !_waitTillGrounded)
                     {
                         attackJoystick.SetHanging(true);
-                        _joint = gameObject.AddComponent<DistanceJoint2D>();
-                        _friction = gameObject.AddComponent<FrictionJoint2D>();
                         Rigidbody2D otherRb = _selectedStar.GetComponent<Rigidbody2D>();
-                        _joint.autoConfigureDistance = false;
                         _joint.connectedBody = otherRb;
                         _joint.distance = (_position - otherRb.position).magnitude;
                         _joint.maxDistanceOnly = _joint.distance < _minHangDistance;
                         if (_joint.maxDistanceOnly)
                             _joint.distance = _minHangDistance;
                         _friction.maxForce = 1;
-                        _friction.enableCollision = true;
+                        _joint.enabled = true;
+                        _friction.enabled = true;
                         hangingEffect.StartEffect(otherRb.transform);
                         _controller.ToggleHook();
                     }

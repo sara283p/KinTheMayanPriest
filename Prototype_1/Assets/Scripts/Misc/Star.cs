@@ -13,7 +13,7 @@ public class Star : MonoBehaviour
     public float coolDownOpacity = 0.3f;
     public GameObject selectedForAttack;
     private Color _color;
-    private Renderer _renderer;
+    private SpriteRenderer _renderer;
     private bool _isMovable;
     private CircleCollider2D _collider;
     private float _starRadius = 0.285f;
@@ -25,8 +25,8 @@ public class Star : MonoBehaviour
     void Start()
     {
         selectedForAttack.SetActive(false);
-        _renderer = GetComponent<Renderer>();
-        _color = _renderer.material.color;
+        _renderer = GetComponent<SpriteRenderer>();
+        _color = _renderer.color;
         _isMovable = GetComponent<MovableStar>();
         _collider = GetComponent<CircleCollider2D>();
         _rb = GetComponent<Rigidbody2D>();
@@ -99,14 +99,14 @@ public class Star : MonoBehaviour
     public void HighlightStar()
     {
         Color newColor = new Color(0f, 255f, 0);
-        _renderer.material.color = newColor;
+        _renderer.color = newColor;
         
     }
     
     public void DeHighlightStar()
     {
         Color newColor = _color;
-       _renderer.material.color = newColor;
+       _renderer.color = newColor;
         
     }
 
