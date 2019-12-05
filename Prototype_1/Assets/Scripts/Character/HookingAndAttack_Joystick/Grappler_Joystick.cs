@@ -151,6 +151,11 @@ public class Grappler_Joystick : MonoBehaviour
             {
                 _friction.maxForce = 0;
             }
+
+            if (_joint.maxDistanceOnly && starCenteredRelativePosition.magnitude >= _minHangDistance - 0.01f)
+            {
+                _joint.maxDistanceOnly = false;
+            }
             // ... otherwise re-enable friction to slow character down when the player is not moving
             else
             {
