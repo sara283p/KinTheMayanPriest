@@ -244,7 +244,7 @@ public class CharacterController : MonoBehaviour
 		}
 
 		// If the player should jump...
-		if (jump && (_grounded || Time.time < _coyoteTime))
+		if (jump && !_jumping && (_grounded || Time.time < _coyoteTime))
 		{
 			_rb.gravityScale = 1;
 			// Before applying the vertical force, re-initialize vertical speed to 0
