@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -36,6 +37,8 @@ public class CharacterController : MonoBehaviour
 	[SerializeField] private float _maxVerticalSpeed = 25;
 	[SerializeField] private float _antiRampJump = 5;
 	private Animator _animator;
+	private CapsuleCollider2D _collider;
+	public LayerMask obstacleLayerMask;
 
 	private Transform _initialParent;
 	private float _jointDistance;
@@ -46,6 +49,8 @@ public class CharacterController : MonoBehaviour
 		_animator = GetComponent<Animator>();
 		_groundNormal = new Vector2(0, 1);
 		_initialParent = transform.parent;
+		_collider = GetComponents<CapsuleCollider2D>()
+			.First(coll => !coll.isTrigger);
 	}
 
 	void Update()
@@ -200,6 +205,11 @@ public class CharacterController : MonoBehaviour
 					{
 						targetVelocity.y = -_maxVerticalSpeed;
 					}
+
+					if (_collider.IsTouchingLayers(obstacleLayerMask))
+					{
+						targetVelocity.x = 0;
+					}
 				}
 			}
 			// ... otherwise, if player is hanged to a star...
@@ -244,7 +254,7 @@ public class CharacterController : MonoBehaviour
 		}
 
 		// If the player should jump...
-		if (jump && (_grounded || Time.time < _coyoteTime))
+		if (jump && !_jumping && (_grounded || Time.time < _coyoteTime))
 		{
 			_rb.gravityScale = 1;
 			// Before applying the vertical force, re-initialize vertical speed to 0

@@ -906,7 +906,7 @@ GameObject:
   - component: {fileID: 1764355198}
   - component: {fileID: 1764355202}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: ExitLevel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1004,6 +1004,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ddeaa6d109bcaf4fb2d53cb67046a8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  YesMarker: {fileID: 0}
+  NoMarker: {fileID: 0}
 --- !u!1 &1987672097
 GameObject:
   m_ObjectHideFlags: 0
@@ -1029,15 +1031,15 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1987672097}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_HorizontalAxis: Horizontal
-  m_VerticalAxis: Vertical
-  m_SubmitButton: Submit
-  m_CancelButton: Cancel
+  m_HorizontalAxis: XboxLHorizontal
+  m_VerticalAxis: XboxLVertical
+  m_SubmitButton: Xbox0
+  m_CancelButton: Xbox1
   m_InputActionsPerSecond: 10
   m_RepeatDelay: 0.5
   m_ForceModuleActive: 0

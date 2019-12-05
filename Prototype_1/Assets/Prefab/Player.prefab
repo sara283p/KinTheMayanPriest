@@ -446,6 +446,9 @@ MonoBehaviour:
   _minVerticalSpeed: 1
   _maxVerticalSpeed: 50
   _antiRampJump: 5
+  obstacleLayerMask:
+    serializedVersion: 2
+    m_Bits: 4352
   groundDir: {x: 0, y: 0}
 --- !u!70 &1635278333857860271
 CapsuleCollider2D:
