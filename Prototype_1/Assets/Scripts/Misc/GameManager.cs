@@ -16,6 +16,9 @@ public class GameManager : MonoBehaviour
     public float maxStarSelectDistance;
     public float minHangDistance;
     public int linkableStars;
+    public float lavaDamage;
+    [Range(0, 1)] public float waterSpeedModifier;
+    [Range(0, 1)] public float waterGravityModifier;
     
     private static GameManager _manager;
     

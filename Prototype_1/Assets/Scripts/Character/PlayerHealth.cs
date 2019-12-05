@@ -8,6 +8,7 @@ public class PlayerHealth : Health
 
     private float _maxHealth = 100f;
     private float _curHealth = 0f;
+    private bool _isVulnerable;
     public bool alive = true;
     
     [SerializeField] private Transform reSpawnPoint;
@@ -27,11 +28,12 @@ public class PlayerHealth : Health
         Spawn();
         rend = GetComponent<Renderer>();
         c = rend.material.color;
+        _isVulnerable = true;
     }
 
     public void TakeDamage(float amount)
     {
-        if (!alive)
+        if (!alive || !_isVulnerable)
         {
             return;
         }
@@ -67,7 +69,8 @@ public class PlayerHealth : Health
     //to be called when the player gets hit by an enemy, to make him invulnerable for a little interval of time
     IEnumerator GetInvulnerable()
     {
-        Physics2D.IgnoreLayerCollision(playerLayer, enemyLayer, true);
+        //Physics2D.IgnoreLayerCollision(playerLayer, enemyLayer, true);
+        _isVulnerable = false;
         //make the player semitransparent
         c.a = 0.5f;
         rend.material.color = c;
@@ -80,7 +83,8 @@ public class PlayerHealth : Health
     //in case he died while he was invulnerable (for example falling)
     public void GetVulnerable()
     {
-        Physics2D.IgnoreLayerCollision(playerLayer, enemyLayer, false);
+        //Physics2D.IgnoreLayerCollision(playerLayer, enemyLayer, false);
+        _isVulnerable = true;
         //make the player no more semitrasparent
         c.a = 1f;
         rend.material.color = c;

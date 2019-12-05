@@ -39,6 +39,13 @@ public class CharacterController : MonoBehaviour
 	private Animator _animator;
 	private CapsuleCollider2D _collider;
 	public LayerMask obstacleLayerMask;
+	private bool _isInWater;
+	private bool _isInLava;
+	private float _lavaDamage;
+	private float _waterSpeedModifier;
+	private float _waterGravityModifier;
+	private Vector2 _wallPosition;
+	private PlayerHealth _health;
 
 	private Transform _initialParent;
 	private float _jointDistance;
@@ -51,6 +58,10 @@ public class CharacterController : MonoBehaviour
 		_initialParent = transform.parent;
 		_collider = GetComponents<CapsuleCollider2D>()
 			.First(coll => !coll.isTrigger);
+		_lavaDamage = GameManager.Instance.lavaDamage;
+		_waterSpeedModifier = GameManager.Instance.waterSpeedModifier;
+		_waterGravityModifier = GameManager.Instance.waterGravityModifier;
+		_health = GetComponent<PlayerHealth>();
 	}
 
 	void Update()
@@ -102,6 +113,11 @@ public class CharacterController : MonoBehaviour
 		{
 			_coyoteTime = Time.time + _coyoteDuration;
 		}
+
+		if (_isInLava)
+		{
+			_health.TakeDamage(_lavaDamage);
+		}
 	}
 
 
@@ -133,6 +149,12 @@ public class CharacterController : MonoBehaviour
 			// If the player is not hanged on a star...
 			if (!_hooked)
 			{
+				if (_isInWater)
+				{
+					move *= _waterSpeedModifier;
+					_rb.gravityScale = _waterGravityModifier;
+				}
+				
 				Vector2 moveAlongGround = new Vector2(_groundNormal.y, - _groundNormal.x);
 				groundDir = moveAlongGround;   // Used for debugging purposes
 
@@ -264,7 +286,8 @@ public class CharacterController : MonoBehaviour
 			_grounded = false;
 			transform.SetParent(_initialParent);
 			// Add a vertical force to the player.
-			_rb.AddForce(new Vector2(0f, _jumpForce));
+			float forceMagnitude = _isInWater ? _jumpForce * _waterSpeedModifier : _jumpForce;
+			_rb.AddForce(new Vector2(0f, forceMagnitude));
 		}
 	}
 
@@ -306,6 +329,35 @@ public class CharacterController : MonoBehaviour
 		{
 			velocity.y *= 0.5f;
 			_rb.velocity = velocity;
+		}
+	}
+
+	private void OnTriggerEnter2D(Collider2D other)
+	{
+		if (other.CompareTag("Lava"))
+		{
+			_isInLava = true;
+		}
+
+		if (other.CompareTag("Water"))
+		{
+			_isInWater = true;
+			Vector2 currentVelocity = _rb.velocity;
+			currentVelocity.y = _waterSpeedModifier * Math.Sign(currentVelocity.y);
+			_rb.velocity = currentVelocity;
+		}
+	}
+
+	private void OnTriggerExit2D(Collider2D other)
+	{
+		if (other.CompareTag("Lava"))
+		{
+			_isInLava = false;
+		}
+
+		if (other.CompareTag("Water"))
+		{
+			_isInWater = false;
 		}
 	}
 }
