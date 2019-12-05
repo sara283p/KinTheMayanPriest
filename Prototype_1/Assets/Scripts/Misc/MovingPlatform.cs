@@ -25,7 +25,7 @@ public class MovingPlatform : MonoBehaviour
         _endPos = _tr.parent.GetComponentInChildren<EndPos>().transform.position;
         _startToEnd = (_endPos - _startPos).normalized;
         _endToStart = -_startToEnd;
-        _currentDirection = _endToStart;
+        _currentDirection = _startToEnd;
         _startEdge = GetComponentInChildren<PlatformStartEdge>().transform;
         _endEdge = GetComponentInChildren<PlatformEndEdge>().transform;
         _minSpeed = 2;
