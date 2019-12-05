@@ -4,36 +4,44 @@ using UnityEngine;
 
 public class ExitLevel : MonoBehaviour
 {
-    private GameObject yesMarker;
-    private GameObject noMarker;
+    private bool hasJustStarted = false;
+    private bool isMarkerOnYes;
+    private bool isMarkerOnNo;
+    public GameObject YesMarker;
+    public GameObject NoMarker;
     
-    // Start is called before the first frame update
     void Start()
     {
-        GameObject yesMarker = GameObject.FindGameObjectWithTag("YesMarker");
-        GameObject noMarker = GameObject.FindGameObjectWithTag("NoMarker");
-        
-        yesMarker.GetComponent<Renderer>().enabled = false;
-    }
+        YesMarker = GameObject.FindGameObjectWithTag("YesMarker");
+        NoMarker = GameObject.FindGameObjectWithTag("NoMarker");
 
-    // Update is called once per frame
+        hasJustStarted = true;
+    }
+    
     void Update()
     {
-        if (yesMarker.GetComponent<Renderer>().enabled == false && InputManager.GetAxis("Horizontal") < -0.01)
+        if (hasJustStarted)
         {
-            yesMarker.GetComponent<Renderer>().enabled = true;
-            noMarker.GetComponent<Renderer>().enabled = false;
+            hasJustStarted = false;
+            YesMarker.SetActive(false);
+            isMarkerOnYes = false;
+            isMarkerOnNo = true;
         }
         
-        else if (noMarker.GetComponent<Renderer>().enabled == false && InputManager.GetAxis("Horizontal") > 0.01)
+        else if (!isMarkerOnYes && isMarkerOnNo && InputManager.GetAxis("Horizontal") < -0.01)
         {
-            noMarker.GetComponent<Renderer>().enabled = true;
-            yesMarker.GetComponent<Renderer>().enabled = false;
+            NoMarker.SetActive(false);
+            isMarkerOnNo = false;
+            YesMarker.SetActive(true);
+            isMarkerOnYes = true;
         }
-
-        else
+        
+        else if (!isMarkerOnNo && isMarkerOnYes && InputManager.GetAxis("Horizontal") > 0.01)
         {
-            return;
+            YesMarker.SetActive(false);
+            isMarkerOnYes = false;
+            NoMarker.SetActive(true);
+            isMarkerOnNo = true;
         }
     }
 }
