@@ -19,14 +19,24 @@ public class SkyRotation : MonoBehaviour
     [SerializeField] public float _speed;
     private float _rightMostConstRBound;
 
+    public bool debugMode;
+    public bool manualMode;
+
 
     private void GenerateConstellations()
     {
         //We must also add gods' constellations to the set, when needed
         for (int i = 0; i < constellationCount; i++)
         {
-            GameObject newObject = ConstellationGenerator.Instance.GenerateConstellation();
-            //GameObject newObject = ConstellationGenerator.Instance.GenerateDebuggingConstellation();
+            GameObject newObject;
+            if (!debugMode)
+            {
+                newObject = ConstellationGenerator.Instance.GenerateConstellation();
+            }
+            else
+            { 
+                newObject = ConstellationGenerator.Instance.GenerateDebuggingConstellation();
+            }
             newObject.transform.SetParent(GetComponent<Transform>());
             
             // The objects are first set to active to call method Awake and initialize its parameters to the
@@ -96,24 +106,28 @@ public class SkyRotation : MonoBehaviour
         float newY = _firstRowHeight;
         Constellation constellation;
 
-        do
+        if (!manualMode)
         {
             do
             {
-                Vector2 position = new Vector2(newX, newY);
-                constellation = _constellations.GetRandomConstellation();
-                GameObject toRender = constellation.gameObject;
-                toRender.GetComponent<Transform>().position = position;
-                toRender.SetActive(true);
-                _activeConstellations.Enqueue(toRender.GetComponent<Transform>());
-                newY = constellation.GetBottomBound() - constellation.GetVerticalExtent() - _minDistance;
-            } while (newY > _bottomLimit);
+                do
+                {
+                    Vector2 position = new Vector2(newX, newY);
+                    constellation = _constellations.GetRandomConstellation();
+                    GameObject toRender = constellation.gameObject;
+                    toRender.GetComponent<Transform>().position = position;
+                    toRender.SetActive(true);
+                    _activeConstellations.Enqueue(toRender.GetComponent<Transform>());
+                    newY = constellation.GetBottomBound() - constellation.GetVerticalExtent() - _minDistance;
+                } while (newY > _bottomLimit);
 
-            newY = _firstRowHeight;
-            newX = constellation.GetRightBound() + constellation.GetHorizontalExtent() + _minDistance;
-        } while (newX < _rightLimit);
-       
-        _rightMostConstRBound = constellation.GetRightBound();
+                newY = _firstRowHeight;
+                newX = constellation.GetRightBound() + constellation.GetHorizontalExtent() + _minDistance;
+            } while (newX < _rightLimit);
+
+
+            _rightMostConstRBound = constellation.GetRightBound();
+        }
     }
 
     // Update is called once per frame
@@ -124,11 +138,19 @@ public class SkyRotation : MonoBehaviour
         {
             Vector3 delta = new Vector3(- _speed * Time.deltaTime, 0);
 
-            foreach(Transform constellation in _activeConstellations)
+            if (!manualMode)
             {
-                constellation.position += delta;
-            };
-            _rightMostConstRBound += delta.x;
+                foreach (Transform constellation in _activeConstellations)
+                {
+                    constellation.position += delta;
+                }
+                
+                _rightMostConstRBound += delta.x;
+            }
+            else
+            {
+                GetComponentInChildren<Constellation>().transform.position += delta;
+            }
 
             Vector2 position = new Vector2(_rightMostConstRBound + _minDistance, _firstRowHeight);
             if (position.x < _rightLimit)
@@ -137,6 +159,8 @@ public class SkyRotation : MonoBehaviour
                 while (position.y > _bottomLimit)
                 {
                     Constellation constellation = _constellations.GetRandomConstellation();
+                    if (!constellation)
+                        return;
                     GameObject toRender = constellation.gameObject;
                     if (firstRow)
                     {
