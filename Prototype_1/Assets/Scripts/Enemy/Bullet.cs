@@ -7,20 +7,26 @@ public class Bullet : MonoBehaviour
     public float speed = 20f;
     public Rigidbody2D rb;
     public float damageToPlayer = 20f;
-    
+
     // Start is called before the first frame update
     void Start()
     {
         rb.velocity = transform.up * speed;
     }
-    
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player") && other.isTrigger)
         {
             other.gameObject.GetComponent<PlayerHealth>().TakeDamage(damageToPlayer);
+            Destroy(gameObject);
         }
-        //the bullet has to be destroyed no matter what it hit
+        
+    }
+
+    //destroy the bullet as it moves out of the view of the camera
+    void OnBecameInvisible()
+    { 
         Destroy(gameObject);
     }
 }
