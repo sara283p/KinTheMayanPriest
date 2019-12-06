@@ -349,6 +349,7 @@ public class CharacterController : MonoBehaviour
 		if (other.CompareTag("Lava"))
 		{
 			_isInLava = true;
+			return;
 		}
 
 		if (other.CompareTag("Water"))
@@ -357,6 +358,7 @@ public class CharacterController : MonoBehaviour
 			Vector2 currentVelocity = _rb.velocity;
 			currentVelocity.y = _waterSpeedModifier * Math.Sign(currentVelocity.y);
 			_rb.velocity = currentVelocity;
+			return;
 		}
 	}
 
@@ -365,11 +367,13 @@ public class CharacterController : MonoBehaviour
 		if (other.CompareTag("Lava"))
 		{
 			_isInLava = false;
+			return;
 		}
 
 		if (other.CompareTag("Water"))
 		{
 			_isInWater = false;
+			return;
 		}
 	}
 }
