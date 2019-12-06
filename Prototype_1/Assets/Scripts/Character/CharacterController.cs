@@ -235,7 +235,7 @@ public class CharacterController : MonoBehaviour
 						
 						Debug.DrawRay(_rb.position, _wallPosition, Color.green);
 						
-						if (Math.Abs(targetVelocity.x) <= 0.01f || targetVelocity.x * _wallPosition.x > 0)
+						if (targetVelocity.x * _wallPosition.x > 0)
 						{
 							targetVelocity.x = 0;
 						}
