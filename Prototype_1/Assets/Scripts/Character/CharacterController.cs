@@ -230,7 +230,19 @@ public class CharacterController : MonoBehaviour
 
 					if (_collider.IsTouchingLayers(obstacleLayerMask))
 					{
-						targetVelocity.x = 0;
+						if(_wallPosition == Vector2.zero)
+							_wallPosition = new Vector2(Math.Sign(targetVelocity.x), 0);
+						
+						Debug.DrawRay(_rb.position, _wallPosition, Color.green);
+						
+						if (Math.Abs(targetVelocity.x) <= 0.01f || targetVelocity.x * _wallPosition.x > 0)
+						{
+							targetVelocity.x = 0;
+						}
+					}
+					else
+					{
+						_wallPosition = Vector2.zero;
 					}
 				}
 			}
