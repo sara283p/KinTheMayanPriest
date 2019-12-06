@@ -172,7 +172,7 @@ public class CharacterController : MonoBehaviour
 				}
 				
 				// If the player is not jumping, but the character is not grounded... (Reduces jumps at the end of ramps)
-				if (!_jumping && !_grounded && _rb.velocity.y > - _antiRampJump)
+				if (!_jumping && !_grounded && !_isInWater && _rb.velocity.y > - _antiRampJump)
 				{
 					Vector2 newVelocity = _rb.velocity;
 					newVelocity.y = - _antiRampJump;

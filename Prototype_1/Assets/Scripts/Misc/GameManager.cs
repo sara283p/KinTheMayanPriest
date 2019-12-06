@@ -64,10 +64,5 @@ public class GameManager : MonoBehaviour
         {
             SceneManager.LoadScene(scenes[1]);
         }
-
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            SceneManager.LoadScene(scenes[2]);
-        }
     }
 }
