@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Attack_Joystick : MonoBehaviour
+public class Attack_Joystick_Alternative : MonoBehaviour
 {
     public Locker_Joystick locker;
 
@@ -26,6 +26,8 @@ public class Attack_Joystick : MonoBehaviour
     private const float UpThresholdSelect = 0.5f;
     private const float DownThresholdSelect = 0.2f;
     private const float ThresholdViewfinder = 0.3f;
+
+    private float _counter;
 
     private Star _targetStar;
     private IDamageable _targetEnemy;
@@ -115,25 +117,25 @@ public class Attack_Joystick : MonoBehaviour
             lineRenderer.positionCount++;
         }
 
-        if ((InputManager.GetButtonDown("LB") || InputManager.GetButtonDown("RB")) && _attacking)
-        {
-            if (_targetType == TargetType.Star)
-            {
-                var pointedEnemy = locker.GetNearestAvailableEnemy(_selectedStars.Select(x => x.transform.position).LastOrDefault(), maxAllowedDistance);
-                if (pointedEnemy != null)
-                {
-                    _targetType = TargetType.Enemy;
-                    _targetEnemy = pointedEnemy;
-                    viewfinder.gameObject.transform.position = pointedEnemy.GetPosition();
-                }
-                
-            }
-            else
-            {
-                _targetType = TargetType.Star;
-                viewfinder.gameObject.transform.position = _selectedStars.Select(x => x.transform.position).LastOrDefault();
-            }
-        }
+//        if ((InputManager.GetButtonDown("LB") || InputManager.GetButtonDown("RB")) && _attacking)
+//        {
+//            if (_targetType == TargetType.Star)
+//            {
+//                var pointedEnemy = locker.GetNearestAvailableEnemy(_selectedStars.Select(x => x.transform.position).LastOrDefault(), maxAllowedDistance);
+//                if (pointedEnemy != null)
+//                {
+//                    _targetType = TargetType.Enemy;
+//                    _targetEnemy = pointedEnemy;
+//                    viewfinder.gameObject.transform.position = pointedEnemy.GetPosition();
+//                }
+//                
+//            }
+//            else
+//            {
+//                _targetType = TargetType.Star;
+//                viewfinder.gameObject.transform.position = _selectedStars.Select(x => x.transform.position).LastOrDefault();
+//            }
+//        }
 
         if (InputManager.GetButtonDown("Button1"))
         {
@@ -205,12 +207,34 @@ public class Attack_Joystick : MonoBehaviour
     {
         if (InputManager.GetAxisRaw("LTrigger") > UpThresholdSelect && _readyToSelect)
         {
-            _selecting = true;
             _readyToSelect = false;
-        } 
-        if (InputManager.GetAxisRaw("LTrigger") <= DownThresholdSelect)
+        }
+
+        if (!_readyToSelect && _counter < 180)
+        {
+            _counter += 1;
+        }
+
+        if (_counter == 180 && _attacking) 
+        {
+            if (_targetType == TargetType.Star)
+            {
+                var pointedEnemy = locker.GetNearestAvailableEnemy(_selectedStars.Select(x => x.transform.position).LastOrDefault(), maxAllowedDistance);
+                if (pointedEnemy != null)
+                {
+                    _targetType = TargetType.Enemy;
+                    _targetEnemy = pointedEnemy;
+                    viewfinder.gameObject.transform.position = pointedEnemy.GetPosition();
+                }
+                
+            }
+        }
+
+        if (InputManager.GetAxisRaw("LTrigger") <= DownThresholdSelect && !_readyToSelect)
         {
             _readyToSelect = true;
+            _selecting = true;
+            _counter = 0;
         }
     }
 
@@ -247,6 +271,7 @@ public class Attack_Joystick : MonoBehaviour
         _targetStar = null;
         _targetEnemy = null;
         _targetType = TargetType.Star;
+        _readyToSelect = true;
 
         _selectedStars.ForEach(x => x.DeselectForAttack());
         _selectedStars.Clear();
