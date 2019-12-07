@@ -54,6 +54,7 @@ public class PlayerHealth : Health
     //to be called when the player should die no matter how healthy he is (for example when he falls)
     public void Die()
     {
+        _isVulnerable = true;
         TakeDamage(_maxHealth);
     }
 

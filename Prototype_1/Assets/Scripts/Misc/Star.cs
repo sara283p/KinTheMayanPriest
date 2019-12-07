@@ -151,7 +151,6 @@ public class Star : MonoBehaviour
             if (!other.GetComponent<Star>().isDisabled)
             {
                 _starContact = true;
-                print("Disabled");
             }
             else
             {
