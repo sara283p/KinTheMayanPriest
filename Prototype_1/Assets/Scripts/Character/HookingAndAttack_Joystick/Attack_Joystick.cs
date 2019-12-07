@@ -89,7 +89,7 @@ public class Attack_Joystick : MonoBehaviour
         }
         
         // Move stars and effects if the sky is rotating
-        if (InputManager.GetButton("Button2"))
+        if (InputManager.GetButton("Button3"))
         {
             if (_targetStar) viewfinder.gameObject.transform.position = _targetStar.transform.position;
             var positions = _selectedStars.Select(x => x.transform.position).ToList();
@@ -203,12 +203,12 @@ public class Attack_Joystick : MonoBehaviour
 
     private void IsSelectPressed()
     {
-        if (InputManager.GetAxisRaw("LTrigger") > UpThresholdSelect && _readyToSelect)
+        if (InputManager.GetAxisRaw("RTrigger") > UpThresholdSelect && _readyToSelect)
         {
             _selecting = true;
             _readyToSelect = false;
         } 
-        if (InputManager.GetAxisRaw("LTrigger") <= DownThresholdSelect)
+        if (InputManager.GetAxisRaw("RTrigger") <= DownThresholdSelect)
         {
             _readyToSelect = true;
         }

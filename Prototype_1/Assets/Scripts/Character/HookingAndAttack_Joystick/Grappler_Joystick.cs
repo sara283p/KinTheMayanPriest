@@ -53,12 +53,12 @@ public class Grappler_Joystick : MonoBehaviour
 
     private void HookInput()
     {
-        if (InputManager.GetAxis("RTrigger") > UpThresholdHang)
+        if (InputManager.GetAxis("LTrigger") > UpThresholdHang)
         {
             _wantToHook = true;
         }
         
-        if(InputManager.GetAxis("RTrigger") < DownThresholdHang)
+        if(InputManager.GetAxis("LTrigger") < DownThresholdHang)
         {
             _wantToHook = false;
             
