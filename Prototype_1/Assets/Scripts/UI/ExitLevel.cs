@@ -1,47 +1,44 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class ExitLevel : MonoBehaviour
 {
-    private bool hasJustStarted = false;
-    private bool isMarkerOnYes;
-    private bool isMarkerOnNo;
-    public GameObject YesMarker;
-    public GameObject NoMarker;
+    private bool isYesSelected;
+    private bool isNoSelected;
+    private TextMeshProUGUI selectedText;
+    [SerializeField] private GameObject yesButton;
+    [SerializeField] private GameObject noButton;
+    
+    
     
     void Start()
     {
-        YesMarker = GameObject.FindGameObjectWithTag("YesMarker");
-        NoMarker = GameObject.FindGameObjectWithTag("NoMarker");
-
-        hasJustStarted = true;
+        isYesSelected = false;
+        isNoSelected = true;
+        selectedText = noButton.GetComponentInChildren<TextMeshProUGUI>();
+        selectedText.color = Color.yellow;
     }
     
     void Update()
     {
-        if (hasJustStarted)
+        if (isNoSelected && InputManager.GetAxis("Horizontal") < -0.01)
         {
-            hasJustStarted = false;
-            YesMarker.SetActive(false);
-            isMarkerOnYes = false;
-            isMarkerOnNo = true;
+            isNoSelected = false;
+            isYesSelected = true;
+            selectedText.color = Color.white;
+            selectedText = yesButton.GetComponentInChildren<TextMeshProUGUI>();
+            selectedText.color = Color.yellow;
         }
         
-        else if (!isMarkerOnYes && isMarkerOnNo && InputManager.GetAxis("Horizontal") < -0.01)
+        else if (isYesSelected && InputManager.GetAxis("Horizontal") > 0.01)
         {
-            NoMarker.SetActive(false);
-            isMarkerOnNo = false;
-            YesMarker.SetActive(true);
-            isMarkerOnYes = true;
-        }
-        
-        else if (!isMarkerOnNo && isMarkerOnYes && InputManager.GetAxis("Horizontal") > 0.01)
-        {
-            YesMarker.SetActive(false);
-            isMarkerOnYes = false;
-            NoMarker.SetActive(true);
-            isMarkerOnNo = true;
+            isYesSelected = false;
+            isNoSelected = true;
+            selectedText.color = Color.white;
+            selectedText = noButton.GetComponentInChildren<TextMeshProUGUI>();
+            selectedText.color = Color.yellow;
         }
     }
 }

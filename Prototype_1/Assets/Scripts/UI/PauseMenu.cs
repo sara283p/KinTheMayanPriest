@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class PauseMenu : MonoBehaviour
@@ -9,15 +10,28 @@ public class PauseMenu : MonoBehaviour
     public GameObject pauseMenuUI;
     
     //elements needed to move the marker
-    private bool isMarker1On;
-    private bool isMarker2On;
-    private bool isMarker3On;
-    public GameObject marker1;
-    public GameObject marker2;
-    public GameObject marker3;
+    private bool isResumeSelected;
+    private bool isSettingsSelected;
+    private bool isExitSelected;
+    private TextMeshProUGUI selectedText;
+    [SerializeField] private GameObject resume;
+    [SerializeField] private GameObject settings;
+    [SerializeField] private GameObject exit;
+
+    void Start()
+    {
+        isResumeSelected = true;
+        isSettingsSelected = false;
+        isExitSelected = false;
+        selectedText = resume.GetComponentInChildren<TextMeshProUGUI>();
+        selectedText.color = Color.yellow;
+    }
 
     void Update()
     {
+        print("Before isResumeSelected: " + isResumeSelected);
+        print("Before isSettingsSelected: " + isSettingsSelected);
+        print("Before isExitSelected" + isExitSelected);
         //resume gameplay if "Start button" is pressed while the game is paused, pause it otherwise
         if (InputManager.GetButtonDown("Button4"))
         {
@@ -32,7 +46,7 @@ public class PauseMenu : MonoBehaviour
         }
 
         //resume gameplay if "A button" is pressed while the game is paused
-        if (InputManager.GetButtonDown("Button0") && isMarker1On && !isMarker2On && !isMarker3On)
+        if (InputManager.GetButtonDown("Button0") && isResumeSelected && !isSettingsSelected && !isExitSelected)
         {
             if (isGamePaused)
             {
@@ -44,46 +58,52 @@ public class PauseMenu : MonoBehaviour
         if (isGamePaused && InputManager.GetAxis("Vertical") > 0.01)
         {
             //moving from "Settings" to "Resume"
-            if (!isMarker1On && isMarker2On && !isMarker3On)
+            if (!isResumeSelected && isSettingsSelected && !isExitSelected)
             {
-                marker2.SetActive(false);
-                isMarker2On = false;
-                marker1.SetActive(true);
-                isMarker1On = true;
+                isSettingsSelected = false;
+                isResumeSelected = true;
+                selectedText.color = Color.white;
+                selectedText = resume.GetComponentInChildren<TextMeshProUGUI>();
+                selectedText.color = Color.yellow;
             }
             
             //moving from "Exit" to "Settings"
-            else if (!isMarker1On && !isMarker2On && isMarker3On)
+            else if (!isResumeSelected && !isSettingsSelected && isExitSelected)
             {
-                marker3.SetActive(false);
-                isMarker3On = false;
-                marker2.SetActive(true);
-                isMarker2On = true;
+                isExitSelected = false;
+                isSettingsSelected = true;
+                selectedText.color = Color.white;
+                selectedText = settings.GetComponentInChildren<TextMeshProUGUI>();
+                selectedText.color = Color.yellow;
             }
-
         }
         
         //moving downwards between the options
         else if (isGamePaused && InputManager.GetAxis("Vertical") < -0.01)
         {
             //moving from "Resume" to "Settings"
-            if (isMarker1On && !isMarker2On && !isMarker3On)
+            if (isResumeSelected && !isSettingsSelected && !isExitSelected)
             {
-                marker1.SetActive(false);
-                isMarker1On = false;
-                marker2.SetActive(true);
-                isMarker2On = true;
+                isResumeSelected = false;
+                isSettingsSelected = true;
+                selectedText.color = Color.white;
+                selectedText = settings.GetComponentInChildren<TextMeshProUGUI>();
+                selectedText.color = Color.yellow;
             }
             
             //moving from "Settings" to "Exit"
-            else if (!isMarker1On && isMarker2On && !isMarker3On)
+            else if (!isResumeSelected && isSettingsSelected && !isExitSelected)
             {
-                marker2.SetActive(false);
-                isMarker2On = false;
-                marker3.SetActive(true);
-                isMarker3On = true;
+                isSettingsSelected = false;
+                isExitSelected = true;
+                selectedText.color = Color.white;
+                selectedText = exit.GetComponentInChildren<TextMeshProUGUI>();
+                selectedText.color = Color.yellow;
             }
         }
+        print("isResumeSelected: " + isResumeSelected);
+        print("isSettingsSelected: " + isSettingsSelected);
+        print("isExitSelected: " + isExitSelected);
     }
 
     void Resume()
@@ -98,11 +118,14 @@ public class PauseMenu : MonoBehaviour
         pauseMenuUI.SetActive(true);
         Time.timeScale = 0f;
         isGamePaused = true;
-        marker1.SetActive(true);
-        isMarker1On = true;
-        marker2.SetActive(false);
-        isMarker2On = false;
-        marker3.SetActive(false);
-        isMarker3On = false;
+        isResumeSelected = true;
+        isSettingsSelected = false;
+        isExitSelected = false;
+        selectedText = exit.GetComponentInChildren<TextMeshProUGUI>();
+        selectedText.color = Color.white;
+        selectedText = settings.GetComponentInChildren<TextMeshProUGUI>();
+        selectedText.color = Color.white;
+        selectedText = resume.GetComponentInChildren<TextMeshProUGUI>();
+        selectedText.color = Color.yellow;
     }
 }

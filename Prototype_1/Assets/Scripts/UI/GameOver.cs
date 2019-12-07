@@ -21,9 +21,7 @@ public class GameOver : MonoBehaviour
         isRestartSelected = true;
         isExitSelected = false;
         selectedText = restart.GetComponentInChildren<TextMeshProUGUI>();
-        print(selectedText);
         selectedText.color = Color.yellow;
-        
     }
     void Update()
     {
