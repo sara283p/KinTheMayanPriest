@@ -15,12 +15,14 @@ public class MovingPlatform : MonoBehaviour
     private Transform _startEdge;
     private Transform _endEdge;
     private float _minSpeed;
+    private Vector2 _initialPosition;
 
     public float speed;
 
     private void Awake()
     {
         _tr = GetComponent<Transform>();
+        _initialPosition = _tr.position;
         _startPos = _tr.parent.GetComponentInChildren<StartPos>().transform.position;
         _endPos = _tr.parent.GetComponentInChildren<EndPos>().transform.position;
         _startToEnd = (_endPos - _startPos).normalized;
@@ -30,7 +32,12 @@ public class MovingPlatform : MonoBehaviour
         _endEdge = GetComponentInChildren<PlatformEndEdge>().transform;
         _minSpeed = 2;
     }
-    
+
+    private void OnEnable()
+    {
+        EventManager.StartListening("PlayerDeath", Init);
+    }
+
     void FixedUpdate()
     {
         if (!_isActivated)
@@ -73,5 +80,12 @@ public class MovingPlatform : MonoBehaviour
     public void Activate()
     {
         _isActivated = true;
+    }
+
+    private void Init()
+    {
+        _isActivated = false;
+        _currentDirection = _startToEnd;
+        _tr.position = _initialPosition;
     }
 }
