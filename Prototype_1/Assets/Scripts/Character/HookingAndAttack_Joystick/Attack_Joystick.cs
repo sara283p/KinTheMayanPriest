@@ -168,7 +168,7 @@ public class Attack_Joystick : MonoBehaviour
         
         if (_attacking)
         {
-            lineRenderer.SetPosition(0, _tr.position);
+            lineRenderer.SetPosition(0, (Vector2) _tr.position);
             
             if (_targetType == TargetType.Star)
             {
@@ -225,7 +225,7 @@ public class Attack_Joystick : MonoBehaviour
                 _targetStar.SelectForAttack();
                 _selectedStars.Add(_targetStar);
                 lineRenderer.positionCount++;
-                lineRenderer.SetPosition(_selectedStars.Count, _targetStar.transform.position);
+                lineRenderer.SetPosition(_selectedStars.Count, (Vector2) _targetStar.transform.position);
             }
             else
             {
