@@ -71,7 +71,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 427550381
-  m_SortingLayer: 7
+  m_SortingLayer: 9
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: a0b18ded24382574ca34c9163ceb245f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -120,7 +120,7 @@ LineRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 427550381
-  m_SortingLayer: 7
+  m_SortingLayer: 9
   m_SortingOrder: 0
   m_Positions:
   - {x: -3.0453975, y: -4.77502, z: 0}
@@ -364,9 +364,9 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 967924931
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: 11
-  m_Sprite: {fileID: 21300000, guid: 8c3356a7689bd5848b7af7a98d6c8376, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 35cc9bed7fb518e438d22eccd5e0ef8b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -425,6 +425,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43444bb8a35cce243ac9a682f997f5fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  drawGroundedSphere: 0
   _leftJumpCheck: {fileID: 1635278335292191555}
   _rightJumpCheck: {fileID: 1635278335214696001}
   floorCheck: {fileID: 1635278335687538369}
@@ -463,8 +464,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.116667174, y: 0.18721578}
-  m_Size: {x: 3.2696717, y: 10.385566}
+  m_Offset: {x: -0.04251933, y: -1.1311643}
+  m_Size: {x: 1.7867162, y: 5.903075}
   m_Direction: 0
 --- !u!114 &1635278333857860268
 MonoBehaviour:
@@ -561,8 +562,8 @@ CapsuleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.11324911, y: 0}
-  m_Size: {x: 4.0726438, y: 10.76}
+  m_Offset: {x: -0.11324911, y: -1.1041424}
+  m_Size: {x: 2.8121321, y: 5.9808755}
   m_Direction: 0
 --- !u!95 &725032587
 Animator:
@@ -688,7 +689,7 @@ LineRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1067148771
-  m_SortingLayer: 6
+  m_SortingLayer: 7
   m_SortingOrder: 10
   m_Positions:
   - {x: 0, y: 0, z: 0}
@@ -830,7 +831,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1067148771
-  m_SortingLayer: 6
+  m_SortingLayer: 7
   m_SortingOrder: 6
   m_Sprite: {fileID: 21300000, guid: 32a85c0c97357eba5a2506ee33db09ab, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -952,7 +953,7 @@ LineRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1067148771
-  m_SortingLayer: 6
+  m_SortingLayer: 7
   m_SortingOrder: 0
   m_Positions:
   - {x: 0, y: 0, z: 0}
@@ -1036,7 +1037,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1635278334761831655}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -4.8, z: 0}
+  m_LocalPosition: {x: 0, y: -3.7, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1635278333857860264}
@@ -1066,7 +1067,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1635278335214696000}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.95, y: -4.7900004, z: 0}
+  m_LocalPosition: {x: -0.95, y: -3.873, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1635278333857860264}
@@ -1096,7 +1097,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1635278335292191554}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.74, y: -4.79, z: 0}
+  m_LocalPosition: {x: 0.74, y: -3.873, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1635278333857860264}
@@ -1195,7 +1196,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1635278335770408278}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 175.54199, y: -5.836, z: -9.5752125}
+  m_LocalPosition: {x: 48.05738, y: 0.9040005, z: -9.5752125}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 112858133}
@@ -1225,11 +1226,11 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.1
+  near clip plane: 2
   far clip plane: 5000
   field of view: 40
   orthographic: 1
-  orthographic size: 10
+  orthographic size: 5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2

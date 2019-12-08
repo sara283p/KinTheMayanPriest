@@ -7,7 +7,8 @@ public class CharacterController : MonoBehaviour
 
 {
 	private static readonly int Jumping = Animator.StringToHash("Jumping");
-	
+
+	public bool drawGroundedSphere;
 	public Transform _leftJumpCheck;											// Position marking used to check when the character has landed after jumps
 	public Transform _rightJumpCheck;
 	public Transform floorCheck;												// A position marking used to check the direction of the floor in front of the character
@@ -25,6 +26,7 @@ public class CharacterController : MonoBehaviour
 	private Vector2 _starPosition;												// Position of the star the player is hooked to
 	[SerializeField] private float _groundedRadius = 0.2f; 						// Distance from ground at which player is considered to be grounded
 	[SerializeField] private bool _grounded;            						// Whether or not the player is grounded.
+	private bool _nearGround;													// Whether or not the player is very near to the ground. It is used to check when set gravity scale to 0 to avoid sliding on descending terrains
 	private bool _hooked;														// Whether or not the player is hanged to a star
 	private Rigidbody2D _rb;													// Character's rigidbody component
 	private bool _facingRight = true; 											// For determining which way the player is currently facing.
@@ -98,6 +100,16 @@ public class CharacterController : MonoBehaviour
 			}
 		}
 
+		groundCollider = Physics2D.OverlapCircle(_groundCheck.position, 0.1f, _whatIsGround);
+		if (groundCollider)
+		{
+			_nearGround = true;
+		}
+		else
+		{
+			_nearGround = false;
+		}
+
 		// Compute floor direction
 		hit = Physics2D.Raycast(floorCheck.position, Vector2.down, Mathf.Infinity, _whatIsGround);
 		if (hit.collider)
@@ -134,7 +146,8 @@ public class CharacterController : MonoBehaviour
 		Gizmos.color = Color.yellow;
 		Gizmos.DrawRay(_rightJumpCheck.position, _jumpCheckRadius * Vector2.down);
 		//Gizmos.DrawRay(_groundCheck.position, _groundedRadius * Vector2.down);
-		Gizmos.DrawSphere(_groundCheck.position, _groundedRadius);
+		if(drawGroundedSphere)
+			Gizmos.DrawSphere(_groundCheck.position, _groundedRadius);
 	}
 	/*END OF GIZMOS SECTION */ 
 
@@ -162,7 +175,8 @@ public class CharacterController : MonoBehaviour
 				if (_grounded && !_jumping && Math.Abs(moveAlongGround.y) > 0.01)
 				{
 					targetVelocity = move * moveAlongGround;
-					_rb.gravityScale = 0;
+					if(_nearGround)
+						_rb.gravityScale = 0;
 				}
 				// ... otherwise...
 				else
