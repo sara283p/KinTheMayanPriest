@@ -26,7 +26,6 @@ public class CharacterController : MonoBehaviour
 	private Vector2 _starPosition;												// Position of the star the player is hooked to
 	[SerializeField] private float _groundedRadius = 0.2f; 						// Distance from ground at which player is considered to be grounded
 	[SerializeField] private bool _grounded;            						// Whether or not the player is grounded.
-	private bool _nearGround;													// Whether or not the player is very near to the ground. It is used to check when set gravity scale to 0 to avoid sliding on descending terrains
 	private bool _hooked;														// Whether or not the player is hanged to a star
 	private Rigidbody2D _rb;													// Character's rigidbody component
 	private bool _facingRight = true; 											// For determining which way the player is currently facing.
@@ -71,15 +70,19 @@ public class CharacterController : MonoBehaviour
 		_grounded = false;
 
 		// Check if player has landed after jumping
-		RaycastHit2D hit = Physics2D.Raycast(_leftJumpCheck.position, Vector2.down, _jumpCheckRadius, _whatIsGround);
-		if (hit.collider)
+		Vector2 rayDir = _leftJumpCheck.position;
+		rayDir.y -= _jumpCheckRadius;
+		Collider2D coll = Physics2D.OverlapPoint(rayDir, _whatIsGround);
+		if (coll)
 		{
 			_jumping = false;
 		}
 		else
 		{
-			hit = Physics2D.Raycast(_rightJumpCheck.position, Vector2.down, _jumpCheckRadius, _whatIsGround);
-			if (hit.collider)
+			rayDir = _rightJumpCheck.position;
+			rayDir.y -= _jumpCheckRadius;
+			coll = Physics2D.OverlapPoint(rayDir, _whatIsGround);
+			if (coll)
 			{
 				_jumping = false;
 			}
@@ -100,18 +103,8 @@ public class CharacterController : MonoBehaviour
 			}
 		}
 
-		groundCollider = Physics2D.OverlapCircle(_groundCheck.position, 0.1f, _whatIsGround);
-		if (groundCollider)
-		{
-			_nearGround = true;
-		}
-		else
-		{
-			_nearGround = false;
-		}
-
 		// Compute floor direction
-		hit = Physics2D.Raycast(floorCheck.position, Vector2.down, Mathf.Infinity, _whatIsGround);
+		RaycastHit2D hit = Physics2D.Raycast(floorCheck.position, Vector2.down, Mathf.Infinity, _whatIsGround);
 		if (hit.collider)
 		{
 			_groundNormal = hit.normal;
@@ -175,8 +168,7 @@ public class CharacterController : MonoBehaviour
 				if (_grounded && !_jumping && Math.Abs(moveAlongGround.y) > 0.01)
 				{
 					targetVelocity = move * moveAlongGround;
-					if(_nearGround)
-						_rb.gravityScale = 0;
+					_rb.gravityScale = 0;
 				}
 				// ... otherwise...
 				else
