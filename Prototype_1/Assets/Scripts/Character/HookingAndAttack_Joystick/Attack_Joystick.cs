@@ -12,7 +12,7 @@ public class Attack_Joystick : MonoBehaviour
     public LayerMask obstacleLayerMask;
     
     public float maxAllowedDistance; // Max distance at which the first star selected can be
-    public float ThresholdManualAttackDistance;
+    public float thresholdManualAttackDistance;
 
     private enum TargetType {Star, Enemy}
 
@@ -41,7 +41,6 @@ public class Attack_Joystick : MonoBehaviour
     private void Awake()
     // Initialize the attack effect
     {
-//        ThresholdManualAttackDistance = ThresholdManualAttackDistance * ThresholdManualAttackDistance;
         lineRenderer.positionCount = 0;
         _tr = GetComponent<Transform>();
         maxAllowedDistance = GameManager.Instance.maxStarSelectDistance;
@@ -65,6 +64,7 @@ public class Attack_Joystick : MonoBehaviour
 
     void Update()
     {
+        // If hanging, just freeze the attack situation
         if (isHanging) return;
         
         // Move viewfinder when not doing anything
@@ -80,10 +80,12 @@ public class Attack_Joystick : MonoBehaviour
         }
         else
         {
+            Vector2 relativePosition = viewfinder.transform.position - _tr.position;
             // If the player entered in manual target mode and then moves away, come back in autotarget mode
-            if ((viewfinder.transform.position - _tr.position).magnitude > ThresholdManualAttackDistance &&
-                _selectedStars.Count == 0)
+            if (relativePosition.magnitude > thresholdManualAttackDistance && _selectedStars.Count == 0)
             {
+                lineRenderer.positionCount = 0;
+                Abort();
                 _autoTarget = true;
             }
         }
@@ -103,7 +105,6 @@ public class Attack_Joystick : MonoBehaviour
              || InputManager.GetAxisRaw("RVertical") > ThresholdViewfinder || _selecting) && !_attacking)
         {
             _autoTarget = false;
-//            _selecting = false;
             if (!locker.GetNearestAvailableStar(maxAllowedDistance)) return;
             if (_isAttackOngoing)
             {
@@ -115,6 +116,7 @@ public class Attack_Joystick : MonoBehaviour
             lineRenderer.positionCount++;
         }
 
+        // If the player press LB/RB, change the target type 
         if ((InputManager.GetButtonDown("LB") || InputManager.GetButtonDown("RB")) && _attacking)
         {
             if (_targetType == TargetType.Star)
@@ -135,12 +137,17 @@ public class Attack_Joystick : MonoBehaviour
             }
         }
 
+        // Reset the attack
         if (InputManager.GetButtonDown("Button1"))
         {
             lineRenderer.positionCount = 0;
             Abort();
         }
 
+        // Check:
+        // 1) Is the first star gone too far?
+        // 2) An obstacle is now between the first star and Kin?
+        // 3) Is there any targeted stars which is now not usable?
         if (_attacking && _selectedStars.Count > 0)
         {
             Vector2 relativePosition = _selectedStars.First().transform.position - _tr.position;
@@ -151,16 +158,42 @@ public class Attack_Joystick : MonoBehaviour
                 Abort();
                 return;
             }
-            
+
             Debug.DrawRay(_tr.position, relativePosition, Color.red);
-            RaycastHit2D hit = Physics2D.Raycast(_tr.position, relativePosition, relativePosition.magnitude, obstacleLayerMask);
+            RaycastHit2D hit = Physics2D.Raycast(_tr.position, relativePosition, relativePosition.magnitude,
+                obstacleLayerMask);
             if (hit.collider)
             {
                 lineRenderer.positionCount = 0;
                 Abort();
+                return;
+            }
+
+            var starsWentUnavailable = _selectedStars.Where(x => x.isDisabled).ToList();
+            if (starsWentUnavailable.Count > 0)
+            {
+                if (_targetType == TargetType.Star)
+                {
+                    // Reset the viewfinder on the last targeted star. It's quite arbitrary, it may not been the best
+                    // solution.
+                    viewfinder.gameObject.transform.position =
+                        _selectedStars.Select(x => x.transform.position).LastOrDefault();
+                }
+                
+                starsWentUnavailable.ForEach(x =>
+                {
+                    x.DeselectForAttack();
+                    _selectedStars.Remove(x);
+                    lineRenderer.positionCount--;
+                    var positions = _selectedStars.Select(y => x.transform.position).ToList();
+                    positions.Insert(0, _tr.position);
+                    lineRenderer.SetPositions(positions.ToArray());
+                });
+                
             }
         }
         
+        // If the enemy is moving and it's targetted, move the viewfinder with him
         if (_attacking && _targetType == TargetType.Enemy && _targetEnemy != null)
         {
             viewfinder.gameObject.transform.position = _targetEnemy.GetPosition();
@@ -168,6 +201,7 @@ public class Attack_Joystick : MonoBehaviour
         
         if (_attacking)
         {
+            // Update the effect first position
             lineRenderer.SetPosition(0, (Vector2) _tr.position);
             
             if (_targetType == TargetType.Star)
