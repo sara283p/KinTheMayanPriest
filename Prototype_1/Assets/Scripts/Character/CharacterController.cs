@@ -26,6 +26,7 @@ public class CharacterController : MonoBehaviour
 	private Vector2 _starPosition;												// Position of the star the player is hooked to
 	[SerializeField] private float _groundedRadius = 0.2f; 						// Distance from ground at which player is considered to be grounded
 	[SerializeField] private bool _grounded;            						// Whether or not the player is grounded.
+	private bool _nearGround;
 	private bool _hooked;														// Whether or not the player is hanged to a star
 	private Rigidbody2D _rb;													// Character's rigidbody component
 	private bool _facingRight = true; 											// For determining which way the player is currently facing.
@@ -68,23 +69,28 @@ public class CharacterController : MonoBehaviour
 	void Update()
 	{
 		_grounded = false;
+		_nearGround = false;
 
 		// Check if player has landed after jumping
+		RaycastHit2D hit = Physics2D.Raycast(_leftJumpCheck.position, Vector2.down, _jumpCheckRadius, _whatIsGround);
 		Vector2 rayDir = _leftJumpCheck.position;
 		rayDir.y -= _jumpCheckRadius;
 		Collider2D coll = Physics2D.OverlapPoint(rayDir, _whatIsGround);
-		if (coll)
+		if (coll || hit.collider)
 		{
 			_jumping = false;
+			_nearGround = true;
 		}
 		else
 		{
+			hit = Physics2D.Raycast(_rightJumpCheck.position, Vector2.down, _jumpCheckRadius, _whatIsGround);
 			rayDir = _rightJumpCheck.position;
 			rayDir.y -= _jumpCheckRadius;
 			coll = Physics2D.OverlapPoint(rayDir, _whatIsGround);
-			if (coll)
+			if (coll || hit.collider)
 			{
 				_jumping = false;
+				_nearGround = true;
 			}
 		}
 
@@ -104,7 +110,7 @@ public class CharacterController : MonoBehaviour
 		}
 
 		// Compute floor direction
-		RaycastHit2D hit = Physics2D.Raycast(floorCheck.position, Vector2.down, Mathf.Infinity, _whatIsGround);
+		hit = Physics2D.Raycast(floorCheck.position, Vector2.down, Mathf.Infinity, _whatIsGround);
 		if (hit.collider)
 		{
 			_groundNormal = hit.normal;
@@ -168,7 +174,8 @@ public class CharacterController : MonoBehaviour
 				if (_grounded && !_jumping && Math.Abs(moveAlongGround.y) > 0.01)
 				{
 					targetVelocity = move * moveAlongGround;
-					_rb.gravityScale = 0;
+					if(_nearGround)
+						_rb.gravityScale = 0;
 				}
 				// ... otherwise...
 				else
