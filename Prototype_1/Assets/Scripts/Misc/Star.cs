@@ -123,6 +123,7 @@ public class Star : MonoBehaviour
             foreach (Star star in inRangeMovableStars)
             {
                 star._starContact = true;
+                star.DeselectForAttack();
                 star.DarkenStar();
             }
         }
