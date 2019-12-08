@@ -215,7 +215,7 @@ GameObject:
   - component: {fileID: 282466125}
   - component: {fileID: 282466124}
   m_Layer: 5
-  m_Name: Opening
+  m_Name: OpeningScreen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -256,7 +256,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.79607844}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -669,7 +669,7 @@ GameObject:
   - component: {fileID: 1154373918}
   - component: {fileID: 1154373922}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: OpeningScreenCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -779,6 +779,7 @@ GameObject:
   - component: {fileID: 2069150853}
   - component: {fileID: 2069150855}
   - component: {fileID: 2069150854}
+  - component: {fileID: 2069150856}
   m_Layer: 5
   m_Name: Press a button to play
   m_TagString: Untagged
@@ -802,7 +803,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 17.09497, y: 12.597885}
+  m_AnchoredPosition: {x: 14.6, y: 25.2}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2069150854
@@ -825,8 +826,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: Press a button to play
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 2e498d1c8094910479dc3e1b768306a4, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 2e498d1c8094910479dc3e1b768306a4, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 0e7d3db2373c2154aa8201d6f354017a, type: 2}
+  m_sharedMaterial: {fileID: 1854550394975721637, guid: 0e7d3db2373c2154aa8201d6f354017a,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -851,14 +853,14 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 20
-  m_fontSizeBase: 20
+  m_fontSize: 16
+  m_fontSizeBase: 16
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 2
-  m_textAlignment: 1026
+  m_textAlignment: 514
   m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -889,7 +891,7 @@ MonoBehaviour:
   m_firstVisibleCharacter: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -276.208, y: -122.28438, z: -242.42444, w: -92.393715}
+  m_margin: {x: -276.208, y: -0.4066176, z: -242.42444, w: -184.36678}
   m_textInfo:
     textComponent: {fileID: 2069150854}
     characterCount: 22
@@ -923,3 +925,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2069150852}
   m_CullTransparentMesh: 0
+--- !u!114 &2069150856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2069150852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27ce8a0c2bcf82646845e2a0b142857a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  approachSpeed: 0.001
+  growthBound: 1.1
+  shrinkBound: 0.98

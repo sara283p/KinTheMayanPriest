@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.Experimental.PlayerLoop;
 
 public class PauseMenu : MonoBehaviour
 {
@@ -25,13 +27,11 @@ public class PauseMenu : MonoBehaviour
         isExitSelected = false;
         selectedText = resume.GetComponentInChildren<TextMeshProUGUI>();
         selectedText.color = Color.yellow;
+        
     }
 
     void Update()
     {
-        print("Before isResumeSelected: " + isResumeSelected);
-        print("Before isSettingsSelected: " + isSettingsSelected);
-        print("Before isExitSelected" + isExitSelected);
         //resume gameplay if "Start button" is pressed while the game is paused, pause it otherwise
         if (InputManager.GetButtonDown("Button4"))
         {
@@ -53,9 +53,20 @@ public class PauseMenu : MonoBehaviour
                 Resume();
             }
         }
+        
+        float axisValue = InputManager.GetAxis("Vertical");
+        if (axisValue > 0)
+        {
+            axisValue = 0.15f;
+        }
+        
+        else if (axisValue < 0)
+        {
+            axisValue = -0.15f;
+        }
 
         //moving upwards between the options
-        if (isGamePaused && InputManager.GetAxis("Vertical") > 0.01)
+        if (isGamePaused && axisValue > 0.01)
         {
             //moving from "Settings" to "Resume"
             if (!isResumeSelected && isSettingsSelected && !isExitSelected)
@@ -79,7 +90,7 @@ public class PauseMenu : MonoBehaviour
         }
         
         //moving downwards between the options
-        else if (isGamePaused && InputManager.GetAxis("Vertical") < -0.01)
+        else if (isGamePaused && axisValue < -0.01)
         {
             //moving from "Resume" to "Settings"
             if (isResumeSelected && !isSettingsSelected && !isExitSelected)
@@ -101,9 +112,6 @@ public class PauseMenu : MonoBehaviour
                 selectedText.color = Color.yellow;
             }
         }
-        print("isResumeSelected: " + isResumeSelected);
-        print("isSettingsSelected: " + isSettingsSelected);
-        print("isExitSelected: " + isExitSelected);
     }
 
     void Resume()
@@ -128,4 +136,5 @@ public class PauseMenu : MonoBehaviour
         selectedText = resume.GetComponentInChildren<TextMeshProUGUI>();
         selectedText.color = Color.yellow;
     }
+
 }
