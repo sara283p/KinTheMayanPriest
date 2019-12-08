@@ -844,7 +844,7 @@ PrefabInstance:
     - target: {fileID: 529985853196360884, guid: f5af43bf0a635c4f5a3f986a658da7ec,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.41
+      value: -1.105
       objectReference: {fileID: 0}
     - target: {fileID: 529985853196360884, guid: f5af43bf0a635c4f5a3f986a658da7ec,
         type: 3}
@@ -1073,7 +1073,7 @@ TilemapCollider2D:
   m_GameObject: {fileID: 1054671635}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 6200000, guid: 549d009babe774740b87b4553b3e606b, type: 2}
+  m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -3158,7 +3158,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1765799768}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.797384, y: 1.2940005, z: -14.324219}
+  m_LocalPosition: {x: 10.358385, y: 1.3610005, z: -14.324219}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1716742808}
@@ -3235,12 +3235,12 @@ PrefabInstance:
     - target: {fileID: 1635278335770408279, guid: a1240e1e33e94e14e8875613a27c1351,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 48.05738
+      value: 53.618385
       objectReference: {fileID: 0}
     - target: {fileID: 1635278335770408279, guid: a1240e1e33e94e14e8875613a27c1351,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.9040005
+      value: 0.97100055
       objectReference: {fileID: 0}
     - target: {fileID: 1635278335770408362, guid: a1240e1e33e94e14e8875613a27c1351,
         type: 3}
@@ -3252,10 +3252,29 @@ PrefabInstance:
       propertyPath: orthographic size
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 3062047736677184027, guid: a1240e1e33e94e14e8875613a27c1351,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.x
+      value: 6.1830025
+      objectReference: {fileID: 0}
+    - target: {fileID: 3062047736677184027, guid: a1240e1e33e94e14e8875613a27c1351,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.y
+      value: -1.119
+      objectReference: {fileID: 0}
+    - target: {fileID: 3738046232125153116, guid: a1240e1e33e94e14e8875613a27c1351,
+        type: 3}
+      propertyPath: m_Distance
+      value: 6.283445
+      objectReference: {fileID: 0}
     - target: {fileID: 1635278333857860270, guid: a1240e1e33e94e14e8875613a27c1351,
         type: 3}
       propertyPath: activeIcon
       value: 
       objectReference: {fileID: 625636804}
+    - target: {fileID: 112858132, guid: a1240e1e33e94e14e8875613a27c1351, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a1240e1e33e94e14e8875613a27c1351, type: 3}
