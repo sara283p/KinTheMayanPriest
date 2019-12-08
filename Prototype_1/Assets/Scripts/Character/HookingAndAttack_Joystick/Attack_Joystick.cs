@@ -37,6 +37,7 @@ public class Attack_Joystick : MonoBehaviour
 
     public bool isHanging;
     private bool _autoTarget = true;
+    private Animator _blueSphereAnimator;
 
     private void Awake()
     // Initialize the attack effect
@@ -44,6 +45,7 @@ public class Attack_Joystick : MonoBehaviour
         lineRenderer.positionCount = 0;
         _tr = GetComponent<Transform>();
         maxAllowedDistance = GameManager.Instance.maxStarSelectDistance;
+        _blueSphereAnimator = gameObject.GetComponentInChildren<AttackBlueSphere>().GetComponent<Animator>();
     }
 
     public void SetHanging(bool val)
@@ -64,6 +66,7 @@ public class Attack_Joystick : MonoBehaviour
 
     void Update()
     {
+        _blueSphereAnimator.SetBool("IsAttacking", _selectedStars.Count > 0);
         // If hanging, just freeze the attack situation
         if (isHanging) return;
         
