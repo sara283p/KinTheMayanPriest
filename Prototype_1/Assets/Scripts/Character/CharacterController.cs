@@ -16,7 +16,7 @@ public class CharacterController : MonoBehaviour
 	[SerializeField] private float _jumpCheckRadius;							// Distance from ground at which the jump is considered to be ended
 	[SerializeField] private float _jumpForce = 400f;							// Amount of force added when the player jumps.
 	[Range(0, .3f)] [SerializeField] private float m_MovementSmoothing = .05f;	// How much to smooth out the movement
-	[SerializeField] private bool _airControl = false;							// Whether or not a player can steer while jumping;
+	[SerializeField] private bool _hookReleased = false;							// Whether or not a player can steer while jumping;
 	[SerializeField] private LayerMask _whatIsGround;							// A mask determining what is ground to the character
 	[SerializeField] private Transform _groundCheck;  							// A position marking where to check if the player is grounded.
 	private float _oscillationSpeed;											// Max oscillation speed used to avoid circles while hanging
@@ -99,6 +99,7 @@ public class CharacterController : MonoBehaviour
 		if(groundCollider)
 		{
 			_grounded = true;
+			_hookReleased = false;
 			if (!_jumping)
 			{
 				transform.SetParent(groundCollider.CompareTag("MovingPlatform")
@@ -154,7 +155,7 @@ public class CharacterController : MonoBehaviour
 	{
 		_rb.gravityScale = 1;
 		//only control the player if grounded or airControl is turned on
-		if (_grounded || _airControl)
+		if (_grounded || !_hookReleased)
 		{
 			// Move the character by finding the target velocity
 			Vector3 targetVelocity;
@@ -344,6 +345,7 @@ public class CharacterController : MonoBehaviour
 		else
 		{
 			_starPosition = Vector2.zero;
+			_hookReleased = true;
 		}
 	}
 
