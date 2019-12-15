@@ -161,7 +161,19 @@ public class Grappler_Joystick : MonoBehaviour
             {
                 _joint.maxDistanceOnly = false;
             }
-            
+
+            // TODO: for now, an immediate constant is used to increase the ray length. If we are going to keep this mechanic, replace it with a named constant
+            if (InputManager.GetButton("Button0"))
+            {
+                _joint.distance += 1 * Time.deltaTime;
+                _controller.OnJointDistanceChange(_joint.distance);
+            }
+            else if (InputManager.GetButton("Button2"))
+            {
+                _joint.distance -= 1 * Time.deltaTime;
+                _controller.OnJointDistanceChange(_joint.distance);
+            }
+
 
             if (!_wantToHook || _controller.IsGrounded()) // || _skyIsMoving)
             {

@@ -313,6 +313,7 @@ public class CharacterController : MonoBehaviour
 			transform.SetParent(_initialParent);
 			// Add a vertical force to the player.
 			float forceMagnitude = _isInWater ? _jumpForce * _waterSpeedModifier : _jumpForce;
+			_animator.SetBool(Jumping, true);
 			_rb.AddForce(new Vector2(0f, forceMagnitude));
 		}
 	}
@@ -341,12 +342,19 @@ public class CharacterController : MonoBehaviour
 			_starPosition = joint.connectedBody.position;
 			_jointDistance = joint.distance;
 			_oscillationSpeed = _baseOscillationSpeed * _jointDistance * 0.8f ;
+			_hookReleased = false;
 		}
 		else
 		{
 			_starPosition = Vector2.zero;
 			_hookReleased = true;
 		}
+	}
+
+	public void OnJointDistanceChange(float newDistance)
+	{
+		_jointDistance = newDistance;
+		_oscillationSpeed = _baseOscillationSpeed * _jointDistance * 0.8f;
 	}
 
 	public void StopJump()
