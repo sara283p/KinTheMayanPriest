@@ -104,8 +104,8 @@ public class Attack_Joystick : MonoBehaviour
 
         // If the player moves the viewfinder or selects a star or press select button, go in attack mode
         IsSelectPressed();
-        if ((InputManager.GetAxisRaw("RHorizontal") > ThresholdViewfinder 
-             || InputManager.GetAxisRaw("RVertical") > ThresholdViewfinder || _selecting) && !_attacking)
+        if ((Math.Abs(InputManager.GetAxisRaw("RHorizontal")) > ThresholdViewfinder 
+             || Math.Abs(InputManager.GetAxisRaw("RVertical")) > ThresholdViewfinder || _selecting) && !_attacking)
         {
             _autoTarget = false;
             if (!locker.GetNearestAvailableStar(maxAllowedDistance)) return;

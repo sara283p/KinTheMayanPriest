@@ -76,14 +76,14 @@ public class Locker_Joystick : MonoBehaviour
 	
 	public Star GetNearestAvailableStar(float range = MaxSearchRadius)
 	{
-		var kinPosition = kin.position;
+		Vector2 kinPosition = kin.position;
 		var stars = Physics2D.OverlapCircleAll(kinPosition, range, starLayerMask)
 			.Select(x => x.GetComponent<Star>())
 			.Where(x => !x.isDisabled)
 			.Where(x =>
 			{
 				var xPosition = x.GetComponent<Rigidbody2D>().position;
-				return !Physics2D.Raycast(kin.position, xPosition - kinPosition,
+				return !Physics2D.Raycast(kinPosition, xPosition - kinPosition,
 						(xPosition - kinPosition).magnitude, obstacleLayerMask);
 			})
 			.OrderBy(x => (kinPosition - x.GetComponent<Rigidbody2D>().position).sqrMagnitude)
@@ -114,7 +114,7 @@ public class Locker_Joystick : MonoBehaviour
 			.Select(x => x.transform.GetComponent<Star>())
 			.Where(x => !x.isDisabled)
 			.Where(x => !Physics2D.Raycast(origin.position, direction, ((Vector2) x.transform.position - originPosition).magnitude, obstacleLayerMask))
-			.OrderBy(x => (origin.position - x.transform.position).sqrMagnitude)
+			.OrderBy(x => (originPosition - (Vector2) x.transform.position).sqrMagnitude)
 			.ToArray();
 
 		if (stars.Length > 0)
@@ -163,8 +163,8 @@ public class Locker_Joystick : MonoBehaviour
 		var enemies = Physics2D.OverlapCircleAll(lastSelectedStar, range, enemyLayerMask)
 			.Where(x =>
 			{
-				var position = x.GetComponent<Transform>().position;
-				var relativeDirection = (Vector2) position - lastSelectedStar;
+				Vector2 position = x.GetComponent<Transform>().position;
+				var relativeDirection = position - lastSelectedStar;
 				return !Physics2D.Raycast(lastSelectedStar, relativeDirection, relativeDirection.magnitude - 1f, obstacleLayerMask);
 				// The " - 1f" trick is to let player target a destructable object, but meanwile prevent the targeting of a 
 				// star over an obstacle
@@ -186,7 +186,7 @@ public class Locker_Joystick : MonoBehaviour
 	{
 		if (_selectingWait) return null;
 
-		var originPosition = origin.position;
+		Vector2 originPosition = origin.position;
 		var horizontalMove = InputManager.GetAxisRaw("RHorizontal");
 		var verticalMove = InputManager.GetAxisRaw("RVertical");
 		
@@ -200,11 +200,11 @@ public class Locker_Joystick : MonoBehaviour
 			.Where(x =>
 			{
 				Vector2 position = x.transform.position;
-				Vector2 relativeDirection = position - (Vector2) lastSelectedStar;
+				Vector2 relativeDirection = position - lastSelectedStar;
 				return !Physics2D.Raycast(lastSelectedStar, relativeDirection, relativeDirection.magnitude, obstacleLayerMask).collider;
 			})
 			.Where(x => (lastSelectedStar - (Vector2) x.transform.position).magnitude < range)
-			.OrderBy(x => (origin.position - x.transform.position).sqrMagnitude)
+			.OrderBy(x => (originPosition - (Vector2) x.transform.position).sqrMagnitude)
 			.Select(x => x.transform.GetComponent<IDamageable>())
 			.ToArray();
 
