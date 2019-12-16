@@ -294,7 +294,6 @@ GameObject:
   - component: {fileID: 1635278333857860271}
   - component: {fileID: 1635278333857860268}
   - component: {fileID: 1635278333857860270}
-  - component: {fileID: 4406609869848391951}
   - component: {fileID: 1635278333857860269}
   - component: {fileID: 2018781787280271629}
   - component: {fileID: 1376827222978263852}
@@ -499,7 +498,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1635278333857860183}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e12b0726a91e976a9b2266c559220015, type: 3}
   m_Name: 
@@ -512,28 +511,6 @@ MonoBehaviour:
   _waitTillGrounded: 0
   viewfinder: {fileID: 1635278334211474296}
   attackJoystick: {fileID: 1635278333857860269}
---- !u!114 &4406609869848391951
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1635278333857860183}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d0953d82913e59d58c8a3707897d3c7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  locker: {fileID: 1635278333857860268}
-  lineRenderer: {fileID: 1635278334745749729}
-  obstacleLayerMask:
-    serializedVersion: 2
-    m_Bits: 4352
-  maxAllowedDistance: 10
-  ThresholdManualAttackDistance: 15
-  viewfinder: {fileID: 1635278334211474296}
-  isHanging: 0
-  _autoTarget: 1
 --- !u!114 &1635278333857860269
 MonoBehaviour:
   m_ObjectHideFlags: 0
