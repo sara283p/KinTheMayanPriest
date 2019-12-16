@@ -17,8 +17,9 @@ public class Grappler_Joystick : MonoBehaviour
     private bool _skyIsMoving;
     [SerializeField] private bool _waitTillGrounded;
 
-    private float _minHangDistance = 3;
-    private float _maxStarDistance = 10f;
+    private float _minHangDistance;
+    private float _hangLengthVariationSpeed = 1;
+    private float _maxHangDistance;
     private const float DownThresholdHang = 0.3f;
     private const float UpThresholdHang = 0.7f;
     
@@ -35,7 +36,7 @@ public class Grappler_Joystick : MonoBehaviour
         _controller = GetComponent<CharacterController>();
         _rb = GetComponent<Rigidbody2D>();
         _minHangDistance = GameManager.Instance.minHangDistance;
-        _maxStarDistance = GameManager.Instance.maxHangDistance;
+        _maxHangDistance = GameManager.Instance.maxHangDistance;
         _joint = GetComponent<DistanceJoint2D>();
         _friction = GetComponent<FrictionJoint2D>();
         _joint.autoConfigureDistance = false;
@@ -165,12 +166,15 @@ public class Grappler_Joystick : MonoBehaviour
             // TODO: for now, an immediate constant is used to increase the ray length. If we are going to keep this mechanic, replace it with a named constant
             if (InputManager.GetButton("Button0"))
             {
-                _joint.distance += 1 * Time.deltaTime;
-                _controller.OnJointDistanceChange(_joint.distance);
+                if (_joint.distance < _maxHangDistance)
+                {
+                    _joint.distance += _hangLengthVariationSpeed * Time.deltaTime;
+                    _controller.OnJointDistanceChange(_joint.distance);
+                }
             }
-            else if (InputManager.GetButton("Button2"))
+            else if (InputManager.GetButton("Button2") && _joint.distance > _minHangDistance)
             {
-                _joint.distance -= 1 * Time.deltaTime;
+                _joint.distance -= _hangLengthVariationSpeed * Time.deltaTime;
                 _controller.OnJointDistanceChange(_joint.distance);
             }
 
@@ -187,7 +191,7 @@ public class Grappler_Joystick : MonoBehaviour
             // If there is not a joint and hook is pressed...
             if (_wantToHook)
             {
-                var temp = locker.GetStarsInRange(_maxStarDistance);
+                var temp = locker.GetStarsInRange(_maxHangDistance);
                 _availableStars
                     .ForEach(x =>
                     {
@@ -202,7 +206,7 @@ public class Grappler_Joystick : MonoBehaviour
                 {
                     // If Kin is NOT the ground and meanwhile jump is pressed assume that the hang has to be accomplished.
                     // Create a joint, start the effect.
-                    if (!_controller.IsGrounded() && ((Vector2) _selectedStar.transform.position - _position).magnitude < _maxStarDistance && !_waitTillGrounded)
+                    if (!_controller.IsGrounded() && ((Vector2) _selectedStar.transform.position - _position).magnitude < _maxHangDistance && !_waitTillGrounded)
                     {
                         attackJoystick.SetHanging(true);
                         Rigidbody2D otherRb = _selectedStar.GetComponent<Rigidbody2D>();
