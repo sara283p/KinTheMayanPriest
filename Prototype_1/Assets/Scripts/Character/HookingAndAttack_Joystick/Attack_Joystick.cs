@@ -37,6 +37,7 @@ public class Attack_Joystick : MonoBehaviour
 
     public bool isHanging;
     private bool _autoTarget = true;
+    private Animator _blueSphereAnimator;
 
     private void Awake()
     // Initialize the attack effect
@@ -44,6 +45,7 @@ public class Attack_Joystick : MonoBehaviour
         lineRenderer.positionCount = 0;
         _tr = GetComponent<Transform>();
         maxAllowedDistance = GameManager.Instance.maxStarSelectDistance;
+        _blueSphereAnimator = gameObject.GetComponentInChildren<AttackBlueSphere>().GetComponent<Animator>();
     }
 
     public void SetHanging(bool val)
@@ -64,6 +66,7 @@ public class Attack_Joystick : MonoBehaviour
 
     void Update()
     {
+        _blueSphereAnimator.SetBool("IsAttacking", _selectedStars.Count > 0);
         // If hanging, just freeze the attack situation
         if (isHanging) return;
         
@@ -101,8 +104,8 @@ public class Attack_Joystick : MonoBehaviour
 
         // If the player moves the viewfinder or selects a star or press select button, go in attack mode
         IsSelectPressed();
-        if ((InputManager.GetAxisRaw("RHorizontal") > ThresholdViewfinder 
-             || InputManager.GetAxisRaw("RVertical") > ThresholdViewfinder || _selecting) && !_attacking)
+        if ((Math.Abs(InputManager.GetAxisRaw("RHorizontal")) > ThresholdViewfinder 
+             || Math.Abs(InputManager.GetAxisRaw("RVertical")) > ThresholdViewfinder || _selecting) && !_attacking)
         {
             _autoTarget = false;
             if (!locker.GetNearestAvailableStar(maxAllowedDistance)) return;
@@ -167,6 +170,20 @@ public class Attack_Joystick : MonoBehaviour
                 lineRenderer.positionCount = 0;
                 Abort();
                 return;
+            }
+
+            for (int i = 0; i < _selectedStars.Count - 1; i++)
+            {
+                relativePosition = _selectedStars[i + 1].transform.position - _selectedStars[i].transform.position;
+                if (Physics2D.Raycast(_selectedStars[i].transform.position, relativePosition,
+                    relativePosition.magnitude,
+                    obstacleLayerMask))
+                {
+                    lineRenderer.positionCount = 0;
+                    Abort();
+                    return;
+                }
+
             }
 
             var starsWentUnavailable = _selectedStars.Where(x => x.isDisabled).ToList();
@@ -256,6 +273,17 @@ public class Attack_Joystick : MonoBehaviour
             // or deselect a star already selected, so remove it, deselect it, and redraw the animation.
             if (!_targetStar.IsSelectedForAttack())
             {
+                var lastStar = _selectedStars.LastOrDefault();
+                if (lastStar)
+                {
+                    Vector2 relativePosition = _targetStar.transform.position - lastStar.transform.position;
+                    if (Physics2D.Raycast(lastStar.transform.position,
+                        relativePosition, relativePosition.magnitude,
+                        obstacleLayerMask))
+                    {
+                        return;
+                    }
+                }
                 _targetStar.SelectForAttack();
                 _selectedStars.Add(_targetStar);
                 lineRenderer.positionCount++;
