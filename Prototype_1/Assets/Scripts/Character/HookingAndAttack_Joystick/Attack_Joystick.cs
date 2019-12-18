@@ -11,7 +11,7 @@ public class Attack_Joystick : MonoBehaviour
     public LineRenderer lineRenderer;
     public LayerMask obstacleLayerMask;
     
-    public float maxAllowedDistance; // Max distance at which the first star selected can be
+    private float maxAllowedDistance; // Max distance at which the first star selected can be
     public float thresholdManualAttackDistance;
 
     private enum TargetType {Star, Enemy}
@@ -38,14 +38,17 @@ public class Attack_Joystick : MonoBehaviour
     public bool isHanging;
     private bool _autoTarget = true;
     private Animator _blueSphereAnimator;
+    private Transform _blueSphere;
 
     private void Awake()
     // Initialize the attack effect
     {
         lineRenderer.positionCount = 0;
+        maxAllowedDistance = GameManager.Instance.maxStarSelectDistance;
         _tr = GetComponent<Transform>();
         maxAllowedDistance = GameManager.Instance.maxStarSelectDistance;
         _blueSphereAnimator = gameObject.GetComponentInChildren<AttackBlueSphere>().GetComponent<Animator>();
+        _blueSphere = gameObject.GetComponentInChildren<AttackBlueSphere>().transform;
     }
 
     public void SetHanging(bool val)
@@ -73,7 +76,7 @@ public class Attack_Joystick : MonoBehaviour
         // Move viewfinder when not doing anything
         if (_autoTarget)
         {
-            var target = locker.GetNearestAvailableStar();
+            var target = locker.GetNearestAvailableStar(maxAllowedDistance);
             if (target)
             {
                 viewfinder.DisplayViewfinder(true);
@@ -98,7 +101,7 @@ public class Attack_Joystick : MonoBehaviour
         {
             if (_targetStar) viewfinder.gameObject.transform.position = _targetStar.transform.position;
             var positions = _selectedStars.Select(x => x.transform.position).ToList();
-            positions.Insert(0, _tr.position);
+            positions.Insert(0, _blueSphere.position);
             lineRenderer.SetPositions(positions.ToArray());
         }
 
@@ -203,7 +206,7 @@ public class Attack_Joystick : MonoBehaviour
                     _selectedStars.Remove(x);
                     lineRenderer.positionCount--;
                     var positions = _selectedStars.Select(y => x.transform.position).ToList();
-                    positions.Insert(0, _tr.position);
+                    positions.Insert(0, _blueSphere.position);
                     lineRenderer.SetPositions(positions.ToArray());
                 });
                 
@@ -219,7 +222,7 @@ public class Attack_Joystick : MonoBehaviour
         if (_attacking)
         {
             // Update the effect first position
-            lineRenderer.SetPosition(0, (Vector2) _tr.position);
+            lineRenderer.SetPosition(0, (Vector2) _blueSphere.position);
             
             if (_targetType == TargetType.Star)
             {
@@ -295,7 +298,7 @@ public class Attack_Joystick : MonoBehaviour
                 _selectedStars.Remove(_targetStar);
                 lineRenderer.positionCount--;
                 var positions = _selectedStars.Select(x => x.transform.position).ToList();
-                positions.Insert(0, _tr.position);
+                positions.Insert(0, _blueSphere.position);
                 lineRenderer.SetPositions(positions.ToArray());
             }
         }

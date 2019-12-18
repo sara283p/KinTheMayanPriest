@@ -8,7 +8,6 @@ using UnityEngine;
 public class Locker_Joystick : MonoBehaviour
 {
 	public float selectionDelay = 0.5f;
-	private const float MaxSearchRadius = 30f;
 	private const float DeadZone = 0.2f;
 
 	public LayerMask obstacleLayerMask;
@@ -20,6 +19,7 @@ public class Locker_Joystick : MonoBehaviour
 
 	public Rigidbody2D kin;
 	public Transform viewfinder;
+	public LineRenderer selectEffect;
 	
 	IEnumerator SelectionWait()
 	{
@@ -74,7 +74,7 @@ public class Locker_Joystick : MonoBehaviour
 			.ToList();
 	}
 	
-	public Star GetNearestAvailableStar(float range = MaxSearchRadius)
+	public Star GetNearestAvailableStar(float range)
 	{
 		Vector2 kinPosition = kin.position;
 		var stars = Physics2D.OverlapCircleAll(kinPosition, range, starLayerMask)
@@ -96,7 +96,7 @@ public class Locker_Joystick : MonoBehaviour
 		return stars[0];
 	}
 	
-	public Star GetAvailableStarByRaycast(Transform origin, float range = MaxSearchRadius)
+	public Star GetAvailableStarByRaycast(Transform origin, float range)
 	{
 		if (_selectingWait) return null;
 
@@ -104,21 +104,29 @@ public class Locker_Joystick : MonoBehaviour
 		var horizontalMove = InputManager.GetAxisRaw("RHorizontal");
 		var verticalMove = InputManager.GetAxisRaw("RVertical");
 
-		if (Mathf.Abs(verticalMove) < DeadZone && Mathf.Abs(horizontalMove) < DeadZone) return null;
+		//if (Mathf.Abs(verticalMove) < DeadZone && Mathf.Abs(horizontalMove) < DeadZone) return null;
 		
-		var direction = new Vector3(horizontalMove, verticalMove);
+		var direction = new Vector2(horizontalMove, verticalMove);
+		var magnitude = direction.magnitude;
+		var endPoint = originPosition + (range * magnitude * direction.normalized);
+		//print(direction.magnitude);
+		//print(direction.normalized);
+		selectEffect.positionCount = 2;
+		selectEffect.SetPosition(0, originPosition);
+		selectEffect.SetPosition(1, endPoint);
 		
-		Debug.DrawRay(originPosition, direction * 5.0f, Color.green);
+		//Debug.DrawRay(originPosition, direction * 5.0f, Color.green);
 		
-		var stars = Physics2D.RaycastAll(originPosition, direction, range, starLayerMask)
+		var stars = Physics2D.RaycastAll(originPosition, direction, magnitude*range, starLayerMask)
 			.Select(x => x.transform.GetComponent<Star>())
 			.Where(x => !x.isDisabled)
-			.Where(x => !Physics2D.Raycast(origin.position, direction, ((Vector2) x.transform.position - originPosition).magnitude, obstacleLayerMask))
+			.Where(x => !Physics2D.Raycast(originPosition, direction, ((Vector2) x.transform.position - originPosition).magnitude, obstacleLayerMask))
 			.OrderBy(x => (originPosition - (Vector2) x.transform.position).sqrMagnitude)
 			.ToArray();
 
 		if (stars.Length > 0)
 		{
+			selectEffect.positionCount = 0;
 			StartCoroutine(SelectionWait());
 			return stars[0];
 		}
@@ -157,7 +165,7 @@ public class Locker_Joystick : MonoBehaviour
 		return enemy[Array.IndexOf(distances, distances.Min())];
 	}
 	
-	public IDamageable GetNearestAvailableEnemy(Vector2 lastSelectedStar, float range = MaxSearchRadius)
+	public IDamageable GetNearestAvailableEnemy(Vector2 lastSelectedStar, float range)
 	{
 		
 		var enemies = Physics2D.OverlapCircleAll(lastSelectedStar, range, enemyLayerMask)
@@ -182,19 +190,24 @@ public class Locker_Joystick : MonoBehaviour
 		return null;
 	}
 	
-	public IDamageable GetAvailableEnemyByRaycast(Transform origin, Vector2 lastSelectedStar, float range = MaxSearchRadius)
+	public IDamageable GetAvailableEnemyByRaycast(Transform origin, Vector2 lastSelectedStar, float range)
 	{
 		if (_selectingWait) return null;
 
 		Vector2 originPosition = origin.position;
 		var horizontalMove = InputManager.GetAxisRaw("RHorizontal");
 		var verticalMove = InputManager.GetAxisRaw("RVertical");
-		
-		if (Mathf.Abs(verticalMove) < DeadZone && Mathf.Abs(horizontalMove) < DeadZone) return null;
-		
-		var direction = new Vector3(horizontalMove, verticalMove);
 
-		Debug.DrawRay(originPosition, direction * 5.0f, Color.green);
+		//if (Mathf.Abs(verticalMove) < DeadZone && Mathf.Abs(horizontalMove) < DeadZone) return null;
+		
+		var direction = new Vector2(horizontalMove, verticalMove);
+		var magnitude = direction.magnitude;
+		var endPoint = originPosition + (range * magnitude * direction.normalized);
+		//print(direction.magnitude);
+		//print(direction.normalized);
+		selectEffect.positionCount = 2;
+		selectEffect.SetPosition(0, originPosition);
+		selectEffect.SetPosition(1, endPoint);
 		
 		var enemies = Physics2D.RaycastAll(originPosition, direction, Mathf.Infinity, enemyLayerMask)
 			.Where(x =>

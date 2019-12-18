@@ -20,6 +20,7 @@ public class Grappler_Joystick : MonoBehaviour
     private float _minHangDistance;
     private float _hangLengthVariationSpeed = 1;
     private float _maxHangDistance;
+    private float _maxSelectDistance;
     private const float DownThresholdHang = 0.3f;
     private const float UpThresholdHang = 0.7f;
     
@@ -43,8 +44,8 @@ public class Grappler_Joystick : MonoBehaviour
         _joint.enabled = false;
         _friction.enabled = false;
         _friction.enableCollision = true;
-
-
+        _maxSelectDistance = GameManager.Instance.maxStarSelectDistance;
+        
     }
 
     private void SwitchToKinematic()
@@ -115,7 +116,7 @@ public class Grappler_Joystick : MonoBehaviour
 
         if (_wantToHook && _selectedStar)
         {
-            var target = locker.GetAvailableStarByRaycast(viewfinder.transform);
+            var target = locker.GetAvailableStarByRaycast(viewfinder.transform, _maxSelectDistance);
             if (target)
             {
                 _nextStar = target;
