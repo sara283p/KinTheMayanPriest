@@ -41,12 +41,37 @@ public class Obstacle : Health, IDamageable
 
     public Vector2 GetPosition()
     {
+        foreach(Transform tr in transform)
+        {
+            if(tr.CompareTag("TargetPosition"))
+            {
+                return (Vector2) tr.position;
+            }
+        }
         return transform.position;
     }
 
     private void DestroyObstacle()
     {
-        // Instantiate destruction animation
+        foreach (Transform child in transform)
+        {
+            if (child.GetComponent<StalattitePiece>())
+            {
+                child.GetComponent<CapsuleCollider2D>().enabled = true;
+                child.gameObject.AddComponent<Rigidbody2D>();
+                child.GetComponent<StalattitePiece>().Destroy();
+            }
+            
+//            var solidColor = child.GetComponent<SpriteRenderer>().color;
+//            var transparentColor = solidColor;
+//            transparentColor.a = 0.3f;
+//            child.GetComponent<SpriteRenderer>().material.color = solidColor;
+//            child.GetComponent<SpriteRenderer>().material.color = transparentColor;
+        }
+
+        transform.DetachChildren();
         Destroy(gameObject);
+        
     }
+    
 }
