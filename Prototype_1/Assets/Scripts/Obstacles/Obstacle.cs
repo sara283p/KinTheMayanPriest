@@ -1,17 +1,22 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Obstacle : Health, IDamageable
 {
     private float _maxHealth;
     private float _currentHealth;
+    private float _aliveChildren;
+    private Transform _targetPosition;
 
     private void Awake()
     {
         _maxHealth = GameManager.Instance.obstacleMaxHealth;
         _currentHealth = _maxHealth;
+        _aliveChildren = 0;
+        _targetPosition = GetComponentInChildren<StalactiteTarget>().transform;
     }
 
     // Update is called once per frame
@@ -41,37 +46,33 @@ public class Obstacle : Health, IDamageable
 
     public Vector2 GetPosition()
     {
-        foreach(Transform tr in transform)
-        {
-            if(tr.CompareTag("TargetPosition"))
-            {
-                return (Vector2) tr.position;
-            }
-        }
-        return transform.position;
+        return _targetPosition.position;
     }
 
     private void DestroyObstacle()
     {
-        foreach (Transform child in transform)
+        GetComponent<CapsuleCollider2D>().enabled = false;
+        foreach (Transform child in transform.GetComponentsInChildren<StalattitePiece>().Select(comp => comp.transform))
         {
-            if (child.GetComponent<StalattitePiece>())
-            {
-                child.GetComponent<CapsuleCollider2D>().enabled = true;
-                child.gameObject.AddComponent<Rigidbody2D>();
-                child.GetComponent<StalattitePiece>().Destroy();
-            }
-            
+            _aliveChildren++;
+            child.gameObject.AddComponent<Rigidbody2D>();
+            child.GetComponent<StalattitePiece>().Destroy();
+
 //            var solidColor = child.GetComponent<SpriteRenderer>().color;
 //            var transparentColor = solidColor;
 //            transparentColor.a = 0.3f;
 //            child.GetComponent<SpriteRenderer>().material.color = solidColor;
 //            child.GetComponent<SpriteRenderer>().material.color = transparentColor;
         }
+    }
 
-        transform.DetachChildren();
-        Destroy(gameObject);
-        
+    public void OnChildrenDestroyed()
+    {
+        _aliveChildren--;
+        if (_aliveChildren <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
     
 }

@@ -5,16 +5,36 @@ using UnityEngine;
 
 public class StalattitePiece : MonoBehaviour
 {
+    private SpriteRenderer _renderer;
+    private Transform _targetPosition;
+    private CapsuleCollider2D _collider;
+    private Obstacle _parent;
+
+    private void Awake()
+    {
+        _renderer = GetComponent<SpriteRenderer>();
+        _targetPosition = transform.parent.GetComponentInChildren<StalactiteTarget>().transform;
+        _collider = GetComponent<CapsuleCollider2D>();
+        _parent = transform.parent.GetComponent<Obstacle>();
+    }
 
     public void Destroy()
     {
         StartCoroutine(DestroyAnimation());
     }
 
+    private void Update()
+    {
+        if (!_collider.enabled && transform.position.y <= _targetPosition.position.y)
+        {
+            _collider.enabled = true;
+        }
+    }
+
     IEnumerator DestroyAnimation()
     {
         float time = 0.5f;
-        var solidColor = GetComponent<SpriteRenderer>().color;
+        var solidColor = _renderer.color;
         var transparentColor = solidColor;
 //        transparentColor.a = 0.3f;
         
@@ -33,9 +53,11 @@ public class StalattitePiece : MonoBehaviour
         for (int i = 0; i < 100; i++)
         {
             transparentColor.a -= dec;
-            GetComponent<SpriteRenderer>().material.color = transparentColor;
+            _renderer.material.color = transparentColor;
             yield return new WaitForSeconds(0.001f);
         }
 
+        _parent.OnChildrenDestroyed();
+        Destroy(gameObject);
     }
 }

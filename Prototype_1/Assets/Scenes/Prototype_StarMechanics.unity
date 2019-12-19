@@ -2909,7 +2909,7 @@ Tilemap:
       - {fileID: 21300000, guid: 51ec15e85f62441418d4221c16d84b58, type: 3}
       - {fileID: 21300000, guid: 56cc15d3c76dd9e4fa88523b5d0e0dcb, type: 3}
       - {fileID: 21300000, guid: adf5c192c1b3ee24689d25bc22207936, type: 3}
-      m_AnimationSpeed: 7.0000005
+      m_AnimationSpeed: 7
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: 22, y: -5, z: 0}
@@ -2981,7 +2981,7 @@ Tilemap:
       - {fileID: 21300000, guid: 51ec15e85f62441418d4221c16d84b58, type: 3}
       - {fileID: 21300000, guid: 56cc15d3c76dd9e4fa88523b5d0e0dcb, type: 3}
       - {fileID: 21300000, guid: adf5c192c1b3ee24689d25bc22207936, type: 3}
-      m_AnimationSpeed: 7.0000005
+      m_AnimationSpeed: 7
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: 30, y: -5, z: 0}
@@ -3079,7 +3079,7 @@ Tilemap:
       - {fileID: 21300000, guid: 94b8c0cefd2e5adf3af4398bc4da8f3e, type: 3}
       - {fileID: 21300000, guid: 9b4262b68108749b4882d8b94f4693db, type: 3}
       - {fileID: 21300000, guid: 60c9067e2b782a26aae4d9099c685f6e, type: 3}
-      m_AnimationSpeed: 12
+      m_AnimationSpeed: 12.000001
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: 28, y: -3, z: 0}
@@ -12800,6 +12800,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2af9a350288c2834ea1f512e47e6a438, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1336607412 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8550377798997088277, guid: 521b9ce8cc7b5a6bdb75d80c1c40e2b9,
+    type: 3}
+  m_PrefabInstance: {fileID: 953750131046174432}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1336607414
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1336607412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 150eac7d405bca640b15edf8a9922dbc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!213 &1343962512
 Sprite:
   m_ObjectHideFlags: 0
@@ -18686,6 +18704,66 @@ PrefabInstance:
     - target: {fileID: 4566205547496468571, guid: 521b9ce8cc7b5a6bdb75d80c1c40e2b9,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4566205547496468564, guid: 521b9ce8cc7b5a6bdb75d80c1c40e2b9,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4566205547496468564, guid: 521b9ce8cc7b5a6bdb75d80c1c40e2b9,
+        type: 3}
+      propertyPath: m_Offset.y
+      value: 4.107196
+      objectReference: {fileID: 0}
+    - target: {fileID: 4566205547496468564, guid: 521b9ce8cc7b5a6bdb75d80c1c40e2b9,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 21.159746
+      objectReference: {fileID: 0}
+    - target: {fileID: 4566205547496468564, guid: 521b9ce8cc7b5a6bdb75d80c1c40e2b9,
+        type: 3}
+      propertyPath: m_Offset.x
+      value: -0.70340514
+      objectReference: {fileID: 0}
+    - target: {fileID: 4566205547496468564, guid: 521b9ce8cc7b5a6bdb75d80c1c40e2b9,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 2.4245048
+      objectReference: {fileID: 0}
+    - target: {fileID: 550653404139644223, guid: 521b9ce8cc7b5a6bdb75d80c1c40e2b9,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 550653404718739392, guid: 521b9ce8cc7b5a6bdb75d80c1c40e2b9,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 550653405648505472, guid: 521b9ce8cc7b5a6bdb75d80c1c40e2b9,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 953750131355938164, guid: 521b9ce8cc7b5a6bdb75d80c1c40e2b9,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7336668641237388335, guid: 521b9ce8cc7b5a6bdb75d80c1c40e2b9,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7336668643131714491, guid: 521b9ce8cc7b5a6bdb75d80c1c40e2b9,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7336668643208643895, guid: 521b9ce8cc7b5a6bdb75d80c1c40e2b9,
+        type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
