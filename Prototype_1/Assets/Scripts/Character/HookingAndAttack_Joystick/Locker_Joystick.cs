@@ -173,7 +173,8 @@ public class Locker_Joystick : MonoBehaviour
 			{
 				Vector2 position = x.GetComponent<Transform>().position;
 				var relativeDirection = position - lastSelectedStar;
-				return !Physics2D.Raycast(lastSelectedStar, relativeDirection, relativeDirection.magnitude - 1f, obstacleLayerMask);
+				RaycastHit2D raycastHit = Physics2D.Raycast(lastSelectedStar, relativeDirection, relativeDirection.magnitude - 1f, obstacleLayerMask);
+				return !raycastHit || raycastHit.collider != x;
 				// The " - 1f" trick is to let player target a destructable object, but meanwile prevent the targeting of a 
 				// star over an obstacle
 			})
@@ -214,7 +215,8 @@ public class Locker_Joystick : MonoBehaviour
 			{
 				Vector2 position = x.transform.position;
 				Vector2 relativeDirection = position - lastSelectedStar;
-				return !Physics2D.Raycast(lastSelectedStar, relativeDirection, relativeDirection.magnitude, obstacleLayerMask).collider;
+				RaycastHit2D raycastHit = Physics2D.Raycast(lastSelectedStar, relativeDirection, relativeDirection.magnitude - 1f, obstacleLayerMask);
+				return !raycastHit || raycastHit.collider !=  x.collider;
 			})
 			.Where(x => (lastSelectedStar - (Vector2) x.transform.position).magnitude < range)
 			.OrderBy(x => (originPosition - (Vector2) x.transform.position).sqrMagnitude)
