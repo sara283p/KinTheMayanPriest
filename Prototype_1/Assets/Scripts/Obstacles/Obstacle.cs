@@ -52,7 +52,12 @@ public class Obstacle : Health, IDamageable
     private void DestroyObstacle()
     {
         GetComponent<CapsuleCollider2D>().enabled = false;
-        Destroy(GetComponentInChildren<ObstacleOutline>().gameObject);
+        ObstacleOutline outline = GetComponentInChildren<ObstacleOutline>();
+        if (outline)
+        {
+            Destroy(outline.gameObject);
+        }
+
         foreach (Transform child in transform.GetComponentsInChildren<StalattitePiece>().Select(comp => comp.transform))
         {
             _aliveChildren++;
