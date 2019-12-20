@@ -39,6 +39,7 @@ public class Attack_Joystick : MonoBehaviour
     private bool _autoTarget = true;
     private Animator _blueSphereAnimator;
     private Transform _blueSphere;
+    private int _maxLinkableStars;
 
     private void Awake()
     // Initialize the attack effect
@@ -49,6 +50,7 @@ public class Attack_Joystick : MonoBehaviour
         maxAllowedDistance = GameManager.Instance.maxStarSelectDistance;
         _blueSphereAnimator = gameObject.GetComponentInChildren<AttackBlueSphere>().GetComponent<Animator>();
         _blueSphere = gameObject.GetComponentInChildren<AttackBlueSphere>().transform;
+        _maxLinkableStars = GameManager.Instance.linkableStars;
     }
 
     public void SetHanging(bool val)
@@ -286,6 +288,11 @@ public class Attack_Joystick : MonoBehaviour
                     {
                         return;
                     }
+                }
+
+                if (_selectedStars.Count >= _maxLinkableStars)
+                {
+                    return;
                 }
                 _targetStar.SelectForAttack();
                 _selectedStars.Add(_targetStar);
