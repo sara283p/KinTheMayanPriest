@@ -16,8 +16,7 @@ public class GameManager : MonoBehaviour
     public float maxStarSelectDistance;
     public float minHangDistance;
     public int linkableStars;
-    [Range(0, 1)] public float analogDeadZoneLowerBound;
-    [Range(0, 1)] public float analogDeadZoneUpperBound;
+    [Range(0, 1)] public float analogDeadZone;
     public float lavaDamage;
     [Range(0, 1)] public float waterSpeedModifier;
     [Range(0, 1)] public float waterGravityModifier;

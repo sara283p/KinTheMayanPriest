@@ -25,7 +25,7 @@ public class Attack_Joystick : MonoBehaviour
 
     private const float UpThresholdSelect = 0.5f;
     private const float DownThresholdSelect = 0.2f;
-    private const float ThresholdViewfinder = 0.3f;
+    private float _analogDeadZone;
 
     private Star _targetStar;
     private IDamageable _targetEnemy;
@@ -51,6 +51,7 @@ public class Attack_Joystick : MonoBehaviour
         _blueSphereAnimator = gameObject.GetComponentInChildren<AttackBlueSphere>().GetComponent<Animator>();
         _blueSphere = gameObject.GetComponentInChildren<AttackBlueSphere>().transform;
         _maxLinkableStars = GameManager.Instance.linkableStars;
+        _analogDeadZone = GameManager.Instance.analogDeadZone;
     }
 
     public void SetHanging(bool val)
@@ -109,8 +110,8 @@ public class Attack_Joystick : MonoBehaviour
 
         // If the player moves the viewfinder or selects a star or press select button, go in attack mode
         IsSelectPressed();
-        if ((Math.Abs(InputManager.GetAxisRaw("RHorizontal")) > ThresholdViewfinder 
-             || Math.Abs(InputManager.GetAxisRaw("RVertical")) > ThresholdViewfinder || _selecting) && !_attacking)
+        if ((Math.Abs(InputManager.GetAxisRaw("RHorizontal")) > _analogDeadZone 
+             || Math.Abs(InputManager.GetAxisRaw("RVertical")) > _analogDeadZone || _selecting) && !_attacking)
         {
             _autoTarget = false;
             if (!locker.GetNearestAvailableStar(maxAllowedDistance)) return;
@@ -259,12 +260,12 @@ public class Attack_Joystick : MonoBehaviour
 
     private void IsSelectPressed()
     {
-        if (InputManager.GetAxisRaw("RTrigger") > UpThresholdSelect && _readyToSelect)
+        if (InputManager.GetAxisRaw("RTrigger") > _analogDeadZone && _readyToSelect)
         {
             _selecting = true;
             _readyToSelect = false;
         } 
-        if (InputManager.GetAxisRaw("RTrigger") <= DownThresholdSelect)
+        if (InputManager.GetAxisRaw("RTrigger") <= _analogDeadZone)
         {
             _readyToSelect = true;
         }
