@@ -64,10 +64,17 @@ public class GameManager : MonoBehaviour
         {
             SceneManager.LoadScene(scenes[1]);
         }
+
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            EventManager.TriggerEvent("LinkableStarsIncreased");
+        }
     }
 
     public void IncreaseLinkableStars()
     {
         linkableStars++;
+        EventManager.TriggerEvent("LinkableStarsIncreased");
+        // TODO: save as persistent the new value of maximum linkable stars
     }
 }
