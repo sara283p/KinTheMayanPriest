@@ -30,11 +30,13 @@ public class Star : MonoBehaviour
     public void SelectForAttack()
     {
         selectedForAttack.SetActive(true);
+        EventManager.TriggerEvent("StarSelected");
     }
 
     public void DeselectForAttack()
     {
         selectedForAttack.SetActive(false);
+        EventManager.TriggerEvent("StarDeselected");
     }
     
     public bool IsSelectedForAttack()

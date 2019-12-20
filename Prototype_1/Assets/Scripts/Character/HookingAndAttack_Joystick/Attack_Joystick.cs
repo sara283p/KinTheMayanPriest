@@ -54,6 +54,21 @@ public class Attack_Joystick : MonoBehaviour
         _analogDeadZone = GameManager.Instance.analogDeadZone;
     }
 
+    private void OnEnable()
+    {
+        EventManager.StartListening("LinkableStarsIncreased", IncreaseLinkableStars);
+    }
+
+    private void OnDisable()
+    {
+        EventManager.StopListening("LinkableStarsIncreased", IncreaseLinkableStars);
+    }
+
+    private void IncreaseLinkableStars()
+    {
+        _maxLinkableStars++;
+    }
+
     public void SetHanging(bool val)
     {
         if (val)
