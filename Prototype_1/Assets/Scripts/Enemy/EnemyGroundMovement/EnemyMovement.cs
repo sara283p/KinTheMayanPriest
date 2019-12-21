@@ -7,29 +7,29 @@ public class EnemyMovement : MonoBehaviour
 {
 
     public float moveSpeed = 3f;
-    Transform leftWayPoint, rightWayPoint;
-    Vector3 localScale;
-    bool movingRight = true;
-    Rigidbody2D rb;
+    private Transform _leftWayPoint, _rightWayPoint;
+    private bool _movingRight = true;
+    private Rigidbody2D _rb;
+    private Vector3 _unusedVelocity;
     
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        localScale = transform.localScale;
-        rb = GetComponent<Rigidbody2D>();
-        leftWayPoint = GameObject.Find("LeftWayPoint").GetComponent<Transform>();
-        rightWayPoint = GameObject.Find("RightWayPoint").GetComponent<Transform>();
+        _unusedVelocity = Vector3.zero;
+        _rb = GetComponent<Rigidbody2D>();
+        _leftWayPoint = transform.parent.GetComponentInChildren<LeftWayPoint>().transform;
+        _rightWayPoint = transform.parent.GetComponentInChildren<RightWayPoint>().transform;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (transform.position.x > rightWayPoint.position.x)
-            movingRight = false;
-        if (transform.position.x < leftWayPoint.position.x)
-            movingRight = true;
+        if (transform.position.x >= _rightWayPoint.position.x)
+            _movingRight = false;
+        else if (transform.position.x <= _leftWayPoint.position.x)
+            _movingRight = true;
 
-        if (movingRight)
+        if (_movingRight)
             MoveRight();
         else 
             MoveLeft();
@@ -38,17 +38,13 @@ public class EnemyMovement : MonoBehaviour
 
     void MoveRight()
     {
-        movingRight = true;
-        localScale.x = Math.Abs(localScale.x);
-        transform.localScale = localScale;
-        rb.velocity = new Vector2(localScale.x * moveSpeed, rb.velocity.y);
+        Vector2 targetVelocity = new Vector2(moveSpeed, _rb.velocity.y);
+        _rb.velocity = Vector3.SmoothDamp(_rb.velocity, targetVelocity, ref _unusedVelocity, 0.05f);
     }
     
     void MoveLeft()
     {
-        movingRight = false;
-        localScale.x = -Math.Abs(localScale.x);
-        transform.localScale = localScale;
-        rb.velocity = new Vector2(localScale.x * moveSpeed, rb.velocity.y);
+        Vector2 targetVelocity = new Vector2( - moveSpeed, _rb.velocity.y);
+        _rb.velocity = Vector3.SmoothDamp(_rb.velocity, targetVelocity, ref _unusedVelocity, 0.05f);
     }
 }
