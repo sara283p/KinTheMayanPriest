@@ -15,8 +15,9 @@ public class Star : MonoBehaviour
     private SpriteRenderer _renderer;
     private CircleCollider2D _collider;
     private Rigidbody2D _rb;
+    private ParticleSystem _particleEffect;
     
-    void Start()
+    void Awake()
     {
         selectedForAttack.SetActive(false);
         _renderer = GetComponent<SpriteRenderer>();
@@ -25,6 +26,8 @@ public class Star : MonoBehaviour
         _rb = GetComponent<Rigidbody2D>();
         damagePoints = GameManager.Instance.enemyPerStarDamage;
         coolDownTime = GameManager.Instance.starCooldownTime;
+        _particleEffect = GetComponentInChildren<ParticleSystem>();
+        _particleEffect.Stop();
     }
 
     public void SelectForAttack()
@@ -47,6 +50,7 @@ public class Star : MonoBehaviour
     public void UseForAttack()
     {
         StartCoroutine(CoolDown());
+        _particleEffect.Play();
     }
 
     public void DarkenStar()

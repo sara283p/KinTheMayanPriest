@@ -98,7 +98,8 @@ public class PowerBar : MonoBehaviour
 
     private void StarDeselected()
     {
-        DisableStar(_starSignals.ToArray()[_enabledStars - 1]);
+        if(_enabledStars > 0)
+            DisableStar(_starSignals.ToArray()[_enabledStars - 1]);
     }
 
     // Update is called once per frame
