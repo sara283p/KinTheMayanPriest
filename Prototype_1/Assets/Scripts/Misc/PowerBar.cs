@@ -54,7 +54,7 @@ public class PowerBar : MonoBehaviour
     private void EnableStar(GameObject star)
     {
         _line.positionCount++;
-        _line.SetPosition(_line.positionCount - 1, star.transform.position);
+        _line.SetPosition(_line.positionCount - 1, star.transform.localPosition);
         SpriteRenderer rend = star.GetComponent<SpriteRenderer>();
         Color starColor = rend.color;
         starColor.a = 1;
