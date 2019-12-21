@@ -7,11 +7,12 @@ public class Enemy : Health, IDamageable
 {
     private float _maxHealth;
     private float _curHealth;
-    public float damageToPlayer = 20f;
+    public float damageToPlayer;
+    public int hitsToDeath;
 
     void Awake()
     {
-        _maxHealth = GameManager.Instance.enemyMaxHealth;
+        _maxHealth = GameManager.Instance.GetEnemyHealthFromHits(hitsToDeath);
         _curHealth = _maxHealth;
     }
     

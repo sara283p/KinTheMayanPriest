@@ -7,7 +7,6 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public String[] scenes;
-    public float enemyMaxHealth;
     public float characterMaxHealth;
     public float obstacleMaxHealth;
     public float enemyPerStarDamage;
@@ -76,5 +75,10 @@ public class GameManager : MonoBehaviour
         linkableStars++;
         EventManager.TriggerEvent("LinkableStarsIncreased");
         // TODO: save as persistent the new value of maximum linkable stars
+    }
+
+    public float GetEnemyHealthFromHits(int hitsToDeath)
+    {
+        return hitsToDeath * enemyPerStarDamage;
     }
 }
