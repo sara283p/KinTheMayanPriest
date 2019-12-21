@@ -55,4 +55,9 @@ public class Enemy : Health, IDamageable
     {
         return _maxHealth;
     }
+
+    public void Regenerate()
+    {
+        _curHealth = _maxHealth;
+    }
 }
