@@ -23,4 +23,9 @@ public class MovingPlatformActivator : MonoBehaviour, IDamageable
     {
         return _tr.position;
     }
+
+    public Transform GetTransform()
+    {
+        return _tr;
+    }
 }

@@ -377,7 +377,7 @@ public class Attack_Joystick : MonoBehaviour
         }
         else
         {
-            var pointedEnemy = locker.GetAvailableEnemyByRaycast(viewfinder.transform,
+            var pointedEnemy = locker.GetAvailableEnemyByRaycast(_targetEnemy.GetTransform(),
                 _selectedStars.Select(x => x.transform.position).LastOrDefault(), maxAllowedDistance);
             if (pointedEnemy != null)
             {

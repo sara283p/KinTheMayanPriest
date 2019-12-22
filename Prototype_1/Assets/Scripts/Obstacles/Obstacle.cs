@@ -49,6 +49,11 @@ public class Obstacle : Health, IDamageable
         return _targetPosition.position;
     }
 
+    public Transform GetTransform()
+    {
+        return transform;
+    }
+
     private void DestroyObstacle()
     {
         GetComponent<CapsuleCollider2D>().enabled = false;

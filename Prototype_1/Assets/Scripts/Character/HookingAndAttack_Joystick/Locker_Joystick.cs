@@ -191,44 +191,45 @@ public class Locker_Joystick : MonoBehaviour
 		return null;
 	}
 	
-	public IDamageable GetAvailableEnemyByRaycast(Transform origin, Vector2 lastSelectedStar, float range)
+	public IDamageable GetAvailableEnemyByRaycast(Transform targetEnemy, Vector2 lastSelectedStar, float range)
 	{
 		if (_selectingWait) return null;
 
-		Vector2 originPosition = origin.position;
+		Vector2 viewfinderPosition = viewfinder.transform.position;
 		var horizontalMove = InputManager.GetAxisRaw("RHorizontal");
 		var verticalMove = InputManager.GetAxisRaw("RVertical");
-
-		//if (Mathf.Abs(verticalMove) < DeadZone && Mathf.Abs(horizontalMove) < DeadZone) return null;
+		
+		// if (Mathf.Abs(verticalMove) < DeadZone && Mathf.Abs(horizontalMove) < DeadZone) return null;
 		
 		var direction = new Vector2(horizontalMove, verticalMove);
 		var magnitude = direction.magnitude;
-		var endPoint = originPosition + (range * magnitude * direction.normalized);
-		//print(direction.magnitude);
-		//print(direction.normalized);
+		var endPoint = viewfinderPosition + (range * magnitude * direction.normalized);
+
 		selectEffect.positionCount = 2;
-		selectEffect.SetPosition(0, originPosition);
+		selectEffect.SetPosition(0, viewfinderPosition);
 		selectEffect.SetPosition(1, endPoint);
 		
-		var enemies = Physics2D.RaycastAll(originPosition, direction, Mathf.Infinity, enemyLayerMask)
+		var enemies = Physics2D.RaycastAll(viewfinderPosition, direction, magnitude*range, enemyLayerMask)
+			.Where(x => x.transform != targetEnemy)
 			.Where(x =>
 			{
-				Vector2 position = x.transform.position;
-				Vector2 relativeDirection = position - lastSelectedStar;
+				Vector2 enemyPosition = x.transform.position;
+				Vector2 relativeDirection = enemyPosition - lastSelectedStar;
 				RaycastHit2D raycastHit = Physics2D.Raycast(lastSelectedStar, relativeDirection, relativeDirection.magnitude - 1f, obstacleLayerMask);
 				return !raycastHit || raycastHit.collider !=  x.collider;
 			})
 			.Where(x => (lastSelectedStar - (Vector2) x.transform.position).magnitude < range)
-			.OrderBy(x => (originPosition - (Vector2) x.transform.position).sqrMagnitude)
+			.OrderBy(x => (viewfinderPosition - (Vector2) x.transform.position).sqrMagnitude)
 			.Select(x => x.transform.GetComponent<IDamageable>())
 			.ToArray();
 
 		if (enemies.Length > 0)
 		{
+			selectEffect.positionCount = 0;
 			StartCoroutine(SelectionWait());
 			return enemies[0];
 		}
-
+		
 		return null;
 	}
 	

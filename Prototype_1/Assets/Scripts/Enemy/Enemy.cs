@@ -33,6 +33,11 @@ public class Enemy : Health, IDamageable
         return transform.position;
     }
 
+    public Transform GetTransform()
+    {
+        return transform;
+    }
+
     void Die()
     {
         //Instantiate(deathEffect, transform.position, Quaternion.identity);

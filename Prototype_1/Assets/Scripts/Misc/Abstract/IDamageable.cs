@@ -6,4 +6,6 @@ public interface IDamageable
 {
     void TakeDamage(float damage);
     Vector2 GetPosition();
+
+    Transform GetTransform();
 }
