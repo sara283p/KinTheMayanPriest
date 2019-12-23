@@ -152,6 +152,10 @@ public class Attack_Joystick : MonoBehaviour
                     _targetEnemy = pointedEnemy;
                     viewfinder.gameObject.transform.position = pointedEnemy.GetPosition();
                 }
+                else
+                {
+                    viewfinder.EnemyTooFarEffect();
+                }
                 
             }
             else
@@ -372,7 +376,11 @@ public class Attack_Joystick : MonoBehaviour
         {
             _targetEnemy =
                 locker.GetNearestAvailableEnemy(_selectedStars.Select(x => x.transform.position).LastOrDefault(), maxAllowedDistance);
-            if (_targetEnemy == null) return;
+            if (_targetEnemy == null)
+            {
+                viewfinder.EnemyTooFarEffect();
+                return;
+            }
             viewfinder.gameObject.transform.position = _targetEnemy.GetPosition();
         }
         else
