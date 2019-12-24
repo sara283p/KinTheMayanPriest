@@ -20,6 +20,8 @@ public class Locker_Joystick : MonoBehaviour
 	public Rigidbody2D kin;
 	public Transform viewfinder;
 	public LineRenderer selectEffect;
+
+	private RaycastHit2D[] dummyRaycastHit2Ds = new RaycastHit2D[5];
 	
 	IEnumerator SelectionWait()
 	{
@@ -167,20 +169,20 @@ public class Locker_Joystick : MonoBehaviour
 	
 	public IDamageable GetNearestAvailableEnemy(Vector2 lastSelectedStar, float range)
 	{
-		
 		var enemies = Physics2D.OverlapCircleAll(lastSelectedStar, range, enemyLayerMask)
 			.Where(x =>
 			{
-				Vector2 position = x.GetComponent<Transform>().position;
+				Vector2 position = x.GetComponent<IDamageable>().GetPosition();
 				var relativeDirection = position - lastSelectedStar;
-				RaycastHit2D raycastHit = Physics2D.Raycast(lastSelectedStar, relativeDirection, relativeDirection.magnitude - 1f, obstacleLayerMask);
-				return !raycastHit || raycastHit.collider != x;
-				// The " - 1f" trick is to let player target a destructable object, but meanwile prevent the targeting of a 
-				// star over an obstacle
+				var size = Physics2D.RaycastNonAlloc(lastSelectedStar, relativeDirection, dummyRaycastHit2Ds, relativeDirection.magnitude, obstacleLayerMask);
+				Debug.DrawRay(lastSelectedStar, relativeDirection.normalized * (relativeDirection.magnitude), Color.green);
+				print(size);
+				return size < 2;
 			})
-			.OrderBy(x => (lastSelectedStar - (Vector2) x.GetComponent<Transform>().position).sqrMagnitude)
 			.Select(x => x.GetComponent<IDamageable>())
+			.OrderBy(x => (lastSelectedStar -  x.GetPosition()).sqrMagnitude)
 			.ToArray();
+		
 
 		if (enemies.Length > 0)
 		{
@@ -213,14 +215,16 @@ public class Locker_Joystick : MonoBehaviour
 			.Where(x => x.transform != targetEnemy)
 			.Where(x =>
 			{
-				Vector2 enemyPosition = x.transform.position;
-				Vector2 relativeDirection = enemyPosition - lastSelectedStar;
-				RaycastHit2D raycastHit = Physics2D.Raycast(lastSelectedStar, relativeDirection, relativeDirection.magnitude - 1f, obstacleLayerMask);
-				return !raycastHit || raycastHit.collider !=  x.collider;
+				Vector2 position = x.transform.GetComponent<IDamageable>().GetPosition();
+				var relativeDirection = position - lastSelectedStar;
+				var size = Physics2D.RaycastNonAlloc(lastSelectedStar, relativeDirection, dummyRaycastHit2Ds, relativeDirection.magnitude, obstacleLayerMask);
+				Debug.DrawRay(lastSelectedStar, relativeDirection.normalized * (relativeDirection.magnitude), Color.green);
+				print(size);
+				return size < 2;
 			})
-			.Where(x => (lastSelectedStar - (Vector2) x.transform.position).magnitude < range)
-			.OrderBy(x => (viewfinderPosition - (Vector2) x.transform.position).sqrMagnitude)
 			.Select(x => x.transform.GetComponent<IDamageable>())
+			.Where(x => (lastSelectedStar - x.GetPosition()).magnitude < range)
+			.OrderBy(x => (viewfinderPosition - x.GetPosition()).sqrMagnitude)
 			.ToArray();
 
 		if (enemies.Length > 0)

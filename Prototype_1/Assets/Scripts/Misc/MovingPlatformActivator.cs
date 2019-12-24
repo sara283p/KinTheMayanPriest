@@ -7,11 +7,14 @@ public class MovingPlatformActivator : MonoBehaviour, IDamageable
 {
     private Transform _tr;
     private MovingPlatform _platform;
+    public Transform activator;
+    private Vector2 activatorPosition;
 
     private void Awake()
     {
         _tr = GetComponent<Transform>();
-        _platform = _tr.parent.GetComponentInChildren<MovingPlatform>();
+        _platform = _tr.GetComponentInChildren<MovingPlatform>();
+        activatorPosition = activator.position;
     }
 
     public void TakeDamage(float damage)
@@ -21,7 +24,7 @@ public class MovingPlatformActivator : MonoBehaviour, IDamageable
 
     public Vector2 GetPosition()
     {
-        return _tr.position;
+        return activatorPosition;
     }
 
     public Transform GetTransform()
