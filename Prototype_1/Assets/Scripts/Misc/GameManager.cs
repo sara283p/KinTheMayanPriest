@@ -77,7 +77,7 @@ public class GameManager : MonoBehaviour
         // TODO: save as persistent the new value of maximum linkable stars
     }
 
-    public float GetEnemyHealthFromHits(int hitsToDeath)
+    public float GetEnemyHealthFromHits(float hitsToDeath)
     {
         return hitsToDeath * enemyPerStarDamage;
     }
