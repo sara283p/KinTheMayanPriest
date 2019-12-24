@@ -42,6 +42,7 @@ public class Enemy : Health, IDamageable
     {
         //Instantiate(deathEffect, transform.position, Quaternion.identity);
         Destroy(gameObject);
+        EventManager.TriggerEvent("EnemyKilled");
     }
 
     private void OnTriggerEnter2D(Collider2D other)
