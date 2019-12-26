@@ -9,7 +9,8 @@ public class MovingPlatform : MonoBehaviour
 {
     public MovingPlatformActivator[] activators;
     public float minSpeed;
-    
+    public float speed;
+
     private bool _isActivated;
     private bool _changeSegment;
     private bool _changeTransition;
@@ -21,24 +22,22 @@ public class MovingPlatform : MonoBehaviour
     private Vector2 _currentDirection;
     private Transform _tr;
     private Vector2 _initialPosition;
-    private Transform _startEdge;
-    private Transform _endEdge;
-
-    public float speed;
+    private StartPos _startPosObject;
+    private EndPos _endPosObject;
 
     private void Awake()
     {
         _tr = GetComponent<Transform>();
         _initialPosition = _tr.position;
-        _startPos = activators[0].GetComponentInChildren<StartPos>().transform.position;
-        _endPos = activators[0].GetComponentInChildren<EndPos>().transform.position;
+        _startPosObject = activators[0].GetComponentInChildren<StartPos>();
+        _endPosObject = activators[0].GetComponentInChildren<EndPos>();
+        _startPos = _startPosObject.transform.position;
+        _endPos = _endPosObject.transform.position;
         _startToEnd = (_endPos - _startPos).normalized;
         _endToStart = -_startToEnd;
         _currentDirection = _startToEnd;
         _currentActiveSegment = 0;
-        _startEdge = GetComponentInChildren<PlatformStartEdge>().transform;
-        _endEdge = GetComponentInChildren<PlatformEndEdge>().transform;
-        
+
         // Disable all MovingPlatformSegmentEnd components
         activators
             .Aggregate(new List<MovingPlatformSegmentEnd>(), (init, activator) => init.Concat(activator.GetComponentsInChildren<MovingPlatformSegmentEnd>()).ToList())
@@ -64,7 +63,7 @@ public class MovingPlatform : MonoBehaviour
         }
 
         Vector2 pos = transform.position;
-        float distance = Math.Min(( _startPos - pos).magnitude, (_endPos - pos).magnitude);
+        float distance = Math.Min(_startPosObject.GetDistance(), _endPosObject.GetDistance());
 
         // Compute distance as a percentage having value 1.5 when the platform is in the middle of the moving path
         distance = distance * 3 / (_startPos - _endPos).magnitude;
@@ -135,8 +134,10 @@ public class MovingPlatform : MonoBehaviour
         currentActivator = activators[_currentActiveSegment];
         currentActivator.GetComponentInChildren<StartPos>().enabled = true;
         currentActivator.GetComponentInChildren<EndPos>().enabled = true;
-        _startPos = currentActivator.GetComponentInChildren<StartPos>().transform.position;
-        _endPos = currentActivator.GetComponentInChildren<EndPos>().transform.position;
+        _startPosObject = currentActivator.GetComponentInChildren<StartPos>();
+        _startPos = _startPosObject.transform.position;
+        _endPosObject = currentActivator.GetComponentInChildren<EndPos>();
+        _endPos = _endPosObject.transform.position;
         _startToEnd = (_endPos - _startPos).normalized;
         _endToStart = -_startToEnd;
         _currentDirection = _startToEnd;

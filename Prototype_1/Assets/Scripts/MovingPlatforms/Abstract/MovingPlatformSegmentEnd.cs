@@ -7,15 +7,26 @@ using UnityEngine;
 public abstract class MovingPlatformSegmentEnd : MonoBehaviour
 {
     protected CircleCollider2D coll;
+    private MovingPlatform _platform;
     private bool _alreadyTriggered;
+    private LayerMask _groundMask;
 
     private void Awake()
     {
         coll = GetComponent<CircleCollider2D>();
+        _platform = transform.parent.parent.GetComponentInChildren<MovingPlatform>();
         _alreadyTriggered = true;
+        _groundMask = LayerMask.GetMask("Ground");
     }
 
     protected abstract Collider2D[] GetEdgeColliders();
+
+    public float GetDistance()
+    {
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, _platform.transform.position - transform.position,
+            (transform.position - _platform.transform.position).magnitude, _groundMask);
+        return hit.distance;
+    }
 
     private void Update()
     {
