@@ -29,25 +29,7 @@ public class MovingPlatform : MonoBehaviour
     {
         _tr = GetComponent<Transform>();
         _initialPosition = _tr.position;
-        _startPosObject = activators[0].GetComponentInChildren<StartPos>();
-        _endPosObject = activators[0].GetComponentInChildren<EndPos>();
-        _startPos = _startPosObject.transform.position;
-        _endPos = _endPosObject.transform.position;
-        _startToEnd = (_endPos - _startPos).normalized;
-        _endToStart = -_startToEnd;
-        _currentDirection = _startToEnd;
-        _currentActiveSegment = 0;
-
-        // Disable all MovingPlatformSegmentEnd components
-        activators
-            .Aggregate(new List<MovingPlatformSegmentEnd>(), (init, activator) => init.Concat(activator.GetComponentsInChildren<MovingPlatformSegmentEnd>()).ToList())
-            .ForEach(end => end.enabled = false);
-        
-        // Enable only the MovingPlatformSegmentEnd components of the first activator
-        foreach (MovingPlatformSegmentEnd end in activators[0].GetComponentsInChildren<MovingPlatformSegmentEnd>())
-        {
-            end.enabled = true;
-        }
+        Init();
     }
 
     private void OnEnable()
@@ -74,10 +56,7 @@ public class MovingPlatform : MonoBehaviour
         {
             currentSpeed = minSpeed;
         }
-        
-        print("Distance: " + distance);
-        print("Speed: " + currentSpeed);
-        
+
         Vector2 delta = currentSpeed * Time.fixedDeltaTime * _currentDirection;
         _tr.position += (Vector3) delta;
     }
@@ -97,11 +76,26 @@ public class MovingPlatform : MonoBehaviour
     private void Init()
     {
         _isActivated = false;
-        _currentDirection = _startToEnd;
         _tr.position = _initialPosition;
-        foreach (MovingPlatformActivator activator in activators)
+        
+        _startPosObject = activators[0].GetComponentInChildren<StartPos>();
+        _endPosObject = activators[0].GetComponentInChildren<EndPos>();
+        _startPos = _startPosObject.transform.position;
+        _endPos = _endPosObject.transform.position;
+        _startToEnd = (_endPos - _startPos).normalized;
+        _endToStart = -_startToEnd;
+        _currentDirection = _startToEnd;
+        _currentActiveSegment = 0;
+
+        // Disable all MovingPlatformSegmentEnd components
+        activators
+            .Aggregate(new List<MovingPlatformSegmentEnd>(), (init, activator) => init.Concat(activator.GetComponentsInChildren<MovingPlatformSegmentEnd>()).ToList())
+            .ForEach(end => end.enabled = false);
+        
+        // Enable only the MovingPlatformSegmentEnd components of the first activator
+        foreach (MovingPlatformSegmentEnd end in activators[0].GetComponentsInChildren<MovingPlatformSegmentEnd>())
         {
-            activator.GetComponent<BoxCollider2D>().enabled = true;
+            end.enabled = true;
         }
     }
 
