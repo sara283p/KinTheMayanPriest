@@ -46,7 +46,6 @@ MonoBehaviour:
   scenes:
   - Scenes/Prototype_CharacterMovement
   - Scenes/Prototype_StarMechanics
-  enemyMaxHealth: 100
   characterMaxHealth: 100
   obstacleMaxHealth: 1
   enemyPerStarDamage: 20
@@ -55,6 +54,7 @@ MonoBehaviour:
   maxStarSelectDistance: 10
   minHangDistance: 2
   linkableStars: 1
+  attackBonus: 0.3
   analogDeadZone: 0.3
   lavaDamage: 25
   waterSpeedModifier: 0.5

@@ -18,6 +18,7 @@ public class PowerBar : MonoBehaviour
     private float _disabledStarOpacity;
     private int _enabledStars;
     private Vector3 _originalScale;
+    private ParticleSystem _particleEffect;
 
     private void Awake()
     {
@@ -31,6 +32,7 @@ public class PowerBar : MonoBehaviour
         _starSignals = new List<GameObject>();
         _disabledStarOpacity = 0.3f;
         _originalScale = new Vector3(1, 1, 1);
+        _particleEffect = GetComponentInChildren<ParticleSystem>();
 
         Vector2 pos = _leftEdge;
         for (int i = 0; i < _linkableStars; i++)
@@ -46,6 +48,10 @@ public class PowerBar : MonoBehaviour
         Color starColor = rend.color;
         starColor.a = _disabledStarOpacity;
         rend.color = starColor;
+        if (_enabledStars == _linkableStars)
+        {
+            _particleEffect.Stop();
+        }
         if (_enabledStars > 0)
         {
             _line.positionCount--;
@@ -62,6 +68,11 @@ public class PowerBar : MonoBehaviour
         starColor.a = 1;
         rend.color = starColor;
         _enabledStars++;
+        if (_enabledStars > 1 && _enabledStars == _linkableStars)
+        {
+            _particleEffect.transform.position = _starSignals.Last().transform.position;
+            _particleEffect.Play();
+        }
     }
 
     private void AddStar(Vector2 position)

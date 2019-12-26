@@ -40,6 +40,7 @@ public class Attack_Joystick : MonoBehaviour
     private Animator _blueSphereAnimator;
     private Transform _blueSphere;
     private int _maxLinkableStars;
+    private float _attackBonus;
 
     private void Awake()
     // Initialize the attack effect
@@ -52,6 +53,7 @@ public class Attack_Joystick : MonoBehaviour
         _blueSphere = gameObject.GetComponentInChildren<AttackBlueSphere>().transform;
         _maxLinkableStars = GameManager.Instance.linkableStars;
         _analogDeadZone = GameManager.Instance.analogDeadZone;
+        _attackBonus = GameManager.Instance.attackBonus;
     }
 
     private void OnEnable()
@@ -401,6 +403,12 @@ public class Attack_Joystick : MonoBehaviour
         {
             StartCoroutine(AttackEffect(_targetEnemy));
             var damage = _selectedStars.Select(x => x.damagePoints).Sum();
+            
+            // Attack bonus in case all linkable stars are selected
+            if (_selectedStars.Count > 1 && _selectedStars.Count == _maxLinkableStars)
+            {
+                damage += _attackBonus * _selectedStars.First().damagePoints;
+            }
             _selectedStars.ForEach(star => star.UseForAttack());
             
             _targetEnemy.TakeDamage(damage);
