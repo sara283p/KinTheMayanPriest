@@ -7,24 +7,24 @@ public class MovingPlatformActivator : MonoBehaviour, IDamageable
 {
     private Transform _tr;
     private MovingPlatform _platform;
-    public Transform activator;
-    private Vector2 activatorPosition;
+    private BoxCollider2D _coll;
 
     private void Awake()
     {
         _tr = GetComponent<Transform>();
-        _platform = _tr.GetComponentInChildren<MovingPlatform>();
-        activatorPosition = activator.position;
+        _platform = _tr.parent.GetComponentInChildren<MovingPlatform>();
+        _coll = GetComponent<BoxCollider2D>();
     }
 
     public void TakeDamage(float damage)
     {
         _platform.Activate();
+        _coll.enabled = false;
     }
 
     public Vector2 GetPosition()
     {
-        return activatorPosition;
+        return _tr.position;
     }
 
     public Transform GetTransform()
