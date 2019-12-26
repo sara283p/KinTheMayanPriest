@@ -17,6 +17,7 @@ public class PowerBar : MonoBehaviour
     private List<GameObject> _starSignals;
     private float _disabledStarOpacity;
     private int _enabledStars;
+    private Vector3 _originalScale;
 
     private void Awake()
     {
@@ -28,7 +29,8 @@ public class PowerBar : MonoBehaviour
         _powerBarStarsDistance = (_rightEdge.x - _leftEdge.x) / (_maxLinkableStars - 1);
         _line = GetComponent<LineRenderer>();
         _starSignals = new List<GameObject>();
-        _disabledStarOpacity = 0.1f;
+        _disabledStarOpacity = 0.3f;
+        _originalScale = new Vector3(1, 1, 1);
 
         Vector2 pos = _leftEdge;
         for (int i = 0; i < _linkableStars; i++)
@@ -65,8 +67,12 @@ public class PowerBar : MonoBehaviour
     private void AddStar(Vector2 position)
     {
         _starSignals.ForEach(EnableStar);
+        _starSignals.ForEach(star => star.transform.localScale = _originalScale);
         GameObject newStar = Instantiate(starPrefab, transform);
-        newStar.transform.position = position;
+        Transform newStarTransform = newStar.transform;
+        newStarTransform.position = position;
+        if(_starSignals.Count > 0)
+            newStarTransform.localScale *= 2;
         _starSignals.Add(newStar);
         _starSignals.ForEach(DisableStar);
     }
@@ -88,7 +94,7 @@ public class PowerBar : MonoBehaviour
     private void IncreaseLinkableStars()
     {
         _linkableStars++;
-        AddStar((Vector2) _starSignals.LastOrDefault().transform.position + new Vector2(_powerBarStarsDistance, 0));
+        AddStar((Vector2) _starSignals.Last().transform.position + new Vector2(_powerBarStarsDistance, 0));
     }
 
     private void StarSelected()
@@ -100,11 +106,5 @@ public class PowerBar : MonoBehaviour
     {
         if(_enabledStars > 0)
             DisableStar(_starSignals.ToArray()[_enabledStars - 1]);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
