@@ -24,10 +24,14 @@ public class MovingPlatform : MonoBehaviour
     private Vector2 _initialPosition;
     private StartPos _startPosObject;
     private EndPos _endPosObject;
+    private Coroutine _runningRoutine;
+    private float _starCooldown;
+    private bool _interrupted;
 
     private void Awake()
     {
         _tr = GetComponent<Transform>();
+        _starCooldown = GameManager.Instance.starCooldownTime;
         _initialPosition = _tr.position;
         Init();
     }
@@ -66,11 +70,18 @@ public class MovingPlatform : MonoBehaviour
         if (!_isActivated)
         {
             _isActivated = true;
+            _runningRoutine = StartCoroutine(DisablingTimer());
         }
         else
         {
             _changeSegment = true;
         }
+    }
+
+    private IEnumerator DisablingTimer()
+    {
+        yield return new WaitForSeconds(_starCooldown);
+        _interrupted = true;
     }
 
     private void Init()
@@ -108,7 +119,17 @@ public class MovingPlatform : MonoBehaviour
     {
         if (_currentDirection == _endToStart)
         {
-            _currentDirection = _startToEnd;
+            if (_interrupted)
+            {
+                _isActivated = false;
+                _interrupted = false;
+                activators[_currentActiveSegment].GetComponent<BoxCollider2D>().enabled = true;
+                _currentDirection = _startToEnd;
+            }
+            else
+            {
+                _currentDirection = _startToEnd;
+            }
         }
         else
         {
@@ -125,7 +146,12 @@ public class MovingPlatform : MonoBehaviour
 
     private void ChangeSegment()
     {
+        if (_runningRoutine != null)
+        {
+            StopCoroutine(_runningRoutine);
+        }
         _changeSegment = false;
+        _runningRoutine = StartCoroutine(DisablingTimer());
         MovingPlatformActivator currentActivator = activators[_currentActiveSegment];
         currentActivator.GetComponentInChildren<StartPos>().enabled = false;
         currentActivator.GetComponentInChildren<EndPos>().enabled = false;
