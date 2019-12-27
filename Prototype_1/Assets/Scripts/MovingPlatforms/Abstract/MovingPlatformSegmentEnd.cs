@@ -48,7 +48,7 @@ public abstract class MovingPlatformSegmentEnd : MonoBehaviour
         
         foreach (Collider2D collid in edgeColliders)
         {
-            collid.transform.parent.GetComponent<MovingPlatform>().EndReached();
+            _platform.EndReached();
         }
         alreadyTriggered = true;
         
