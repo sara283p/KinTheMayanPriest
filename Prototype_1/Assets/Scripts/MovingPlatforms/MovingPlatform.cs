@@ -92,6 +92,11 @@ public class MovingPlatform : MonoBehaviour
             .Aggregate(new List<MovingPlatformSegmentEnd>(), (init, activator) => init.Concat(activator.GetComponentsInChildren<MovingPlatformSegmentEnd>()).ToList())
             .ForEach(end => end.enabled = false);
         
+        foreach (var activator in activators)
+        {
+            activator.GetComponent<BoxCollider2D>().enabled = true;
+        }
+        
         // Enable only the MovingPlatformSegmentEnd components of the first activator
         foreach (MovingPlatformSegmentEnd end in activators[0].GetComponentsInChildren<MovingPlatformSegmentEnd>())
         {
