@@ -8,14 +8,14 @@ public abstract class MovingPlatformSegmentEnd : MonoBehaviour
 {
     protected CircleCollider2D coll;
     private MovingPlatform _platform;
-    private bool _alreadyTriggered;
+    protected bool alreadyTriggered;
     private LayerMask _groundMask;
 
     private void Awake()
     {
         coll = GetComponent<CircleCollider2D>();
         _platform = transform.parent.parent.GetComponentInChildren<MovingPlatform>();
-        _alreadyTriggered = true;
+        alreadyTriggered = true;
         _groundMask = LayerMask.GetMask("Ground");
     }
 
@@ -23,8 +23,11 @@ public abstract class MovingPlatformSegmentEnd : MonoBehaviour
 
     public float GetDistance()
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, _platform.transform.position - transform.position,
-            (transform.position - _platform.transform.position).magnitude, _groundMask);
+        Vector2 pos = transform.position;
+        Vector2 platformPos = _platform.transform.position;
+        Vector2 relativePosition = platformPos - pos;
+        
+        RaycastHit2D hit = Physics2D.Raycast(pos, relativePosition, relativePosition.magnitude, _groundMask);
         return hit.distance;
     }
 
@@ -36,18 +39,18 @@ public abstract class MovingPlatformSegmentEnd : MonoBehaviour
         
         if (edgeColliders.Length <= 0)
         {
-            _alreadyTriggered = false;
+            alreadyTriggered = false;
             return;
         }
         
-        if (_alreadyTriggered)
+        if (alreadyTriggered)
             return;
         
         foreach (Collider2D collid in edgeColliders)
         {
             collid.transform.parent.GetComponent<MovingPlatform>().EndReached();
         }
-        _alreadyTriggered = true;
+        alreadyTriggered = true;
         
 
     }
