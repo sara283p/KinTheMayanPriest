@@ -1,34 +1,43 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class CheckPoint : MonoBehaviour
 {
-    private Animator _checkPointAnimator;
+    private List<Animator> _checkPointAnimators;
+    private Armadillo _armadillo;
     private Transform _spawnPoint;
+    private bool _alreadyTriggered;
 
     private static readonly int Activated = Animator.StringToHash("Activated");
 
     private void Awake()
     {
-        _checkPointAnimator = GetComponent<Animator>();
+        _checkPointAnimators = GetComponentsInChildren<Animator>().ToList();
         _spawnPoint = FindObjectOfType<SpawnPoint>().transform;
+        _armadillo = GetComponentInChildren<Armadillo>();
+        
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player") && other.isTrigger)
+        if (other.CompareTag("Player") && other.isTrigger && !_alreadyTriggered)
         {
             _spawnPoint.position = (Vector2) transform.position;
+            _armadillo.Activate();
             StartCoroutine(AnimationEnabler());
+            _alreadyTriggered = true;
         }
     }
 
     private IEnumerator AnimationEnabler()
     {
-        _checkPointAnimator.SetBool(Activated, true);
+        _checkPointAnimators
+            .ForEach(contr => contr.SetBool(Activated, true));
         yield return new WaitForSeconds(1);
-        _checkPointAnimator.SetBool(Activated, false);
+        _checkPointAnimators
+            .ForEach(contr => contr.SetBool(Activated, false));
     }
 }
