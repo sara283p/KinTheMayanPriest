@@ -32,11 +32,11 @@ public class PauseMenu : MonoBehaviour
         //resume gameplay if "Start button" is pressed while the game is paused, pause it otherwise
         if (InputManager.GetButtonDown("Button4"))
         {
-            if (isGamePaused)
+            if (isGamePaused && !exitLevelUI.activeSelf)
             {
                 Resume();
             }
-            else
+            else if (!isGamePaused)
             {
                 Pause();
             }

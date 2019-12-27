@@ -54,6 +54,7 @@ public class ExitLevel : MonoBehaviour
             {
                  pauseMenuUI.SetActive(true);
                  exitLevelUI.SetActive(false);
+                 return;
             }
             
             //if "YES" is pressed while the exitLevelUI is active:
@@ -61,6 +62,12 @@ public class ExitLevel : MonoBehaviour
             {
                 SceneManager.LoadScene("Scenes/OpeningScreenUI");
             }
+        }
+
+        //to avoid re-opening the menu while the exitLevelUI is open
+        if (InputManager.GetButtonDown("Button4") && exitLevelUI.activeSelf)
+        {
+            return;
         }
 
         //if B is pressed while in the exitLevelUI, the player is brought back to the menu
