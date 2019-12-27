@@ -7,6 +7,7 @@ public class CharacterController : MonoBehaviour
 
 {
     private static readonly int Jumping = Animator.StringToHash("Jumping");
+    private static readonly int IsPlayerTouching = Animator.StringToHash("IsPlayerTouching");
 
     public bool drawGroundedSphere;
     public Transform _leftJumpCheck;											// Position marking used to check when the character has landed after jumps
@@ -373,6 +374,9 @@ public class CharacterController : MonoBehaviour
             Vector2 currentVelocity = _rb.velocity;
             currentVelocity.y = _waterSpeedModifier * Math.Sign(currentVelocity.y);
             _rb.velocity = currentVelocity;
+            other.GetComponentsInChildren<Animator>()
+                .ToList()
+                .ForEach(animator => animator.SetBool(IsPlayerTouching, true));
             return;
         }
     }
@@ -388,6 +392,10 @@ public class CharacterController : MonoBehaviour
         if (other.CompareTag("Water"))
         {
             _isInWater = false;
+            other
+                .GetComponentsInChildren<Animator>()
+                .ToList()
+                .ForEach(animator => animator.SetBool(IsPlayerTouching, false));
             return;
         }
     }
