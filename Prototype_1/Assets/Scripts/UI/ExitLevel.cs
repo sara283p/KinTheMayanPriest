@@ -2,17 +2,23 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ExitLevel : MonoBehaviour
 {
-    private bool isYesSelected;
-    private bool isNoSelected;
+    [SerializeField] private bool isYesSelected;
+    [SerializeField] private bool isNoSelected;
+    
     private TextMeshProUGUI selectedText;
+    
+    public GameObject pauseMenuUI;
+    public GameObject exitLevelUI;
+    
     [SerializeField] private GameObject yesButton;
     [SerializeField] private GameObject noButton;
-    
-    
-    
+
+
+
     void Start()
     {
         isYesSelected = false;
@@ -23,7 +29,7 @@ public class ExitLevel : MonoBehaviour
     
     void Update()
     {
-        if (isNoSelected && InputManager.GetAxis("Horizontal") < -0.01)
+        if (exitLevelUI.activeSelf && isNoSelected && InputManager.GetAxis("Horizontal") < -0.01)
         {
             isNoSelected = false;
             isYesSelected = true;
@@ -31,14 +37,44 @@ public class ExitLevel : MonoBehaviour
             selectedText = yesButton.GetComponentInChildren<TextMeshProUGUI>();
             selectedText.color = Color.yellow;
         }
-        
-        else if (isYesSelected && InputManager.GetAxis("Horizontal") > 0.01)
+            
+        else if (exitLevelUI.activeSelf && isYesSelected && InputManager.GetAxis("Horizontal") > 0.01)
         {
             isYesSelected = false;
             isNoSelected = true;
             selectedText.color = Color.white;
             selectedText = noButton.GetComponentInChildren<TextMeshProUGUI>();
             selectedText.color = Color.yellow;
+        }
+        
+        if (InputManager.GetButtonDown("Button0") && exitLevelUI.activeSelf)
+        {
+            //if "NO" is pressed while the exitLevelUI is active:
+            if (!isYesSelected && isNoSelected)
+            {
+                 pauseMenuUI.SetActive(true);
+                 exitLevelUI.SetActive(false);
+                 return;
+            }
+            
+            //if "YES" is pressed while the exitLevelUI is active:
+            else if (!isNoSelected && isYesSelected)
+            {
+                SceneManager.LoadScene("Scenes/OpeningScreenUI");
+            }
+        }
+
+        //to avoid re-opening the menu while the exitLevelUI is open
+        if (InputManager.GetButtonDown("Button4") && exitLevelUI.activeSelf)
+        {
+            return;
+        }
+
+        //if B is pressed while in the exitLevelUI, the player is brought back to the menu
+        if (InputManager.GetButtonDown("Button1") && exitLevelUI.activeSelf)
+        {
+            pauseMenuUI.SetActive(true);
+            exitLevelUI.SetActive(false);
         }
     }
 }

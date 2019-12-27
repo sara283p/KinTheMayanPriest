@@ -10,24 +10,21 @@ public class PauseMenu : MonoBehaviour
     //elements needed to manage the "paused" state
     public static bool isGamePaused = false;
     public GameObject pauseMenuUI;
+    public GameObject exitLevelUI;
     
     //elements needed to move the marker
     private bool isResumeSelected;
-    private bool isSettingsSelected;
     private bool isExitSelected;
     private TextMeshProUGUI selectedText;
     [SerializeField] private GameObject resume;
-    [SerializeField] private GameObject settings;
     [SerializeField] private GameObject exit;
 
     void Start()
     {
         isResumeSelected = true;
-        isSettingsSelected = false;
         isExitSelected = false;
         selectedText = resume.GetComponentInChildren<TextMeshProUGUI>();
         selectedText.color = Color.yellow;
-        
     }
 
     void Update()
@@ -35,77 +32,58 @@ public class PauseMenu : MonoBehaviour
         //resume gameplay if "Start button" is pressed while the game is paused, pause it otherwise
         if (InputManager.GetButtonDown("Button4"))
         {
-            if (isGamePaused)
+            if (isGamePaused && !exitLevelUI.activeSelf)
             {
                 Resume();
             }
-            else
+            else if (!isGamePaused)
             {
                 Pause();
             }
         }
 
         //resume gameplay if "A button" is pressed while the game is paused
-        if (InputManager.GetButtonDown("Button0") && isResumeSelected && !isSettingsSelected && !isExitSelected)
+        if (InputManager.GetButtonDown("Button0") && isResumeSelected && !isExitSelected)
         {
             if (isGamePaused)
             {
                 Resume();
             }
         }
-        
-        float axisValue = InputManager.GetAxis("Vertical");
-        if (axisValue > 0)
-        {
-            axisValue = 0.15f;
-        }
-        
-        else if (axisValue < 0)
-        {
-            axisValue = -0.15f;
-        }
 
-        //moving upwards between the options
-        if (isGamePaused && axisValue > 0.01)
+        //open exit confirmation UI after pressing on "Exit"
+        if (InputManager.GetButtonDown("Button0") && !isResumeSelected && isExitSelected)
         {
-            //moving from "Settings" to "Resume"
-            if (!isResumeSelected && isSettingsSelected && !isExitSelected)
+            if (isGamePaused)
             {
-                isSettingsSelected = false;
+                exitLevelUI.SetActive(true);
+                pauseMenuUI.SetActive(false);
+            }
+        }
+            
+        
+        //moving upwards between the options
+        if (isGamePaused && InputManager.GetAxis("Vertical") > 0.01)
+        {
+            
+            //moving from "Exit" to "Resume"
+            if (!isResumeSelected && isExitSelected)
+            {
+                isExitSelected = false;
                 isResumeSelected = true;
                 selectedText.color = Color.white;
                 selectedText = resume.GetComponentInChildren<TextMeshProUGUI>();
                 selectedText.color = Color.yellow;
             }
-            
-            //moving from "Exit" to "Settings"
-            else if (!isResumeSelected && !isSettingsSelected && isExitSelected)
-            {
-                isExitSelected = false;
-                isSettingsSelected = true;
-                selectedText.color = Color.white;
-                selectedText = settings.GetComponentInChildren<TextMeshProUGUI>();
-                selectedText.color = Color.yellow;
-            }
         }
         
         //moving downwards between the options
-        else if (isGamePaused && axisValue < -0.01)
+        else if (isGamePaused && InputManager.GetAxis("Vertical") < -0.01)
         {
-            //moving from "Resume" to "Settings"
-            if (isResumeSelected && !isSettingsSelected && !isExitSelected)
+            //moving from "Resume" to "Exit"
+            if (isResumeSelected && !isExitSelected)
             {
                 isResumeSelected = false;
-                isSettingsSelected = true;
-                selectedText.color = Color.white;
-                selectedText = settings.GetComponentInChildren<TextMeshProUGUI>();
-                selectedText.color = Color.yellow;
-            }
-            
-            //moving from "Settings" to "Exit"
-            else if (!isResumeSelected && isSettingsSelected && !isExitSelected)
-            {
-                isSettingsSelected = false;
                 isExitSelected = true;
                 selectedText.color = Color.white;
                 selectedText = exit.GetComponentInChildren<TextMeshProUGUI>();
@@ -127,11 +105,8 @@ public class PauseMenu : MonoBehaviour
         Time.timeScale = 0f;
         isGamePaused = true;
         isResumeSelected = true;
-        isSettingsSelected = false;
         isExitSelected = false;
         selectedText = exit.GetComponentInChildren<TextMeshProUGUI>();
-        selectedText.color = Color.white;
-        selectedText = settings.GetComponentInChildren<TextMeshProUGUI>();
         selectedText.color = Color.white;
         selectedText = resume.GetComponentInChildren<TextMeshProUGUI>();
         selectedText.color = Color.yellow;
