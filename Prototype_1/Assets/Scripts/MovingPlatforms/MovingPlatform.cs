@@ -105,7 +105,7 @@ public class MovingPlatform : MonoBehaviour
         
         foreach (var activator in activators)
         {
-            activator.GetComponent<BoxCollider2D>().enabled = true;
+            activator.gameObject.layer = LayerMask.NameToLayer("DestructibleObstacle");
         }
         
         // Enable only the MovingPlatformSegmentEnd components of the first activator
@@ -123,7 +123,7 @@ public class MovingPlatform : MonoBehaviour
             {
                 _isActivated = false;
                 _interrupted = false;
-                activators[_currentActiveSegment].GetComponent<BoxCollider2D>().enabled = true;
+                activators[_currentActiveSegment].gameObject.layer = LayerMask.NameToLayer("DestructibleObstacle");
                 _currentDirection = _startToEnd;
             }
             else
