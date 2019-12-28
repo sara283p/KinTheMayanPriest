@@ -1,12 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class TextManager : MonoBehaviour
 {
 
-    public Text stalactiteText;
+    public TMP_Text stalactiteText;
     [SerializeField] private float timeToAppear = 2f;
     private float timeWhenDisappear;
 

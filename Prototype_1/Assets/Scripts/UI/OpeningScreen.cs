@@ -23,6 +23,6 @@ public class OpeningScreen : MonoBehaviour
     {
         yield return new WaitForSeconds(0.2f);
         text.color = Color.white;
-        SceneManager.LoadScene("Scenes/LevelDesign_02");
+        SceneManager.LoadScene("Scenes/BetaLevels/BetaLevel_1");
     }
 }

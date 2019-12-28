@@ -20,6 +20,8 @@ public class GameManager : MonoBehaviour
     public float lavaDamage;
     [Range(0, 1)] public float waterSpeedModifier;
     [Range(0, 1)] public float waterGravityModifier;
+    [Range(0, 1)] public float lavaSpeedModifier;
+    [Range(0, 1)] public float lavaGravityModifier;
     
     private static GameManager _manager;
     

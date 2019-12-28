@@ -7,6 +7,7 @@ public class CharacterController : MonoBehaviour
 
 {
     private static readonly int Jumping = Animator.StringToHash("Jumping");
+    private static readonly int IsPlayerTouching = Animator.StringToHash("IsPlayerTouching");
 
     public bool drawGroundedSphere;
     public Transform _leftJumpCheck;											// Position marking used to check when the character has landed after jumps
@@ -45,6 +46,8 @@ public class CharacterController : MonoBehaviour
     private float _lavaDamage;
     private float _waterSpeedModifier;
     private float _waterGravityModifier;
+    private float _lavaSpeedModifier;
+    private float _lavaGravityModifier;
     private Vector2 _wallPosition;
     private PlayerHealth _health;
 
@@ -62,6 +65,8 @@ public class CharacterController : MonoBehaviour
         _lavaDamage = GameManager.Instance.lavaDamage;
         _waterSpeedModifier = GameManager.Instance.waterSpeedModifier;
         _waterGravityModifier = GameManager.Instance.waterGravityModifier;
+        _lavaSpeedModifier = GameManager.Instance.lavaSpeedModifier;
+        _lavaGravityModifier = GameManager.Instance.lavaGravityModifier;
         _health = GetComponent<PlayerHealth>();
     }
 
@@ -162,6 +167,12 @@ public class CharacterController : MonoBehaviour
                 move *= _waterSpeedModifier;
                 _rb.gravityScale = _waterGravityModifier;
             }
+
+            if (_isInLava)
+            {
+                move *= _lavaSpeedModifier;
+                _rb.gravityScale = _lavaGravityModifier;
+            }
 				
             Vector2 moveAlongGround = new Vector2(_groundNormal.y, - _groundNormal.x);
             groundDir = moveAlongGround;   // Used for debugging purposes
@@ -181,7 +192,7 @@ public class CharacterController : MonoBehaviour
             }
 				
             // If the player is not jumping, but the character is not grounded... (Reduces jumps at the end of ramps)
-            if (!_jumping && !_grounded && !_isInWater && _rb.velocity.y > - _antiRampJump)
+            if (!_jumping && !_grounded && !_isInWater && !_isInLava && _rb.velocity.y > - _antiRampJump)
             {
                 Vector2 newVelocity = _rb.velocity;
                 newVelocity.y = - _antiRampJump;
@@ -307,6 +318,7 @@ public class CharacterController : MonoBehaviour
             transform.SetParent(_initialParent);
             // Add a vertical force to the player.
             float forceMagnitude = _isInWater ? _jumpForce * _waterSpeedModifier : _jumpForce;
+            forceMagnitude = _isInLava ? _jumpForce * _lavaSpeedModifier : _jumpForce;
             _animator.SetBool(Jumping, true);
             _rb.AddForce(new Vector2(0f, forceMagnitude));
         }
@@ -364,6 +376,9 @@ public class CharacterController : MonoBehaviour
         if (other.CompareTag("Lava"))
         {
             _isInLava = true;
+            Vector2 currentVelocity = _rb.velocity;
+            currentVelocity.y = _lavaSpeedModifier * Math.Sign(currentVelocity.y);
+            _rb.velocity = currentVelocity;
             return;
         }
 
@@ -373,6 +388,9 @@ public class CharacterController : MonoBehaviour
             Vector2 currentVelocity = _rb.velocity;
             currentVelocity.y = _waterSpeedModifier * Math.Sign(currentVelocity.y);
             _rb.velocity = currentVelocity;
+            other.GetComponentsInChildren<Animator>()
+                .ToList()
+                .ForEach(animator => animator.SetBool(IsPlayerTouching, true));
             return;
         }
     }
@@ -388,6 +406,10 @@ public class CharacterController : MonoBehaviour
         if (other.CompareTag("Water"))
         {
             _isInWater = false;
+            other
+                .GetComponentsInChildren<Animator>()
+                .ToList()
+                .ForEach(animator => animator.SetBool(IsPlayerTouching, false));
             return;
         }
     }
