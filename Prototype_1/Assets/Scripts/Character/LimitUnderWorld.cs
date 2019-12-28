@@ -9,7 +9,7 @@ public class LimitUnderWorld : MonoBehaviour
     {
         if (other.CompareTag("Player") && other.isTrigger)
         {
-            other.gameObject.GetComponent<PlayerHealth>().Die();
+            EventManager.TriggerEvent("PlayerFell");
         }
     }
 }

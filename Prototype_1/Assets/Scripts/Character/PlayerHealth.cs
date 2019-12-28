@@ -100,4 +100,14 @@ public class PlayerHealth : Health
     {
         return _maxHealth;
     }
+    
+    private void OnEnable()
+    {
+        EventManager.StartListening("PlayerFell", Die);
+    }
+    
+    private void OnDisable()
+    {
+        EventManager.StopListening("PlayerFell", Die);
+    }
 }
