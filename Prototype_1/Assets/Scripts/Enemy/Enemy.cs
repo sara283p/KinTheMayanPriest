@@ -11,6 +11,7 @@ public class Enemy : Health, IDamageable
     public int hitsToDeath;
 
     private Barrier _barrier;
+    private bool _isUsedForEnigma;
 
     void Awake()
     {
@@ -24,6 +25,16 @@ public class Enemy : Health, IDamageable
         catch (Exception e)
         {
             _barrier = null;
+        }
+
+        try
+        {
+            var enigma = GetComponentInParent<Enigma>();
+            if (enigma) _isUsedForEnigma = true;
+        }
+        catch (Exception e)
+        {
+            _isUsedForEnigma = false;
         }
     }
     
@@ -56,7 +67,8 @@ public class Enemy : Health, IDamageable
         if(_barrier != null) EventManager.TriggerEvent(string.Concat("DestroyBarrier", _barrier.GetInstanceID()));
         EventManager.TriggerEvent("EnemyKilled");
         
-        Destroy(gameObject);
+        if(_isUsedForEnigma) gameObject.SetActive(false);
+        else Destroy(gameObject);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -75,5 +87,11 @@ public class Enemy : Health, IDamageable
     public override float GetMaxHealth()
     {
         return _maxHealth;
+    }
+
+    private void OnEnable()
+    {
+        _maxHealth = GameManager.Instance.GetEnemyHealthFromHits(hitsToDeath);
+        _curHealth = _maxHealth;
     }
 }
