@@ -18,31 +18,32 @@ public class Barrier : MonoBehaviour
         }
     }
 
-    // private void OnEnable()
-    // {
-    //     EventManager.StartListening("EnemyKilled", EnemyKilled);
-    // }
-    //
-    // private void OnDisable()
-    // {
-    //     EventManager.StopListening("EnemyKilled", EnemyKilled);
-    // }
-    //
-    // private void EnemyKilled()
-    // {
-    //     _killedEnemies++;
-    //     if (_killedEnemies == _enemies.list.Count)
-    //     {
-    //         enabled = false;
-    //         Destroy(gameObject);
-    //     }
-    // }
-
-    private void Update()
+    private void OnEnable()
     {
-        if (GetComponentsInChildren<Enemy>().Length == 0)
+        // EventManager.StartListening("EnemyKilled", EnemyKilled);
+        EventManager.StartListening(string.Concat("DestroyBarrier", GetInstanceID()), EnemyKilled);
+    }
+    
+    private void OnDisable()
+    {
+        EventManager.StopListening(string.Concat("DestroyBarrier", GetInstanceID()), EnemyKilled);
+    }
+    
+    private void EnemyKilled()
+    {
+        _killedEnemies++;
+        if (_killedEnemies == _enemies.list.Count)
         {
+            enabled = false;
             Destroy(gameObject);
         }
     }
+
+    // private void Update()
+    // {
+    //     if (GetComponentsInChildren<Enemy>().Length == 0)
+    //     {
+    //         Destroy(gameObject);
+    //     }
+    // }
 }

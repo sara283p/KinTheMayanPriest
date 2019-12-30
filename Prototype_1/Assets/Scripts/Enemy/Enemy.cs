@@ -10,10 +10,21 @@ public class Enemy : Health, IDamageable
     public float damageToPlayer;
     public int hitsToDeath;
 
+    private Barrier _barrier;
+
     void Awake()
     {
         _maxHealth = GameManager.Instance.GetEnemyHealthFromHits(hitsToDeath);
         _curHealth = _maxHealth;
+
+        try
+        {
+            _barrier = GetComponentInParent<Barrier>();
+        }
+        catch (Exception e)
+        {
+            _barrier = null;
+        }
     }
     
     //public GameObject deathEffect;
@@ -41,8 +52,11 @@ public class Enemy : Health, IDamageable
     void Die()
     {
         //Instantiate(deathEffect, transform.position, Quaternion.identity);
-        Destroy(gameObject);
+        
+        if(_barrier != null) EventManager.TriggerEvent(string.Concat("DestroyBarrier", _barrier.GetInstanceID()));
         EventManager.TriggerEvent("EnemyKilled");
+        
+        Destroy(gameObject);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
