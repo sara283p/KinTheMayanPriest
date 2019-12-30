@@ -176,7 +176,6 @@ public class Locker_Joystick : MonoBehaviour
 				var relativeDirection = position - lastSelectedStar;
 				var size = Physics2D.RaycastNonAlloc(lastSelectedStar, relativeDirection, dummyRaycastHit2Ds, relativeDirection.magnitude, obstacleLayerMask);
 				Debug.DrawRay(lastSelectedStar, relativeDirection.normalized * (relativeDirection.magnitude), Color.green);
-				print(size);
 				return size < 2;
 			})
 			.Select(x => x.GetComponent<IDamageable>())
@@ -219,7 +218,6 @@ public class Locker_Joystick : MonoBehaviour
 				var relativeDirection = position - lastSelectedStar;
 				var size = Physics2D.RaycastNonAlloc(lastSelectedStar, relativeDirection, dummyRaycastHit2Ds, relativeDirection.magnitude, obstacleLayerMask);
 				Debug.DrawRay(lastSelectedStar, relativeDirection.normalized * (relativeDirection.magnitude), Color.green);
-				print(size);
 				return size < 2;
 			})
 			.Select(x => x.transform.GetComponent<IDamageable>())
