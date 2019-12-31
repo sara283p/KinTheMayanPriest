@@ -388,9 +388,6 @@ public class CharacterController : MonoBehaviour
             Vector2 currentVelocity = _rb.velocity;
             currentVelocity.y = _waterSpeedModifier * Math.Sign(currentVelocity.y);
             _rb.velocity = currentVelocity;
-            other.GetComponentsInChildren<Animator>()
-                .ToList()
-                .ForEach(animator => animator.SetBool(IsPlayerTouching, true));
             return;
         }
     }
@@ -406,10 +403,6 @@ public class CharacterController : MonoBehaviour
         if (other.CompareTag("Water"))
         {
             _isInWater = false;
-            other
-                .GetComponentsInChildren<Animator>()
-                .ToList()
-                .ForEach(animator => animator.SetBool(IsPlayerTouching, false));
             return;
         }
     }
