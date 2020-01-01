@@ -7,7 +7,6 @@ using UnityEngine;
 public class CheckPoint : MonoBehaviour
 {
     private List<Animator> _checkPointAnimators;
-    private Armadillo _armadillo;
     private Transform _spawnPoint;
     private bool _alreadyTriggered;
 
@@ -17,7 +16,6 @@ public class CheckPoint : MonoBehaviour
     {
         _checkPointAnimators = GetComponentsInChildren<Animator>().ToList();
         _spawnPoint = FindObjectOfType<SpawnPoint>().transform;
-        _armadillo = GetComponentInChildren<Armadillo>();
         
     }
 
@@ -26,7 +24,6 @@ public class CheckPoint : MonoBehaviour
         if (other.CompareTag("Player") && other.isTrigger && !_alreadyTriggered)
         {
             _spawnPoint.position = (Vector2) transform.position;
-            _armadillo.Activate();
             StartCoroutine(AnimationEnabler());
             _alreadyTriggered = true;
         }
