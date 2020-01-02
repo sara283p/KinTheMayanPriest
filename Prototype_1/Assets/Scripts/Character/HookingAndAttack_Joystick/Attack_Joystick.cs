@@ -35,6 +35,8 @@ public class Attack_Joystick : MonoBehaviour
 
     public MoveStarViewfinder_Joystick viewfinder;
 
+    private AudioManager _audioManager;
+
     public bool isHanging;
     private bool _autoTarget = true;
     private Animator _blueSphereAnimator;
@@ -45,6 +47,7 @@ public class Attack_Joystick : MonoBehaviour
     private void Awake()
     // Initialize the attack effect
     {
+        _audioManager = FindObjectOfType<AudioManager>();
         lineRenderer.positionCount = 0;
         maxAllowedDistance = GameManager.Instance.maxStarSelectDistance;
         _tr = GetComponent<Transform>();
@@ -413,6 +416,7 @@ public class Attack_Joystick : MonoBehaviour
             
             _targetEnemy.TakeDamage(damage);
             print("Inflicted: " + damage);
+            _audioManager.Play("Attack");
         }
         else
         {

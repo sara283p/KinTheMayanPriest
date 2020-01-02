@@ -16,9 +16,13 @@ public class PlayerMovement : MonoBehaviour
     
     private static readonly int Speed = Animator.StringToHash("Speed");
 
+    private AudioManager _audioManager;
+    private bool _wasStill;
+
     private void Awake()
     {
         _analogDeadZone = GameManager.Instance.analogDeadZone;
+        _audioManager = FindObjectOfType<AudioManager>();
     }
 
     // Update is called once per frame
@@ -40,6 +44,20 @@ public class PlayerMovement : MonoBehaviour
             controller.StopJump();
         }
 
+        // Audio stuff
+        // Use the bool to make the call happen only when Kin starts moving and when
+        // he stops.
+        if (Math.Abs(_horizontalMove) > _analogDeadZone && controller.IsGrounded() && _wasStill)
+        {
+            _audioManager.Play("Steps");
+            _wasStill = false;
+        }
+        
+        if ((Math.Abs(_horizontalMove) < _analogDeadZone || !controller.IsGrounded()) && !_wasStill)
+        {
+            _audioManager.StopPlaying("Steps");
+            _wasStill = true;
+        }
         /*if (Input.GetButtonDown("Crouch"))
         {
             _crouch = true;

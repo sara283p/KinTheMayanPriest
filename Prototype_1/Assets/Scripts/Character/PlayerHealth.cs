@@ -10,6 +10,8 @@ public class PlayerHealth : Health
     private float _curHealth;
     private bool _isVulnerable;
     public bool alive = true;
+
+    private AudioManager _audioManager;
     
     [SerializeField] private Transform reSpawnPoint;
 
@@ -25,6 +27,7 @@ public class PlayerHealth : Health
     void Awake()
     {
         _maxHealth = GameManager.Instance.characterMaxHealth;
+        _audioManager = FindObjectOfType<AudioManager>();
         _rend = GetComponent<SpriteRenderer>();
         _startingIdleSprite = _rend.sprite;
         _c = _rend.material.color;
@@ -57,6 +60,8 @@ public class PlayerHealth : Health
     {
         _isVulnerable = true;
         TakeDamage(_maxHealth);
+        _audioManager.StopPlaying("Steps");
+        _audioManager.Play("Die");
     }
 
     public void Spawn()
@@ -105,10 +110,12 @@ public class PlayerHealth : Health
     private void OnEnable()
     {
         EventManager.StartListening("PlayerFell", Die);
+        EventManager.StartListening("PlayerDeath", Die);
     }
     
     private void OnDisable()
     {
         EventManager.StopListening("PlayerFell", Die);
+        EventManager.StartListening("PlayerDeath", Die);
     }
 }
