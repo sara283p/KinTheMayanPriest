@@ -6,29 +6,30 @@ using UnityEngine.Events;
 public class PlayerHealth : Health
 {
 
-    private float _maxHealth = 100f;
-    private float _curHealth = 0f;
+    private float _maxHealth;
+    private float _curHealth;
     private bool _isVulnerable;
     public bool alive = true;
     
     [SerializeField] private Transform reSpawnPoint;
 
-    private Renderer rend;
-    private Color c;
+    private SpriteRenderer _rend;
+    private Sprite _startingIdleSprite;
+    private Color _c;
 
     [SerializeField] private float invulnerabilityTime = 3f;
     [SerializeField] private int playerLayer = 9;
     [SerializeField] private int enemyLayer = 11;
     
 
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         _maxHealth = GameManager.Instance.characterMaxHealth;
-        Spawn();
-        rend = GetComponent<Renderer>();
-        c = rend.material.color;
+        _rend = GetComponent<SpriteRenderer>();
+        _startingIdleSprite = _rend.sprite;
+        _c = _rend.material.color;
         _isVulnerable = true;
+        Spawn();
     }
 
     public void TakeDamage(float amount)
@@ -64,7 +65,7 @@ public class PlayerHealth : Health
         transform.position = reSpawnPoint.transform.position;
         _curHealth = _maxHealth;
         alive = true;
-        
+        _rend.sprite = _startingIdleSprite;
     }
     
     //to be called when the player gets hit by an enemy, to make him invulnerable for a little interval of time
@@ -73,8 +74,8 @@ public class PlayerHealth : Health
         Physics2D.IgnoreLayerCollision(playerLayer, enemyLayer, true);
         _isVulnerable = false;
         //make the player semitransparent
-        c.a = 0.5f;
-        rend.material.color = c;
+        _c.a = 0.5f;
+        _rend.material.color = _c;
         //wait for the invulnerability time before making the player vulnerable again
         yield return new WaitForSeconds(invulnerabilityTime);
         GetVulnerable();
@@ -87,8 +88,8 @@ public class PlayerHealth : Health
         Physics2D.IgnoreLayerCollision(playerLayer, enemyLayer, false);
         _isVulnerable = true;
         //make the player no more semitrasparent
-        c.a = 1f;
-        rend.material.color = c;
+        _c.a = 1f;
+        _rend.material.color = _c;
     }
 
     public override float GetHealth()

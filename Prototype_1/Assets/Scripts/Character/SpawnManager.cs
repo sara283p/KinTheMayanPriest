@@ -17,7 +17,7 @@ public class SpawnManager : MonoBehaviour
     //called when the player dies ("PlayerDeath")
     public void RespawnPlayer()
     {
-        StartCoroutine("RespawnPlayerCoroutine");
+        StartCoroutine(RespawnPlayerCoroutine());
     }
 
     private IEnumerator RespawnPlayerCoroutine()
