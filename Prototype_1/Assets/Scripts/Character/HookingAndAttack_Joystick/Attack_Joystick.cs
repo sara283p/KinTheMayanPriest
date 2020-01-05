@@ -120,13 +120,13 @@ public class Attack_Joystick : MonoBehaviour
         }
         
         // Move stars and effects if the sky is rotating
-        if (InputManager.GetButton("Button3"))
-        {
-            if (_targetStar) viewfinder.gameObject.transform.position = _targetStar.transform.position;
-            var positions = _selectedStars.Select(x => x.transform.position).ToList();
-            positions.Insert(0, _blueSphere.position);
-            lineRenderer.SetPositions(positions.ToArray());
-        }
+        // if (InputManager.GetButton("Button3"))
+        // {
+        //     if (_targetStar) viewfinder.gameObject.transform.position = _targetStar.transform.position;
+        //     var positions = _selectedStars.Select(x => x.transform.position).ToList();
+        //     positions.Insert(0, _blueSphere.position);
+        //     lineRenderer.SetPositions(positions.ToArray());
+        // }
 
         // If the player moves the viewfinder or selects a star or press select button, go in attack mode
         IsSelectPressed();
@@ -153,6 +153,7 @@ public class Attack_Joystick : MonoBehaviour
                 var pointedEnemy = locker.GetNearestAvailableEnemy(_selectedStars.Select(x => x.transform.position).LastOrDefault(), maxAllowedDistance);
                 if (pointedEnemy != null)
                 {
+                    _targetStar = _selectedStars.LastOrDefault();
                     _targetType = TargetType.Enemy;
                     _targetEnemy = pointedEnemy;
                     viewfinder.gameObject.transform.position = pointedEnemy.GetPosition();
