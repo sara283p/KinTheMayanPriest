@@ -7,14 +7,28 @@ using UnityEngine;
 
 public class CameraTrigger : MonoBehaviour
 {
+    [Header("Camera Orthographic Size settings")]
+    [Tooltip("With vertical trigger, \"Orthographic Size Before Trigger\" " +
+              "is the orthographic size value the camera must have to the left " +
+              "of the trigger; with horizontal trigger, it is the orthographic" +
+              "size value the camera must have above the trigger.")]
     public float orthographicSizeBeforeTrigger;
+    [Tooltip("With vertical trigger, \"Orthographic Size After Trigger\" " +
+             "is the orthographic size value the camera must have to the right " +
+             "of the trigger; with horizontal trigger, it is the orthographic" +
+             "size value the camera must have below the trigger.")]
     public float orthographicSizeAfterTrigger;
+    
+    [Header("Trigger settings")]
+    public bool isHorizontal;
+    public bool oneWay;
 
     private CinemachineVirtualCamera _virtualCamera;
     private bool _triggerActivated;
     private float _targetSize;
     private Vector2 _unusedVector;
     private Vector2 _enteringSide;
+    private bool _alreadyTriggered;
 
     private void Awake()
     {
@@ -29,8 +43,8 @@ public class CameraTrigger : MonoBehaviour
             float orthographicSize = _virtualCamera.m_Lens.OrthographicSize;
             bool enlargingTrigger = orthographicSizeBeforeTrigger <= orthographicSizeAfterTrigger;
             bool targetReached;
-            
-            if (_enteringSide == Vector2.left)
+
+            if (_enteringSide == Vector2.left || _enteringSide == Vector2.up)
             {
                 targetReached = enlargingTrigger ? orthographicSize >= _targetSize - 0.01f : orthographicSize <= _targetSize + 0.01f;
             }
@@ -51,18 +65,37 @@ public class CameraTrigger : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (oneWay && _alreadyTriggered)
+            return;
         if (other.CompareTag("Player") && other.isTrigger)
         {
             _triggerActivated = true;
-            if (other.transform.position.x < transform.position.x)
+            _alreadyTriggered = true;
+            if (!isHorizontal)
             {
-                _enteringSide = Vector2.left;
-                _targetSize = orthographicSizeAfterTrigger;
+                if (other.transform.position.x < transform.position.x)
+                {
+                    _enteringSide = Vector2.left;
+                    _targetSize = orthographicSizeAfterTrigger;
+                }
+                else
+                {
+                    _enteringSide = Vector2.right;
+                    _targetSize = orthographicSizeBeforeTrigger;
+                }
             }
             else
             {
-                _enteringSide = Vector2.right;
-                _targetSize = orthographicSizeBeforeTrigger;
+                if (other.transform.position.y > transform.position.y)
+                {
+                    _enteringSide = Vector2.up;
+                    _targetSize = orthographicSizeAfterTrigger;
+                }
+                else
+                {
+                    _enteringSide = Vector2.down;
+                    _targetSize = orthographicSizeBeforeTrigger;
+                }
             }
         }
     }

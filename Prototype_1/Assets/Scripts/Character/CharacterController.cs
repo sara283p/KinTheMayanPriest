@@ -318,7 +318,7 @@ public class CharacterController : MonoBehaviour
             transform.SetParent(_initialParent);
             // Add a vertical force to the player.
             float forceMagnitude = _isInWater ? _jumpForce * _waterSpeedModifier : _jumpForce;
-            forceMagnitude = _isInLava ? _jumpForce * _lavaSpeedModifier : _jumpForce;
+            forceMagnitude = _isInLava ? _jumpForce * _lavaSpeedModifier : forceMagnitude;
             _animator.SetBool(Jumping, true);
             _rb.AddForce(new Vector2(0f, forceMagnitude));
         }
