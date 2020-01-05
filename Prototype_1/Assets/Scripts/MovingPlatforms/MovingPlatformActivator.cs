@@ -7,17 +7,19 @@ public class MovingPlatformActivator : MonoBehaviour, IDamageable
 {
     private Transform _tr;
     private MovingPlatform _platform;
+    private int _groundLayer;
 
     private void Awake()
     {
         _tr = GetComponent<Transform>();
         _platform = _tr.parent.GetComponentInChildren<MovingPlatform>();
+        _groundLayer = LayerMask.NameToLayer("Ground");
     }
 
     public void TakeDamage(float damage)
     {
         _platform.Activate();
-        gameObject.layer = LayerMask.NameToLayer("Ground");
+        gameObject.layer = _groundLayer;
     }
 
     public Vector2 GetPosition()

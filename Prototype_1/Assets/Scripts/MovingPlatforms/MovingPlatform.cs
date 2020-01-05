@@ -27,12 +27,14 @@ public class MovingPlatform : MonoBehaviour
     private Coroutine _runningRoutine;
     private float _starCooldown;
     private bool _interrupted;
+    private int _obstacleLayer;
 
     private void Awake()
     {
         _tr = GetComponent<Transform>();
         _starCooldown = GameManager.Instance.starCooldownTime;
         _initialPosition = _tr.position;
+        _obstacleLayer = LayerMask.NameToLayer("DestructibleObstacle");
         Init();
     }
 
@@ -105,7 +107,7 @@ public class MovingPlatform : MonoBehaviour
         
         foreach (var activator in activators)
         {
-            activator.gameObject.layer = LayerMask.NameToLayer("DestructibleObstacle");
+            activator.gameObject.layer = _obstacleLayer;
         }
         
         // Enable only the MovingPlatformSegmentEnd components of the first activator
@@ -123,7 +125,7 @@ public class MovingPlatform : MonoBehaviour
             {
                 _isActivated = false;
                 _interrupted = false;
-                activators[_currentActiveSegment].gameObject.layer = LayerMask.NameToLayer("DestructibleObstacle");
+                activators[_currentActiveSegment].gameObject.layer = _obstacleLayer;
                 _currentDirection = _startToEnd;
             }
             else
