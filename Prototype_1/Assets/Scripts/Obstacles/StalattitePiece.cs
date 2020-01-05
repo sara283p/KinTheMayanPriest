@@ -9,6 +9,7 @@ public class StalattitePiece : MonoBehaviour
     private Transform _targetPosition;
     private CapsuleCollider2D _collider;
     private Obstacle _parent;
+    private bool _obstacleDestroyed;
 
     private void Awake()
     {
@@ -20,12 +21,13 @@ public class StalattitePiece : MonoBehaviour
 
     public void Destroy()
     {
+        _obstacleDestroyed = true;
         StartCoroutine(DestroyAnimation());
     }
 
     private void Update()
     {
-        if (!_collider.enabled && transform.position.y <= _targetPosition.position.y)
+        if (_obstacleDestroyed && !_collider.enabled && transform.position.y <= _targetPosition.position.y)
         {
             _collider.enabled = true;
         }
