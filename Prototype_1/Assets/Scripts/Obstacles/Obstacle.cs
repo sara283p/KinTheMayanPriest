@@ -63,11 +63,11 @@ public class Obstacle : Health, IDamageable
             Destroy(outline.gameObject);
         }
 
-        foreach (Transform child in transform.GetComponentsInChildren<StalattitePiece>().Select(comp => comp.transform))
+        foreach (var child in transform.GetComponentsInChildren<StalattitePiece>())
         {
             _aliveChildren++;
             child.gameObject.AddComponent<Rigidbody2D>();
-            child.GetComponent<StalattitePiece>().Destroy();
+            child.Destroy();
 
 //            var solidColor = child.GetComponent<SpriteRenderer>().color;
 //            var transparentColor = solidColor;
