@@ -153,6 +153,7 @@ public class Attack_Joystick : MonoBehaviour
                 var pointedEnemy = locker.GetNearestAvailableEnemy(_selectedStars.Select(x => x.transform.position).LastOrDefault(), maxAllowedDistance);
                 if (pointedEnemy != null)
                 {
+                    EventManager.TriggerEvent("TargetAcquired");
                     _targetStar = _selectedStars.LastOrDefault();
                     _targetType = TargetType.Enemy;
                     _targetEnemy = pointedEnemy;

@@ -56,6 +56,7 @@ public class Obstacle : Health, IDamageable
 
     private void DestroyObstacle()
     {
+        EventManager.TriggerEvent("TargetDestroyed");
         GetComponent<CapsuleCollider2D>().enabled = false;
         ObstacleOutline outline = GetComponentInChildren<ObstacleOutline>();
         if (outline)
