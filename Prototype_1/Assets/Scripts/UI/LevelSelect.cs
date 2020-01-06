@@ -8,5 +8,6 @@ public class LevelSelect : MonoBehaviour
    public void loadSelectedLevel(string levelName)
    {
       SceneManager.LoadScene(levelName);
+      Time.timeScale = 1f;
    }
 }
