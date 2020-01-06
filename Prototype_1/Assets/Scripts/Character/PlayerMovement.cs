@@ -44,20 +44,23 @@ public class PlayerMovement : MonoBehaviour
             controller.StopJump();
         }
 
-        // Audio stuff
+        // Audio stuff (STEPS)
         // Use the bool to make the call happen only when Kin starts moving and when
         // he stops.
-        if (Math.Abs(_horizontalMove) > _analogDeadZone && controller.IsGrounded() && _wasStill)
-        {
-            _audioManager.Play("Steps");
-            _wasStill = false;
-        }
+        // if (Math.Abs(_horizontalMove) > _analogDeadZone && controller.IsGrounded() && _wasStill)
+        // {
+        //     _audioManager.Play("Steps");
+        //     _wasStill = false;
+        // }
+        //
+        // if ((Math.Abs(_horizontalMove) < _analogDeadZone || !controller.IsGrounded()) && !_wasStill)
+        // {
+        //     _audioManager.StopPlaying("Steps");
+        //     _wasStill = true;
+        // }
         
-        if ((Math.Abs(_horizontalMove) < _analogDeadZone || !controller.IsGrounded()) && !_wasStill)
-        {
-            _audioManager.StopPlaying("Steps");
-            _wasStill = true;
-        }
+        
+        
         /*if (Input.GetButtonDown("Crouch"))
         {
             _crouch = true;
