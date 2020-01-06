@@ -111,12 +111,12 @@ public class PlayerHealth : Health
     private void OnEnable()
     {
         EventManager.StartListening("PlayerFell", Die);
-        EventManager.StartListening("PlayerDeath", Die);
+        //EventManager.StartListening("PlayerDeath", Die);
     }
     
     private void OnDisable()
     {
         EventManager.StopListening("PlayerFell", Die);
-        EventManager.StartListening("PlayerDeath", Die);
+        //EventManager.StopListening("PlayerDeath", Die);
     }
 }

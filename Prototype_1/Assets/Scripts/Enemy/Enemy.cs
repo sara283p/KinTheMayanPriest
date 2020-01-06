@@ -38,6 +38,13 @@ public class Enemy : Health, IDamageable
         {
             _isUsedForEnigma = false;
         }
+
+        if (_barrier || GetComponentInParent<LianaSeamless>())
+        {
+            return;
+        }
+        
+        GameManager.Instance.RegisterForRespawn(gameObject);
     }
     
     //public GameObject deathEffect;
