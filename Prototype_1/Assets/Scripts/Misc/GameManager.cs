@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Linq;
 
 public class GameManager : MonoBehaviour
 {
@@ -22,7 +23,11 @@ public class GameManager : MonoBehaviour
     [Range(0, 1)] public float waterGravityModifier;
     [Range(0, 1)] public float lavaSpeedModifier;
     [Range(0, 1)] public float lavaGravityModifier;
-    
+
+    private List<GameObject> _registeredForRespawn;
+    private List<GameObject> _aliveObjects;
+    private bool _respawnAlreadyRegistered;
+    private List<bool> _activeFlags;
     private static GameManager _manager;
     
     public static GameManager Instance => _manager;
@@ -32,6 +37,9 @@ public class GameManager : MonoBehaviour
         if (!_manager)
         {
             _manager = this;
+            _registeredForRespawn = new List<GameObject>();
+            _aliveObjects = new List<GameObject>();
+            _activeFlags = new List<bool>();
 
             if (!_manager)
             {
@@ -44,14 +52,41 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
-
     private void OnEnable()
     {
         DontDestroyOnLoad(this);
+        EventManager.StartListening("PlayerDeath", Reinit);
+        EventManager.StartListening("LevelFinished", ChangeLevel);
+    }
+
+    private void OnDisable()
+    {
+        EventManager.StopListening("PlayerDeath", Reinit);
+        EventManager.StopListening("LevelFinished", ChangeLevel);
+    }
+
+    private void ChangeLevel()
+    {
+        _registeredForRespawn.Clear();
+        _aliveObjects.Clear();
+        _activeFlags.Clear();
+        _respawnAlreadyRegistered = false;
+        IncreaseLinkableStars();
+        //TODO: load next level or level selection
+    }
+
+    private void Reinit()
+    {
+        _aliveObjects.ForEach(Destroy);
+        _aliveObjects.Clear();
+        _respawnAlreadyRegistered = true;
+        for (int i = 0; i < _registeredForRespawn.Count; i++)
+        {
+            GameObject obj = _registeredForRespawn[i];
+            GameObject toSpawn = Instantiate(obj, obj.transform.parent);
+            _aliveObjects.Add(toSpawn);
+            toSpawn.SetActive(_activeFlags[i]);
+        }
     }
 
     // Update is called once per frame
@@ -73,7 +108,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void IncreaseLinkableStars()
+    private void IncreaseLinkableStars()
     {
         linkableStars++;
         EventManager.TriggerEvent("LinkableStarsIncreased");
@@ -83,5 +118,17 @@ public class GameManager : MonoBehaviour
     public float GetEnemyHealthFromHits(float hitsToDeath)
     {
         return hitsToDeath * enemyPerStarDamage;
+    }
+
+    public void RegisterForRespawn(GameObject registrar)
+    {
+        if (_respawnAlreadyRegistered)
+        {
+            return;
+        }
+        bool isActive = registrar.activeInHierarchy;
+        registrar.SetActive(false);
+        _registeredForRespawn.Add(registrar);
+        _activeFlags.Add(isActive);
     }
 }

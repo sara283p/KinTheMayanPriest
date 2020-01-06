@@ -19,6 +19,8 @@ public class Obstacle : Health, IDamageable
         _currentHealth = _maxHealth;
         _aliveChildren = 0;
         _targetPosition = GetComponentInChildren<StalactiteTarget>().transform;
+        
+        GameManager.Instance.RegisterForRespawn(gameObject);
     }
 
     // Update is called once per frame

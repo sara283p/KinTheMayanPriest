@@ -12,6 +12,7 @@ public class SpawnManager : MonoBehaviour
     void Start()
     {
         _playerHealth = FindObjectOfType<PlayerHealth>();
+        EventManager.TriggerEvent("PlayerDeath");
     }
 
     //called when the player dies ("PlayerDeath")

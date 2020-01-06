@@ -23,6 +23,8 @@ public class LianaSeamless : Health, IDamageable
         {
             enemy.gameObject.SetActive(false); 
         }
+        
+        GameManager.Instance.RegisterForRespawn(gameObject);
     }
     
     public override float GetHealth()

@@ -38,6 +38,8 @@ public class Enemy : Health, IDamageable
         {
             _isUsedForEnigma = false;
         }
+        
+        GameManager.Instance.RegisterForRespawn(gameObject);
     }
     
     //public GameObject deathEffect;
