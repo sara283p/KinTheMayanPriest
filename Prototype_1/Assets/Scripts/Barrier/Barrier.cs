@@ -16,6 +16,8 @@ public class Barrier : MonoBehaviour
         {
             _enemies.Add(enemy);
         }
+
+        GameManager.Instance.RegisterForRespawn(gameObject);
     }
 
     private void OnEnable()
