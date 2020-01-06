@@ -7,18 +7,22 @@ using UnityEngine;
 public class Armadillo : MonoBehaviour
 {
     private bool _activated;
+    private Animator _animator;
     private Camera _camera;
-    
+    private static readonly int Activated = Animator.StringToHash("Activated");
+
     public float speed;
 
     private void Awake()
     {
-        _camera = GameObject.FindObjectOfType<Camera>();
+        _camera = FindObjectOfType<Camera>();
+        _animator = GetComponent<Animator>();
     }
 
-    public void Activate()
+    private void Activate()
     {
         _activated = true;
+        _animator.SetBool(Activated, true);
     }
     
     void FixedUpdate()
@@ -36,6 +40,14 @@ public class Armadillo : MonoBehaviour
             {
                 gameObject.SetActive(false);
             }
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Player") && other.isTrigger)
+        {
+            Activate();
         }
     }
 }

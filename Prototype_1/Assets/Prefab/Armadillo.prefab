@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3653506464357487509}
   - component: {fileID: 3653506464357487511}
   - component: {fileID: 3653506464357487510}
+  - component: {fileID: 4005650892053861289}
   m_Layer: 0
   m_Name: Armadillo
   m_TagString: Untagged
@@ -114,3 +115,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 8
+--- !u!70 &4005650892053861289
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3653506464357487506}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.57279456, y: 0.04203405}
+  m_Size: {x: 9.484587, y: 5.0399427}
+  m_Direction: 1
