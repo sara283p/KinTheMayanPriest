@@ -39,7 +39,7 @@ public class Attack_Joystick : MonoBehaviour
 
     public bool isHanging;
     private bool _autoTarget = true;
-    private Animator _blueSphereAnimator;
+    private Animator _redSphereAnimator;
     private Transform _blueSphere;
     private int _maxLinkableStars;
     private float _attackBonus;
@@ -52,8 +52,8 @@ public class Attack_Joystick : MonoBehaviour
         maxAllowedDistance = GameManager.Instance.maxStarSelectDistance;
         _tr = GetComponent<Transform>();
         maxAllowedDistance = GameManager.Instance.maxStarSelectDistance;
-        _blueSphereAnimator = gameObject.GetComponentInChildren<AttackBlueSphere>().GetComponent<Animator>();
-        _blueSphere = gameObject.GetComponentInChildren<AttackBlueSphere>().transform;
+        _redSphereAnimator = gameObject.GetComponentInChildren<AttackRedSphere>().GetComponent<Animator>();
+        _blueSphere = gameObject.GetComponentInChildren<AttackRedSphere>().transform;
         _maxLinkableStars = GameManager.Instance.linkableStars;
         _analogDeadZone = GameManager.Instance.analogDeadZone;
         _attackBonus = GameManager.Instance.attackBonus;
@@ -92,7 +92,7 @@ public class Attack_Joystick : MonoBehaviour
 
     void Update()
     {
-        _blueSphereAnimator.SetBool("IsAttacking", _selectedStars.Count > 0);
+        _redSphereAnimator.SetBool("IsAttacking", _selectedStars.Count > 0);
         // If hanging, just freeze the attack situation
         if (isHanging) return;
         
