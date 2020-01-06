@@ -52,8 +52,8 @@ public class Attack_Joystick : MonoBehaviour
         maxAllowedDistance = GameManager.Instance.maxStarSelectDistance;
         _tr = GetComponent<Transform>();
         maxAllowedDistance = GameManager.Instance.maxStarSelectDistance;
-        _redSphereAnimator = gameObject.GetComponentInChildren<AttackBlueSphere>().GetComponent<Animator>();
-        _blueSphere = gameObject.GetComponentInChildren<AttackBlueSphere>().transform;
+        _redSphereAnimator = gameObject.GetComponentInChildren<AttackRedSphere>().GetComponent<Animator>();
+        _blueSphere = gameObject.GetComponentInChildren<AttackRedSphere>().transform;
         _maxLinkableStars = GameManager.Instance.linkableStars;
         _analogDeadZone = GameManager.Instance.analogDeadZone;
         _attackBonus = GameManager.Instance.attackBonus;
