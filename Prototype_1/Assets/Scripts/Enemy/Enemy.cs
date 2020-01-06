@@ -12,11 +12,13 @@ public class Enemy : Health, IDamageable
 
     private Barrier _barrier;
     private bool _isUsedForEnigma;
+    private AudioManager _audioManager;
 
     void Awake()
     {
         _maxHealth = GameManager.Instance.GetEnemyHealthFromHits(hitsToDeath);
         _curHealth = _maxHealth;
+        _audioManager = FindObjectOfType<AudioManager>();
 
         try
         {
@@ -48,6 +50,10 @@ public class Enemy : Health, IDamageable
         {
             Die();
         }
+        else
+        {
+            _audioManager.Play("EnemyTakeDamage");
+        }
     }
 
     public Vector2 GetPosition()
@@ -63,7 +69,7 @@ public class Enemy : Health, IDamageable
     void Die()
     {
         //Instantiate(deathEffect, transform.position, Quaternion.identity);
-        
+        _audioManager.Play("EnemyDie");
         if(_barrier != null) EventManager.TriggerEvent(string.Concat("DestroyBarrier", _barrier.GetInstanceID()));
         EventManager.TriggerEvent("EnemyKilled");
         

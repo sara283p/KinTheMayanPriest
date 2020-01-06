@@ -46,7 +46,7 @@ MonoBehaviour:
   sounds:
   - name: BackgroundMusic
     clip: {fileID: 8300000, guid: f7bf2764b031e7145a30431f6497036a, type: 3}
-    volume: 0.262
+    volume: 0.411
     volumeVariance: 0
     pitch: 1
     pitchVariance: 0
@@ -70,6 +70,30 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: Attack
     clip: {fileID: 8300000, guid: 881bdc0859ab2eb8390070c3e5533ddf, type: 3}
+    volume: 1
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    loop: 0
+    source: {fileID: 0}
+  - name: EnemyDie
+    clip: {fileID: 8300000, guid: d425a1ba5e3359d4dbae8797acfcd0e5, type: 3}
+    volume: 0.656
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    loop: 0
+    source: {fileID: 0}
+  - name: EnemyTakeDamage
+    clip: {fileID: 8300000, guid: 471cc7b80fcd51e4a9055d009dbed822, type: 3}
+    volume: 0.68
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    loop: 0
+    source: {fileID: 0}
+  - name: StalattiteBreak
+    clip: {fileID: 8300000, guid: 9d8d3d882c529bd40ae28bda69416367, type: 3}
     volume: 1
     volumeVariance: 0
     pitch: 1
