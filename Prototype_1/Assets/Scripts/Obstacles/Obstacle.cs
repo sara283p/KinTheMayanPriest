@@ -10,9 +10,11 @@ public class Obstacle : Health, IDamageable
     private float _currentHealth;
     private float _aliveChildren;
     private Transform _targetPosition;
-
+    private AudioManager _audioManager;
+    
     private void Awake()
     {
+        _audioManager = FindObjectOfType<AudioManager>();
         _maxHealth = GameManager.Instance.obstacleMaxHealth;
         _currentHealth = _maxHealth;
         _aliveChildren = 0;
@@ -57,6 +59,7 @@ public class Obstacle : Health, IDamageable
     private void DestroyObstacle()
     {
         EventManager.TriggerEvent("TargetDestroyed");
+        _audioManager.Play("StalattiteBreak");
         GetComponent<CapsuleCollider2D>().enabled = false;
         ObstacleOutline outline = GetComponentInChildren<ObstacleOutline>();
         if (outline)
