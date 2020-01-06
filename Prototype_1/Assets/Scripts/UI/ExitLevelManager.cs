@@ -73,7 +73,7 @@ public class ExitLevelManager : MonoBehaviour
                //if "YES" is pressed while the exitLevelUI is active:
                else if (!isNoSelected && isYesSelected)
                {
-                   SceneManager.LoadScene("Scenes/OpeningScreenUI");
+                   SceneManager.LoadScene("Scenes/LevelSelection");
                }
             }
        
@@ -104,9 +104,4 @@ public class ExitLevelManager : MonoBehaviour
             } 
         }
     }
-    
-    IEnumerator setTimeout()
-        {
-            yield return new WaitForSeconds(0.2f);
-        }
 }

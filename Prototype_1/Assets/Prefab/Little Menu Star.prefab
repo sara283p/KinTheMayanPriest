@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 1729923349657509952}
   - component: {fileID: 8077094565006231830}
   - component: {fileID: 8077094565006231831}
-  m_Layer: 0
+  - component: {fileID: 2013603923}
+  m_Layer: 5
   m_Name: Little Menu Star
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -27,7 +28,7 @@ RectTransform:
   m_GameObject: {fileID: 8077094565006231828}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -10490.296}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.8941332, y: 0.8941332, z: 0.8941332}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -105,3 +106,11 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!222 &2013603923
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8077094565006231828}
+  m_CullTransparentMesh: 0
