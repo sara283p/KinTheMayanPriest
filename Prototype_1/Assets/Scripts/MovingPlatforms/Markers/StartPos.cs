@@ -18,7 +18,7 @@ public class StartPos : MovingPlatformSegmentEnd
 
     protected override Collider2D[] GetEdgeColliders()
     {
-        return Physics2D.OverlapCircleAll(transform.position, coll.radius)
+        return Physics2D.OverlapCircleAll(transform.position, radius)
             .Where(collid => collid.GetComponent<PlatformStartEdge>())
             .ToArray();
     }

@@ -67,16 +67,23 @@ public class MovingPlatform : MonoBehaviour
         _tr.position += (Vector3) delta;
     }
 
-    public void Activate()
+    public void Activate(GameObject hitActivator)
     {
         if (!_isActivated)
         {
+            if (!hitActivator.Equals(activators[_currentActiveSegment].gameObject))
+            {
+                return;
+            }
             _isActivated = true;
             _runningRoutine = StartCoroutine(DisablingTimer());
         }
         else
         {
-            _changeSegment = true;
+            if (hitActivator.Equals(activators[_currentActiveSegment + 1].gameObject))
+            {
+                _changeSegment = true;
+            }
         }
     }
 

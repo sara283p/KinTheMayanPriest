@@ -18,7 +18,7 @@ public class MovingPlatformActivator : MonoBehaviour, IDamageable
 
     public void TakeDamage(float damage)
     {
-        _platform.Activate();
+        _platform.Activate(gameObject);
         gameObject.layer = _groundLayer;
     }
 

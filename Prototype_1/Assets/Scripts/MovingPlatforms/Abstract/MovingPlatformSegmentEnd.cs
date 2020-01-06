@@ -6,14 +6,15 @@ using UnityEngine;
 
 public abstract class MovingPlatformSegmentEnd : MonoBehaviour
 {
-    protected CircleCollider2D coll;
+    protected float radius;
     private MovingPlatform _platform;
     protected bool alreadyTriggered;
     private LayerMask _groundMask;
 
     private void Awake()
     {
-        coll = GetComponent<CircleCollider2D>();
+        Vector2 vect = new Vector2(GetComponent<CircleCollider2D>().radius, 0);
+        radius = transform.TransformVector(vect).x;
         _platform = transform.parent.parent.GetComponentInChildren<MovingPlatform>();
         alreadyTriggered = true;
         _groundMask = LayerMask.GetMask("Ground");
@@ -33,7 +34,7 @@ public abstract class MovingPlatformSegmentEnd : MonoBehaviour
 
     private void Update()
     {
-        Collider2D[] edgeColliders = Physics2D.OverlapCircleAll(transform.position, coll.radius)
+        Collider2D[] edgeColliders = Physics2D.OverlapCircleAll(transform.position, radius)
             .Where(collid => collid.CompareTag("MovingPlatformEdge"))
             .ToArray();
         
