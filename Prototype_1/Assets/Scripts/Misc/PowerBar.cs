@@ -7,18 +7,21 @@ using UnityEngine;
 public class PowerBar : MonoBehaviour
 {
     public GameObject starPrefab;
+    public GameObject dotPrefab;
     
     private int _linkableStars;
     private int _maxLinkableStars;
     private Vector2 _leftEdge;
     private Vector2 _rightEdge;
     private float _powerBarStarsDistance;
-    private LineRenderer _line;
+    private int _dotsPerSegment;
+    private float _interDotDistance;
     private List<GameObject> _starSignals;
     private float _disabledStarOpacity;
     private int _enabledStars;
     private Vector3 _originalScale;
     private ParticleSystem[] _particleEffects;
+    private List<GameObject[]> _segments;
 
     private void Awake()
     {
@@ -28,11 +31,13 @@ public class PowerBar : MonoBehaviour
         _leftEdge = GetComponentInChildren<PowerBarLeftEdge>().transform.position;
         _rightEdge = GetComponentInChildren<PowerBarRightEdge>().transform.position;
         _powerBarStarsDistance = (_rightEdge.x - _leftEdge.x) / (_maxLinkableStars - 1);
-        _line = GetComponent<LineRenderer>();
+        _dotsPerSegment = 3;
+        _interDotDistance = _powerBarStarsDistance / (_dotsPerSegment + 1);
         _starSignals = new List<GameObject>();
         _disabledStarOpacity = 0.3f;
-        _originalScale = new Vector3(1, 1, 1);
+        _originalScale = starPrefab.transform.localScale;
         _particleEffects = GetComponentsInChildren<ParticleSystem>();
+        _segments = new List<GameObject[]>();
 
         Vector2 pos = _leftEdge;
         for (int i = 0; i < _linkableStars; i++)
@@ -55,28 +60,35 @@ public class PowerBar : MonoBehaviour
                 effect.Stop();
             }
         }
+
+        if (_enabledStars > 1)
+        {
+            DisableSegment(_segments[_enabledStars - 2]);
+        }
         if (_enabledStars > 0)
         {
-            _line.positionCount--;
             _enabledStars--;
         }
     }
 
     private void EnableStar(GameObject star)
     {
-        _line.positionCount++;
-        _line.SetPosition(_line.positionCount - 1, star.transform.localPosition);
         SpriteRenderer rend = star.GetComponent<SpriteRenderer>();
         Color starColor = rend.color;
         starColor.a = 1;
         rend.color = starColor;
         _enabledStars++;
-        if (_enabledStars > 1 && _enabledStars == _linkableStars)
+        if (_enabledStars > 1)
         {
-            foreach (var effect in _particleEffects)
+            EnableSegment(_segments[_enabledStars - 2]);
+            
+            if (_enabledStars == _linkableStars)
             {
-                effect.transform.position = _starSignals.Last().transform.position;
-                effect.Play();
+                foreach (var effect in _particleEffects)
+                {
+                    effect.transform.position = _starSignals.Last().transform.position;
+                    effect.Play();
+                }
             }
         }
     }
@@ -88,10 +100,41 @@ public class PowerBar : MonoBehaviour
         GameObject newStar = Instantiate(starPrefab, transform);
         Transform newStarTransform = newStar.transform;
         newStarTransform.position = position;
-        if(_starSignals.Count > 0)
-            newStarTransform.localScale *= 2;
+        if (_starSignals.Count > 0)
+        {
+            newStarTransform.localScale *= 1.5f;
+            
+            GameObject[] segment = new GameObject[3];
+            Vector2 newPos = _starSignals.Last().transform.position;
+            for (int i = 0; i < _dotsPerSegment; i++)
+            {
+                newPos.x += _interDotDistance;
+                GameObject newDot = Instantiate(dotPrefab, transform);
+                newDot.transform.position = newPos;
+                segment[i] = newDot;
+            }
+            _segments.Add(segment);
+        }
+
         _starSignals.Add(newStar);
         _starSignals.ForEach(DisableStar);
+        _segments.ForEach(DisableSegment);
+    }
+
+    private void DisableSegment(GameObject[] segment)
+    {
+        foreach (var dot in segment)
+        {
+            dot.SetActive(false);
+        }
+    }
+
+    private void EnableSegment(GameObject[] segment)
+    {
+        foreach (var dot in segment)
+        {
+            dot.SetActive(true);
+        }
     }
 
     private void OnEnable()
@@ -110,6 +153,7 @@ public class PowerBar : MonoBehaviour
 
     private void IncreaseLinkableStars()
     {
+        _starSignals.ForEach(DisableStar);
         _linkableStars++;
         AddStar((Vector2) _starSignals.Last().transform.position + new Vector2(_powerBarStarsDistance, 0));
     }
