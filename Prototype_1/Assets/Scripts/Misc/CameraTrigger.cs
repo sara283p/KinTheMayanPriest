@@ -18,6 +18,23 @@ public class CameraTrigger : MonoBehaviour
              "of the trigger; with horizontal trigger, it is the orthographic" +
              "size value the camera must have below the trigger.")]
     public float orthographicSizeAfterTrigger;
+
+    [Header("Camera Offsets")]
+    [Tooltip("Offset to be added to ScreenX property when entering the trigger from left or top side")]
+    [Range(-1, 1)]
+    public float leftOrTopOffsetX;
+    
+    [Tooltip("Offset to be added to ScreenY property when entering the trigger from left or top side")]
+    [Range(-1, 1)]
+    public float leftOrTopOffsetY;
+    
+    [Tooltip("Offset to be added to ScreenX property when entering the trigger from right or bottom side")]
+    [Range(-1, 1)]
+    public float rightOrBottomOffsetX;
+    
+    [Tooltip("Offset to be added to ScreenY property when entering the trigger from right or bottom side")]
+    [Range(-1, 1)]
+    public float rightOrBottomOffsetY;
     
     [Header("Trigger settings")]
     public bool isHorizontal;
@@ -52,14 +69,43 @@ public class CameraTrigger : MonoBehaviour
             {
                 targetReached = enlargingTrigger ? orthographicSize <= _targetSize + 0.01f : orthographicSize >= _targetSize - 0.01f;
             }
+
+            Vector2 targetVector = new Vector2(_targetSize, 0);
+            _virtualCamera.m_Lens.OrthographicSize = Vector2.SmoothDamp(new Vector2(orthographicSize, 0), targetVector, ref _unusedVector, 0.5f).x;
             
             if (targetReached)
             {
                 _triggerActivated = false;
+                if (oneWay)
+                {
+                    enabled = false;
+                }
             }
-            
-            Vector2 targetVector = new Vector2(_targetSize, 0);
-            _virtualCamera.m_Lens.OrthographicSize = Vector2.SmoothDamp(new Vector2(orthographicSize, 0), targetVector, ref _unusedVector, 0.5f).x;
+        }
+    }
+    
+    private void ApplyOffsets()
+    {
+        float offsetX;
+        float offsetY;
+        if (_enteringSide == Vector2.left || _enteringSide == Vector2.up)
+        {
+            offsetX = leftOrTopOffsetX;
+            offsetY = leftOrTopOffsetY;
+        }
+        else
+        {
+            offsetX = rightOrBottomOffsetX;
+            offsetY = rightOrBottomOffsetY;
+        }
+        CinemachineFramingTransposer transposer = _virtualCamera.GetCinemachineComponent<CinemachineFramingTransposer>();
+        float sum = transposer.m_ScreenX + offsetX;
+        if(sum > 0 && sum < 1)
+            transposer.m_ScreenX += offsetX;
+        sum = transposer.m_ScreenY + offsetY;
+        if (sum > 0 && sum < 1)
+        {
+            transposer.m_ScreenY += offsetY;
         }
     }
 
@@ -97,6 +143,7 @@ public class CameraTrigger : MonoBehaviour
                     _targetSize = orthographicSizeBeforeTrigger;
                 }
             }
+            ApplyOffsets();
         }
     }
 }
