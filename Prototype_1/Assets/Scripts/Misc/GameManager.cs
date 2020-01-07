@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
     private bool _respawnAlreadyRegistered;
     private List<bool> _activeFlags;
     private static GameManager _manager;
+    private int _currentLevel;
     
     public static GameManager Instance => _manager;
 
@@ -37,6 +38,7 @@ public class GameManager : MonoBehaviour
         if (!_manager)
         {
             _manager = this;
+            _currentLevel = 0;
             _registeredForRespawn = new List<GameObject>();
             _aliveObjects = new List<GameObject>();
             _activeFlags = new List<bool>();
@@ -72,7 +74,8 @@ public class GameManager : MonoBehaviour
         _activeFlags.Clear();
         _respawnAlreadyRegistered = false;
         IncreaseLinkableStars();
-        //TODO: load next level or level selection
+        _currentLevel++;
+        SceneManager.LoadScene(scenes[_currentLevel]);
     }
 
     private void Reinit()
@@ -100,6 +103,11 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             SceneManager.LoadScene(scenes[1]);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            SceneManager.LoadScene(scenes[2]);
         }
 
         if (Input.GetKeyDown(KeyCode.T))

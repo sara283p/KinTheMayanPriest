@@ -11,6 +11,7 @@ public class Obstacle : Health, IDamageable
     private float _aliveChildren;
     private Transform _targetPosition;
     private AudioManager _audioManager;
+    private bool _usedForEnigma;
     
     private void Awake()
     {
@@ -19,8 +20,10 @@ public class Obstacle : Health, IDamageable
         _currentHealth = _maxHealth;
         _aliveChildren = 0;
         _targetPosition = GetComponentInChildren<StalactiteTarget>().transform;
+        _usedForEnigma = GetComponentInParent<Enigma>();
         
-        GameManager.Instance.RegisterForRespawn(gameObject);
+        if(!_usedForEnigma)
+            GameManager.Instance.RegisterForRespawn(gameObject);
     }
 
     // Update is called once per frame
@@ -60,6 +63,10 @@ public class Obstacle : Health, IDamageable
 
     private void DestroyObstacle()
     {
+        if (_usedForEnigma)
+        {
+            GetComponent<SequentialDestructible>().enabled = false;
+        }
         EventManager.TriggerEvent("TargetDestroyed");
         _audioManager.Play("StalattiteBreak");
         GetComponent<CapsuleCollider2D>().enabled = false;
