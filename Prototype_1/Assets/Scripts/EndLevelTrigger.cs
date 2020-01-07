@@ -7,18 +7,29 @@ public class EndLevelTrigger : MonoBehaviour
 {
     private List<Animator> _godAnimators;
     private bool _alreadyTriggered;
+    private PlayerMovement _movement;
+    private CharacterController _cc;
+    private Rigidbody2D _rb;
     
     private static readonly int Activated = Animator.StringToHash("Activated");
-    
+    private static readonly int Speed = Animator.StringToHash("Speed");
+
     private void Awake()
     {
         _godAnimators = GetComponentsInChildren<Animator>().ToList();
+        _movement = FindObjectOfType<PlayerMovement>();
+        _cc = _movement.GetComponent<CharacterController>();
+        _rb = _movement.GetComponent<Rigidbody2D>();
     }
     
      private void OnTriggerEnter2D(Collider2D other)
         {
             if (other.CompareTag("Player") && other.isTrigger && !_alreadyTriggered)
             {
+                _movement.enabled = false;
+                _cc.enabled = false;
+                _movement.GetComponent<Animator>().SetFloat(Speed, 0);
+                _rb.velocity = Vector3.zero;
                 StartCoroutine(AnimationEnabler());
                 _alreadyTriggered = true;
             }
@@ -28,8 +39,7 @@ public class EndLevelTrigger : MonoBehaviour
          {
              _godAnimators
                  .ForEach(contr => contr.SetBool(Activated, true));
-             yield return new WaitForSeconds(1);
-             _godAnimators
-                 .ForEach(contr => contr.SetBool(Activated, false));
+             yield return new WaitForSeconds(2);
+             EventManager.TriggerEvent("LevelFinished");
          }
 }
