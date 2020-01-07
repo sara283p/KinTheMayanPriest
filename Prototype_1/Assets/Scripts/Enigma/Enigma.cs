@@ -63,7 +63,11 @@ public class Enigma : MonoBehaviour
 
         _started = false;
         
-        _enigmaSet.ForEach(destr => Destroy(destr.gameObject));
+        _enigmaSet.ForEach(destr =>
+        {
+            if(destr)
+                Destroy(destr.gameObject);
+        });
         
         _enigmaSet.Clear();
 
