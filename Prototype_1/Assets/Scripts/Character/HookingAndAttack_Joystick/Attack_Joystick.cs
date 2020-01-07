@@ -47,7 +47,7 @@ public class Attack_Joystick : MonoBehaviour
     private void Awake()
     // Initialize the attack effect
     {
-        _audioManager = FindObjectOfType<AudioManager>();
+        _audioManager = AudioManager.instance;
         lineRenderer.positionCount = 0;
         maxAllowedDistance = GameManager.Instance.maxStarSelectDistance;
         _tr = GetComponent<Transform>();

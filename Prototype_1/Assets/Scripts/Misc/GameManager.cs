@@ -60,25 +60,39 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(this);
         EventManager.StartListening("PlayerDeath", Reinit);
         EventManager.StartListening("LevelFinished", ChangeLevel);
+        SceneManager.sceneLoaded += ReinitRespawnLists;
     }
 
     private void OnDisable()
     {
         EventManager.StopListening("PlayerDeath", Reinit);
         EventManager.StopListening("LevelFinished", ChangeLevel);
+        SceneManager.sceneLoaded -= ReinitRespawnLists;
     }
 
-    private void ChangeLevel()
+
+    private void ReinitRespawnLists(Scene scene, LoadSceneMode mode)
     {
-        _isChangingLevel = true;
         _registeredForRespawn.Clear();
         _aliveObjects.Clear();
         _activeFlags.Clear();
         _respawnAlreadyRegistered = false;
+    }
+    private void ChangeLevel()
+    {
+        _isChangingLevel = true;
         IncreaseLinkableStars();
-        _currentLevel++;
+        if (_currentLevel == 2)
+        {
+            _currentLevel = 0;
+        }
+        else
+        {
+            _currentLevel++;
+        }
         SceneManager.LoadScene(scenes[_currentLevel]);
         _isChangingLevel = false;
+
     }
 
     public bool IsChangingLevel()

@@ -18,7 +18,7 @@ public class Enemy : Health, IDamageable
     {
         _maxHealth = GameManager.Instance.GetEnemyHealthFromHits(hitsToDeath);
         _curHealth = _maxHealth;
-        _audioManager = FindObjectOfType<AudioManager>();
+        _audioManager = AudioManager.instance;
 
         try
         {

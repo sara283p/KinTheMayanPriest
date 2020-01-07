@@ -22,7 +22,7 @@ public class PlayerMovement : MonoBehaviour
     private void Awake()
     {
         _analogDeadZone = GameManager.Instance.analogDeadZone;
-        _audioManager = FindObjectOfType<AudioManager>();
+        _audioManager = AudioManager.instance;
     }
 
     // Update is called once per frame

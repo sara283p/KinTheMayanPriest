@@ -28,7 +28,7 @@ public class PlayerHealth : Health
     void Awake()
     {
         _maxHealth = GameManager.Instance.characterMaxHealth;
-        _audioManager = FindObjectOfType<AudioManager>();
+        _audioManager = AudioManager.instance;
         _rend = GetComponent<SpriteRenderer>();
         _startingIdleSprite = _rend.sprite;
         _c = _rend.material.color;

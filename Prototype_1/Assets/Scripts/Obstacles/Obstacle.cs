@@ -15,7 +15,7 @@ public class Obstacle : Health, IDamageable
     
     private void Awake()
     {
-        _audioManager = FindObjectOfType<AudioManager>();
+        _audioManager = AudioManager.instance;
         _maxHealth = GameManager.Instance.obstacleMaxHealth;
         _currentHealth = _maxHealth;
         _aliveChildren = 0;
