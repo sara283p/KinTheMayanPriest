@@ -43,6 +43,11 @@ public class EventManager : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
+
     public static void StartListening(string eventName, UnityAction listener)
     {
         UnityEvent thisEvent = null;
