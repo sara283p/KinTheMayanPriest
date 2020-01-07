@@ -30,6 +30,7 @@ public class GameManager : MonoBehaviour
     private List<bool> _activeFlags;
     private static GameManager _manager;
     private int _currentLevel;
+    private bool _isChangingLevel;
     
     public static GameManager Instance => _manager;
 
@@ -69,6 +70,7 @@ public class GameManager : MonoBehaviour
 
     private void ChangeLevel()
     {
+        _isChangingLevel = true;
         _registeredForRespawn.Clear();
         _aliveObjects.Clear();
         _activeFlags.Clear();
@@ -76,6 +78,12 @@ public class GameManager : MonoBehaviour
         IncreaseLinkableStars();
         _currentLevel++;
         SceneManager.LoadScene(scenes[_currentLevel]);
+        _isChangingLevel = false;
+    }
+
+    public bool IsChangingLevel()
+    {
+        return _isChangingLevel;
     }
 
     private void Reinit()

@@ -33,7 +33,7 @@ public class Enigma : MonoBehaviour
 
     public bool CheckSequence(int destroyedObjectOrder)
     {
-        if (!_started)
+        if (!_started || GameManager.Instance.IsChangingLevel())
         {
             return false;
         }
@@ -50,7 +50,7 @@ public class Enigma : MonoBehaviour
 
     public void ReinitializeEnigma()
     {
-        if (!_started)
+        if (!_started || GameManager.Instance.IsChangingLevel())
         {
             return;
         }
