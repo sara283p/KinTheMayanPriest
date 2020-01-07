@@ -39,7 +39,7 @@ public class Enigma : MonoBehaviour
         }
         var toReturn = _enigmaSet
             .Where(obj => obj.sequenceOrder < destroyedObjectOrder)
-            .Aggregate(true, (init, obj) => !obj.isActiveAndEnabled && init);
+            .Aggregate(true, (init, obj) => (obj == null ||!obj.isActiveAndEnabled) && init);
 
         if (toReturn && (_enigmaSet.Count() - _enigmaSet.Count(obj => obj == null || !obj.isActiveAndEnabled)) == 0)
             StartCoroutine(_EndEnigma());
