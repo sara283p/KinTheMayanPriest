@@ -17,7 +17,7 @@ public class LianaSeamless : Health, IDamageable
         _currentHealth = _maxHealth;
         _targetPosition = GetComponentInChildren<LianaSeamlessTarget>().transform;
         _children = GetComponentsInChildren<LianaSeamlessPiece>();
-        _connectedEnemies = GetComponentsInChildren<Enemy>();
+        _connectedEnemies = GetComponentsInChildren<Enemy>(true);
 
         foreach (var enemy in _connectedEnemies)
         {
