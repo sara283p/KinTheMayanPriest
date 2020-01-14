@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.UIElements;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -176,7 +177,7 @@ public class Locker_Joystick : MonoBehaviour
 				var relativeDirection = position - lastSelectedStar;
 				var size = Physics2D.RaycastNonAlloc(lastSelectedStar, relativeDirection, dummyRaycastHit2Ds, relativeDirection.magnitude, obstacleLayerMask);
 				Debug.DrawRay(lastSelectedStar, relativeDirection.normalized * (relativeDirection.magnitude), Color.green);
-				return size < 2;
+				return size < 1 || (size == 1 && x == dummyRaycastHit2Ds[0].collider);
 			})
 			.Select(x => x.GetComponent<IDamageable>())
 			.OrderBy(x => (lastSelectedStar -  x.GetPosition()).sqrMagnitude)
@@ -209,7 +210,7 @@ public class Locker_Joystick : MonoBehaviour
 		selectEffect.positionCount = 2;
 		selectEffect.SetPosition(0, viewfinderPosition);
 		selectEffect.SetPosition(1, endPoint);
-		
+
 		var enemies = Physics2D.RaycastAll(viewfinderPosition, direction, magnitude*range, enemyLayerMask)
 			.Where(x => x.transform != targetEnemy)
 			.Where(x =>
@@ -218,7 +219,7 @@ public class Locker_Joystick : MonoBehaviour
 				var relativeDirection = position - lastSelectedStar;
 				var size = Physics2D.RaycastNonAlloc(lastSelectedStar, relativeDirection, dummyRaycastHit2Ds, relativeDirection.magnitude, obstacleLayerMask);
 				Debug.DrawRay(lastSelectedStar, relativeDirection.normalized * (relativeDirection.magnitude), Color.green);
-				return size < 2;
+				return size < 1 || (size == 1 && x.collider == dummyRaycastHit2Ds[0].collider);
 			})
 			.Select(x => x.transform.GetComponent<IDamageable>())
 			.Where(x => (lastSelectedStar - x.GetPosition()).magnitude < range)
