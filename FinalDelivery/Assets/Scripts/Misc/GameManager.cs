@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
     [Range(0, 1)] public float lavaSpeedModifier;
     [Range(0, 1)] public float lavaGravityModifier;
 
+    private bool[] _starNumberAlreadyIncreased;
     private List<GameObject> _registeredForRespawn;
     private List<GameObject> _aliveObjects;
     private bool _respawnAlreadyRegistered;
@@ -43,6 +44,7 @@ public class GameManager : MonoBehaviour
             _registeredForRespawn = new List<GameObject>();
             _aliveObjects = new List<GameObject>();
             _activeFlags = new List<bool>();
+            _starNumberAlreadyIncreased = scenes.Select(x => false).ToArray();
 
             if (!_manager)
             {
@@ -60,18 +62,16 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(this);
         EventManager.StartListening("PlayerDeath", Reinit);
         EventManager.StartListening("LevelFinished", ChangeLevel);
-        SceneManager.sceneLoaded += ReinitRespawnLists;
     }
 
     private void OnDisable()
     {
         EventManager.StopListening("PlayerDeath", Reinit);
         EventManager.StopListening("LevelFinished", ChangeLevel);
-        SceneManager.sceneLoaded -= ReinitRespawnLists;
     }
 
 
-    private void ReinitRespawnLists(Scene scene, LoadSceneMode mode)
+    private void ReinitRespawnLists()
     {
         _registeredForRespawn.Clear();
         _aliveObjects.Clear();
@@ -81,7 +81,12 @@ public class GameManager : MonoBehaviour
     private void ChangeLevel()
     {
         _isChangingLevel = true;
-        IncreaseLinkableStars();
+        ReinitRespawnLists();
+        if (!_starNumberAlreadyIncreased[_currentLevel])
+        {
+            IncreaseLinkableStars();
+        }
+
         if (_currentLevel == 2)
         {
             _currentLevel = 0;
@@ -93,6 +98,16 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(scenes[_currentLevel]);
         _isChangingLevel = false;
 
+    }
+
+    private void ChangeLevel(int selected)
+    {
+        _isChangingLevel = true;
+        ReinitRespawnLists();
+
+        _currentLevel = selected;
+        SceneManager.LoadScene(scenes[_currentLevel]);
+        _isChangingLevel = false;
     }
 
     public bool IsChangingLevel()
@@ -119,17 +134,17 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            SceneManager.LoadScene(scenes[0]);
+            ChangeLevel(0);
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            SceneManager.LoadScene(scenes[1]);
+            ChangeLevel(1);
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
-            SceneManager.LoadScene(scenes[2]);
+            ChangeLevel(2);
         }
 
         if (Input.GetKeyDown(KeyCode.T))
@@ -141,6 +156,7 @@ public class GameManager : MonoBehaviour
     private void IncreaseLinkableStars()
     {
         linkableStars++;
+        _starNumberAlreadyIncreased[_currentLevel] = true;
         EventManager.TriggerEvent("LinkableStarsIncreased");
         // TODO: save as persistent the new value of maximum linkable stars
     }

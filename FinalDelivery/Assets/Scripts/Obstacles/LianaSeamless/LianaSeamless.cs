@@ -11,7 +11,7 @@ public class LianaSeamless : Health, IDamageable
     private float _aliveChildren;
     private Transform _targetPosition;
 
-    void Start()
+    void Awake()
     {
         _maxHealth = GameManager.Instance.obstacleMaxHealth;
         _currentHealth = _maxHealth;
