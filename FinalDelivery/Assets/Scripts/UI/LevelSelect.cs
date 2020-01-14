@@ -5,9 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class LevelSelect : MonoBehaviour
 {
-   public void loadSelectedLevel(string levelName)
+   public void LoadSelectedLevel(string levelName)
    {
-      SceneManager.LoadScene(levelName);
+      GameManager.Instance.ChangeLevel(levelName);
       Time.timeScale = 1f;
    }
 }

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using UnityEditor.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -108,6 +110,15 @@ public class GameManager : MonoBehaviour
         _currentLevel = selected;
         SceneManager.LoadScene(scenes[_currentLevel]);
         _isChangingLevel = false;
+    }
+
+    public void ChangeLevel(String levelName)
+    {
+        int levelIndex = scenes.ToList().IndexOf(levelName);
+        if (levelIndex >= 0)
+        {
+            ChangeLevel(levelIndex);
+        }
     }
 
     public bool IsChangingLevel()
