@@ -78,20 +78,6 @@ public class Enigma : MonoBehaviour
                 toSpawn.SetActive(true);
                 _enigmaSet.Add(toSpawn.GetComponent<SequentialDestructible>());
             });
-        
-        for (int i = 0; i < _enigmaSet.Count; i++)
-        {
-            if (!_enigmaSet[i])
-            {
-                _enigmaSet.RemoveAt(i);
-            }
-            else if (!_enigmaSet[i].isActiveAndEnabled)
-            {
-                GameObject toSpawn = Instantiate(_glyphCopies[i], _glyphCopies[i].transform.parent);
-                toSpawn.SetActive(true);
-                _enigmaSet.Add(toSpawn.GetComponent<SequentialDestructible>());
-            }
-        }
 
         _started = true;
     }
