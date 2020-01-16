@@ -15,6 +15,9 @@ public class Grappler_Joystick : MonoBehaviour
     private DistanceJoint2D _joint;
     private FrictionJoint2D _friction;
     private bool _skyIsMoving;
+    
+    // This boolean flag is used to avoid that, if any obstacle comes in the grappler's ray, and therefore the grapple is destroyed, 
+    // the player has the possibility to keep the trigger pressed to create another grapple. This is resetted when the player touches the ground
     [SerializeField] private bool _waitTillGrounded;
 
     private float _minHangDistance;
@@ -207,7 +210,7 @@ public class Grappler_Joystick : MonoBehaviour
                 {
                     // If Kin is NOT the ground and meanwhile jump is pressed assume that the hang has to be accomplished.
                     // Create a joint, start the effect.
-                    if (!_controller.IsGrounded() && ((Vector2) _selectedStar.transform.position - _position).magnitude < _maxHangDistance && !_waitTillGrounded)
+                    if (!_controller.IsGrounded() && _controller.HasJumped() && ((Vector2) _selectedStar.transform.position - _position).magnitude < _maxHangDistance && !_waitTillGrounded)
                     {
                         attackJoystick.SetHanging(true);
                         Rigidbody2D otherRb = _selectedStar.GetComponent<Rigidbody2D>();

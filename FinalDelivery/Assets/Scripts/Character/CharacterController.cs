@@ -340,6 +340,11 @@ public class CharacterController : MonoBehaviour
         return _grounded;
     }
 
+    public bool HasJumped()
+    {
+        return _jumping;
+    }
+
     public void ToggleHook()
     {
         _hooked = !_hooked;
