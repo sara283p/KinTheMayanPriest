@@ -86,7 +86,6 @@ public class Enigma : MonoBehaviour
     {
         yield return new WaitForSeconds(0.01f);
         print("Enigma solved!");
-        gameObject.SetActive(false);
     }
     
 }
