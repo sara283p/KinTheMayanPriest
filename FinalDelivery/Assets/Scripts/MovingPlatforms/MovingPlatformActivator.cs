@@ -18,8 +18,10 @@ public class MovingPlatformActivator : MonoBehaviour, IDamageable
 
     public void TakeDamage(float damage)
     {
-        _platform.Activate(gameObject);
-        gameObject.layer = _groundLayer;
+        if (_platform.Activate(gameObject))
+        {
+            gameObject.layer = _groundLayer;
+        }
     }
 
     public Vector2 GetPosition()

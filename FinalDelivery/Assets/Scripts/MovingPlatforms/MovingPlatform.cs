@@ -72,13 +72,13 @@ public class MovingPlatform : MonoBehaviour
         _tr.position += (Vector3) delta;
     }
 
-    public void Activate(GameObject hitActivator)
+    public bool Activate(GameObject hitActivator)
     {
         if (!_isActivated)
         {
             if (!hitActivator.Equals(activators[_currentActiveSegment].gameObject))
             {
-                return;
+                return false;
             }
             _isActivated = true;
             _runningRoutine = StartCoroutine(DisablingTimer());
@@ -89,7 +89,13 @@ public class MovingPlatform : MonoBehaviour
             {
                 _changeSegment = true;
             }
+            else
+            {
+                return false;
+            }
         }
+
+        return true;
     }
 
     private IEnumerator DisablingTimer()
@@ -138,12 +144,9 @@ public class MovingPlatform : MonoBehaviour
                 _isActivated = false;
                 _interrupted = false;
                 activators[_currentActiveSegment].gameObject.layer = _obstacleLayer;
-                _currentDirection = _startToEnd;
             }
-            else
-            {
-                _currentDirection = _startToEnd;
-            }
+            _currentDirection = _startToEnd;
+
         }
         else
         {

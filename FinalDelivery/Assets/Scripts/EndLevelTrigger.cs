@@ -24,7 +24,7 @@ public class EndLevelTrigger : MonoBehaviour
         {
             if (other.CompareTag("Player") && other.isTrigger && !_alreadyTriggered)
             {
-                _movement.enabled = false;
+                _movement.DisableInput();
                 _movement.GetComponent<Animator>().SetFloat(Speed, 0);
                 _rb.velocity = Vector3.zero;
                 StartCoroutine(AnimationEnabler());

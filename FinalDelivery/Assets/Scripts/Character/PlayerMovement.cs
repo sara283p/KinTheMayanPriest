@@ -17,7 +17,7 @@ public class PlayerMovement : MonoBehaviour
     private static readonly int Speed = Animator.StringToHash("Speed");
 
     private AudioManager _audioManager;
-    private bool _wasStill;
+    private bool _inputDisabled;
 
     private void Awake()
     {
@@ -28,6 +28,13 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (_inputDisabled)
+        {
+            _horizontalMove = 0;
+            _jump = false;
+            return;
+        }
+        
         _horizontalMove = InputManager.GetAxisRaw("Horizontal");
 
         _horizontalMove = Math.Abs(_horizontalMove) > _analogDeadZone ? _horizontalMove * runSpeed : 0;
@@ -85,5 +92,10 @@ public class PlayerMovement : MonoBehaviour
     {
         controller.Move(_horizontalMove * Time.fixedDeltaTime, _crouch, _jump);
         _jump = false;
+    }
+
+    public void DisableInput()
+    {
+        _inputDisabled = true;
     }
 }
