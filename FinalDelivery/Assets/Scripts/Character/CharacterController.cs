@@ -8,6 +8,7 @@ public class CharacterController : MonoBehaviour
 {
     private static readonly int Jumping = Animator.StringToHash("Jumping");
     private static readonly int IsPlayerTouching = Animator.StringToHash("IsPlayerTouching");
+    private static readonly int Falling = Animator.StringToHash("Falling");
 
     public bool drawGroundedSphere;
     public Transform _leftJumpCheck;											// Position marking used to check when the character has landed after jumps
@@ -48,11 +49,12 @@ public class CharacterController : MonoBehaviour
     private float _waterGravityModifier;
     private float _lavaSpeedModifier;
     private float _lavaGravityModifier;
-    private Vector2 _wallPosition;
+    private Vector2 _wallPosition;                                                // Vector used to identify the position of the touched wall w.r.t. Kin in order to avoid sticky character
     private PlayerHealth _health;
 
     private Transform _initialParent;
     private float _jointDistance;
+    private bool _justReleasedHook;
 	
     private void Awake()
     {
@@ -103,6 +105,9 @@ public class CharacterController : MonoBehaviour
         if(groundCollider)
         {
             _grounded = true;
+            _justReleasedHook = false;
+            
+            // To avoid remaining child of the moving platform in the frame the player jumps, set the parent to be the moving platform only if he did not jump
             if (!_jumping)
             {
                 transform.SetParent(groundCollider.CompareTag("MovingPlatform")
@@ -111,6 +116,7 @@ public class CharacterController : MonoBehaviour
 				
                 _animator.SetBool(Jumping, false);
             }
+            _animator.SetBool(Falling, false);
         }
 
         // Compute floor direction
@@ -194,7 +200,7 @@ public class CharacterController : MonoBehaviour
             }
 				
             // If the player is not jumping, but the character is not grounded... (Reduces jumps at the end of ramps)
-            if (!_jumping && !_grounded && !_isInWater && !_isInLava && _rb.velocity.y > - _antiRampJump)
+            if (!_jumping && !_grounded && !_isInWater && !_isInLava && !_justReleasedHook &&  _rb.velocity.y > - _antiRampJump)
             {
                 Vector2 newVelocity = _rb.velocity;
                 newVelocity.y = - _antiRampJump;
@@ -244,7 +250,7 @@ public class CharacterController : MonoBehaviour
 
             if (!_grounded)
             {
-                _animator.SetBool(Jumping, true);
+                _animator.SetBool(Falling, true);
                 if (targetVelocity.y < -_maxVerticalSpeed)
                 {
                     targetVelocity.y = -_maxVerticalSpeed;
@@ -340,17 +346,14 @@ public class CharacterController : MonoBehaviour
         return _grounded;
     }
 
-    public bool HasJumped()
-    {
-        return _jumping;
-    }
-
     public void ToggleHook()
     {
         _hooked = !_hooked;
         // If player is hanging to a star, set the maximum oscillation speed according to the distance from the star
         if (_hooked)
         {
+            // TODO: replace this with the hanging animation
+            _animator.SetBool(Falling, true);
             DistanceJoint2D joint = _rb.GetComponent<DistanceJoint2D>();
             _starPosition = joint.connectedBody.position;
             _jointDistance = joint.distance;
@@ -358,6 +361,7 @@ public class CharacterController : MonoBehaviour
         }
         else
         {
+            _justReleasedHook = true;
             _starPosition = Vector2.zero;
         }
     }

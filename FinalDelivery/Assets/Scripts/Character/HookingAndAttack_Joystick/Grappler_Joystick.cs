@@ -210,7 +210,7 @@ public class Grappler_Joystick : MonoBehaviour
                 {
                     // If Kin is NOT the ground and meanwhile jump is pressed assume that the hang has to be accomplished.
                     // Create a joint, start the effect.
-                    if (!_controller.IsGrounded() && _controller.HasJumped() && ((Vector2) _selectedStar.transform.position - _position).magnitude < _maxHangDistance && !_waitTillGrounded)
+                    if (!_controller.IsGrounded() && ((Vector2) _selectedStar.transform.position - _position).magnitude < _maxHangDistance && !_waitTillGrounded)
                     {
                         attackJoystick.SetHanging(true);
                         Rigidbody2D otherRb = _selectedStar.GetComponent<Rigidbody2D>();
