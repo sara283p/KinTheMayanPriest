@@ -60,13 +60,13 @@ public class GameManager : MonoBehaviour
     private void OnEnable()
     {
         DontDestroyOnLoad(this);
-        EventManager.StartListening("PlayerDeath", Reinit);
+        EventManager.StartListening("PlayerRespawn", Reinit);
         EventManager.StartListening("LevelFinished", ChangeLevel);
     }
 
     private void OnDisable()
     {
-        EventManager.StopListening("PlayerDeath", Reinit);
+        EventManager.StopListening("PlayerRespawn", Reinit);
         EventManager.StopListening("LevelFinished", ChangeLevel);
     }
 

@@ -43,12 +43,12 @@ public class CameraFixApplier : MonoBehaviour
 
     private void OnEnable()
     {
-        EventManager.StartListening("PlayerDeath", ReinitCamera);
+        EventManager.StartListening("PlayerRespawn", ReinitCamera);
     }
 
     private void OnDisable()
     {
-        EventManager.StopListening("PlayerDeath", ReinitCamera);
+        EventManager.StopListening("PlayerRespawn", ReinitCamera);
     }
 
     // Update is called once per frame

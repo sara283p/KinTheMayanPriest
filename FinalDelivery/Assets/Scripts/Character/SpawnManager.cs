@@ -7,10 +7,12 @@ public class SpawnManager : MonoBehaviour
 {
     [SerializeField] private float reSpawnTime = 2f;
     private PlayerHealth _playerHealth;
+    private bool _firstSpawn;
     
     // Start is called before the first frame update
     void Start()
     {
+        _firstSpawn = true;
         _playerHealth = FindObjectOfType<PlayerHealth>();
         EventManager.TriggerEvent("PlayerDeath");
     }
@@ -25,7 +27,16 @@ public class SpawnManager : MonoBehaviour
     {
         _playerHealth.gameObject.SetActive(false);
         //wait for a respawn time interval before actually respawning
-        yield return new WaitForSeconds(reSpawnTime);
+        if (!_firstSpawn)
+        {
+            yield return new WaitForSeconds(reSpawnTime);
+        }
+        else
+        {
+            _firstSpawn = false;
+        }
+
+        EventManager.TriggerEvent("PlayerRespawn");
         _playerHealth.Spawn();
         //to make the player vulnerable again, in case he died while he was invulnerable
         _playerHealth.GetVulnerable();

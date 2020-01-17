@@ -40,7 +40,12 @@ public class MovingPlatform : MonoBehaviour
 
     private void OnEnable()
     {
-        EventManager.StartListening("PlayerDeath", Init);
+        EventManager.StartListening("PlayerRespawn", Init);
+    }
+
+    private void OnDisable()
+    {
+        EventManager.StopListening("PlayerRespawn", Init);
     }
 
     void FixedUpdate()
