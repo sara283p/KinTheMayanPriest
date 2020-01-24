@@ -8,6 +8,7 @@ using System.Linq;
 public class GameManager : MonoBehaviour
 {
     public String[] scenes;
+    public Canvas loadingScreen;
     public float characterMaxHealth;
     public float obstacleMaxHealth;
     public float enemyPerStarDamage;
@@ -32,6 +33,7 @@ public class GameManager : MonoBehaviour
     private static GameManager _manager;
     private int _currentLevel;
     private bool _isChangingLevel;
+    private LoadingScreen _loadingScreen;
     
     public static GameManager Instance => _manager;
 
@@ -45,6 +47,7 @@ public class GameManager : MonoBehaviour
             _aliveObjects = new List<GameObject>();
             _activeFlags = new List<bool>();
             _starNumberAlreadyIncreased = scenes.Select(x => false).ToArray();
+            _loadingScreen = loadingScreen.GetComponent<LoadingScreen>();
 
             if (!_manager)
             {
@@ -62,14 +65,20 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(this);
         EventManager.StartListening("PlayerRespawn", Reinit);
         EventManager.StartListening("LevelFinished", ChangeLevel);
+        EventManager.StartListening("LoadingCompleted", LevelLoaded);
     }
 
     private void OnDisable()
     {
         EventManager.StopListening("PlayerRespawn", Reinit);
         EventManager.StopListening("LevelFinished", ChangeLevel);
+        EventManager.StopListening("LoadingCompleted", LevelLoaded);
     }
 
+    private void LevelLoaded()
+    {
+        _isChangingLevel = false;
+    }
 
     private void ReinitRespawnLists()
     {
@@ -95,9 +104,7 @@ public class GameManager : MonoBehaviour
         {
             _currentLevel++;
         }
-        SceneManager.LoadScene(scenes[_currentLevel]);
-        _isChangingLevel = false;
-
+        _loadingScreen.SceneLoading(SceneManager.LoadSceneAsync(scenes[_currentLevel]));
     }
 
     private void ChangeLevel(int selected)
@@ -106,8 +113,7 @@ public class GameManager : MonoBehaviour
         ReinitRespawnLists();
 
         _currentLevel = selected;
-        SceneManager.LoadScene(scenes[_currentLevel]);
-        _isChangingLevel = false;
+        _loadingScreen.SceneLoading(SceneManager.LoadSceneAsync(scenes[_currentLevel]));
     }
 
     public void ChangeLevel(String levelName)
@@ -141,24 +147,27 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (!_isChangingLevel)
         {
-            ChangeLevel(0);
-        }
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                ChangeLevel(0);
+            }
 
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            ChangeLevel(1);
-        }
+            if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                ChangeLevel(1);
+            }
 
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            ChangeLevel(2);
-        }
+            if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                ChangeLevel(2);
+            }
 
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            EventManager.TriggerEvent("LinkableStarsIncreased");
+            if (Input.GetKeyDown(KeyCode.T))
+            {
+                EventManager.TriggerEvent("LinkableStarsIncreased");
+            }
         }
     }
 
