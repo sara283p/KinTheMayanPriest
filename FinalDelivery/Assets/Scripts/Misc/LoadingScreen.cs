@@ -7,13 +7,11 @@ using UnityEngine.UI;
 public class LoadingScreen : MonoBehaviour
 {
     private Slider _bar;
-    private float _maxValue;
     private AsyncOperation _loadingOperation;
 
     private void Awake()
     {
         _bar = GetComponentInChildren<Slider>(true);
-        _maxValue = 0.9f;
     }
 
     public void SceneLoading(AsyncOperation loadingOperation)
@@ -30,11 +28,12 @@ public class LoadingScreen : MonoBehaviour
         {
             float progress = _loadingOperation.progress;
 
-            _bar.value = progress / _maxValue;
+            _bar.value = progress;
             yield return null;
         }
 
-        _bar.value = _loadingOperation.progress / _maxValue;
+        _bar.value = _loadingOperation.progress;
+        yield return new WaitForSeconds(1);
         gameObject.SetActive(false);
         _loadingOperation = null;
         EventManager.TriggerEvent("LoadingCompleted");
