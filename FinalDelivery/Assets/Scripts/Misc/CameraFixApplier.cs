@@ -52,15 +52,21 @@ public class CameraFixApplier : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
+        Vector2 zeroVect = Vector2.zero;
         Vector3 topLeft = _camera.ScreenToWorldPoint(new Vector3(0, Screen.height));
+        Vector2 healthBarPos = _healthBar.transform.position;
         topLeft.x += offsetX;
         topLeft.y -= offsetY;
         topLeft.z = 0;
 
+        Vector2.SmoothDamp(healthBarPos, topLeft, ref zeroVect, 0.5f);
         _healthBar.transform.position = topLeft;
         topLeft.y -= _distance;
+        topLeft = healthBarPos;
+        topLeft.y -= _distance;
         _powerBar.transform.position = topLeft;
+        
     }
 }
