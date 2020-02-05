@@ -84,7 +84,7 @@ public class GameManager : MonoBehaviour
         }
 
         if(!fileCreated){
-            f = File.Open(Application.persistentDataPath + "data.dat", FileMode.Open);
+            f = File.Open(Application.persistentDataPath + dataFile, FileMode.Open);
             PersistentData data = (PersistentData) bf.Deserialize(f);
             _isLevelCompleted = data.completedLevels;
             _isCollectibleTaken = data.collectedCollectibles;
