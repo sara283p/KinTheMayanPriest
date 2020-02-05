@@ -15,6 +15,10 @@ public class Armadillo : MonoBehaviour
 
     private void Awake()
     {
+        if (GameManager.Instance.isCollectibleTaken)
+        {
+            gameObject.SetActive(false);
+        }
         _camera = FindObjectOfType<Camera>();
         _animator = GetComponent<Animator>();
     }
@@ -48,6 +52,7 @@ public class Armadillo : MonoBehaviour
         if (other.CompareTag("Player") && other.isTrigger)
         {
             Activate();
+            GameManager.Instance.TakeCollectible();
         }
     }
 }

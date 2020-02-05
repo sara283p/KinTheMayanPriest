@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
+using Misc;
 
 public class GameManager : MonoBehaviour
 {
@@ -25,7 +28,8 @@ public class GameManager : MonoBehaviour
     [Range(0, 1)] public float lavaSpeedModifier;
     [Range(0, 1)] public float lavaGravityModifier;
 
-    private bool[] _starNumberAlreadyIncreased;
+    private bool[] _isLevelCompleted;
+    private bool[] _isCollectibleTaken;
     private List<GameObject> _registeredForRespawn;
     private List<GameObject> _aliveObjects;
     private bool _respawnAlreadyRegistered;
@@ -46,8 +50,9 @@ public class GameManager : MonoBehaviour
             _registeredForRespawn = new List<GameObject>();
             _aliveObjects = new List<GameObject>();
             _activeFlags = new List<bool>();
-            _starNumberAlreadyIncreased = scenes.Select(x => false).ToArray();
             _loadingScreen = loadingScreen.GetComponent<LoadingScreen>();
+
+            LoadPersistentData();
 
             if (!_manager)
             {
@@ -58,6 +63,41 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    private void LoadPersistentData()
+    {
+        String dataFile = "data.dat";
+        BinaryFormatter bf = new BinaryFormatter();
+        bool fileCreated = false;
+        FileStream f;
+        
+        if(!File.Exists(Application.persistentDataPath + dataFile))
+        {
+            fileCreated = true;
+            _isLevelCompleted = scenes.Select(x => false).ToArray();
+            _isCollectibleTaken = scenes.Select(x => false).ToArray();
+            linkableStars = 1;
+            f = File.Create(Application.persistentDataPath + dataFile);
+            bf.Serialize(f, new PersistentData(_isLevelCompleted, _isCollectibleTaken, linkableStars));
+            f.Close();
+        }
+
+        if(!fileCreated){
+            f = File.Open(Application.persistentDataPath + "data.dat", FileMode.Open);
+            PersistentData data = (PersistentData) bf.Deserialize(f);
+            _isLevelCompleted = data.completedLevels;
+            _isCollectibleTaken = data.collectedCollectibles;
+            linkableStars = data.linkableStars;
+            f.Close();
+        }
+    }
+
+    private void SavePersistentData()
+    {
+        FileStream f = File.Open(Application.persistentDataPath + "data.dat", FileMode.Open);
+        new BinaryFormatter().Serialize(f, new PersistentData(_isLevelCompleted, _isCollectibleTaken, linkableStars));
+        f.Close();
     }
 
     private void OnEnable()
@@ -91,10 +131,12 @@ public class GameManager : MonoBehaviour
     {
         _isChangingLevel = true;
         ReinitRespawnLists();
-        if (!_starNumberAlreadyIncreased[_currentLevel])
+        if (!_isLevelCompleted[_currentLevel])
         {
             IncreaseLinkableStars();
         }
+        _isLevelCompleted[_currentLevel] = true;
+
 
         if (_currentLevel == 2)
         {
@@ -104,6 +146,7 @@ public class GameManager : MonoBehaviour
         {
             _currentLevel++;
         }
+        SavePersistentData();
         _loadingScreen.SceneLoading(SceneManager.LoadSceneAsync(scenes[_currentLevel]));
     }
 
@@ -174,9 +217,7 @@ public class GameManager : MonoBehaviour
     private void IncreaseLinkableStars()
     {
         linkableStars++;
-        _starNumberAlreadyIncreased[_currentLevel] = true;
         EventManager.TriggerEvent("LinkableStarsIncreased");
-        // TODO: save as persistent the new value of maximum linkable stars
     }
 
     public float GetEnemyHealthFromHits(float hitsToDeath)
@@ -195,4 +236,11 @@ public class GameManager : MonoBehaviour
         _registeredForRespawn.Add(registrar);
         _activeFlags.Add(isActive);
     }
+
+    public void TakeCollectible()
+    {
+        _isCollectibleTaken[_currentLevel] = true;
+    }
+
+    public bool isCollectibleTaken => _isCollectibleTaken[_currentLevel];
 }
