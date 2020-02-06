@@ -8,5 +8,10 @@ namespace UI
         {
             inputOverride = GetComponent<BaseInput>();
         }
+
+        public override bool IsModuleSupported()
+        {
+            return true;
+        }
     }
 }
