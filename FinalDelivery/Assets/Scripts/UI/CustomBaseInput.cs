@@ -14,4 +14,6 @@ public class CustomBaseInput : BaseInput
     {
         return InputManager.GetButtonDown(buttonName);
     }
+
+    public override bool mousePresent => false;
 }
