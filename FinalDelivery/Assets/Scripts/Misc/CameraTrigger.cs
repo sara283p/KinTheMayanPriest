@@ -54,6 +54,11 @@ public class CameraTrigger : MonoBehaviour
         _unusedVector = Vector2.zero;
     }
 
+    private void DisableTriggerUpdate()
+    {
+        _triggerActivated = false;
+    }
+
     private void Update()
     {
         if (_triggerActivated)
@@ -113,6 +118,17 @@ public class CameraTrigger : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (oneWay && _alreadyTriggered)
+            return;
+        if (other.CompareTag("Player") && other.isTrigger)
+        {
+            EventManager.StopListening("CameraTriggerActivated", DisableTriggerUpdate);
+            EventManager.TriggerEvent("CameraTriggerActivated");
+        }
+    }
+
     private void OnTriggerStay2D(Collider2D other)
     {
         if (oneWay && _alreadyTriggered)
@@ -148,6 +164,16 @@ public class CameraTrigger : MonoBehaviour
                 }
             }
             ApplyOffsets();
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (oneWay && _alreadyTriggered)
+            return;
+        if (other.CompareTag("Player") && other.isTrigger)
+        {
+            EventManager.StartListening("CameraTriggerActivated", DisableTriggerUpdate);
         }
     }
 }
