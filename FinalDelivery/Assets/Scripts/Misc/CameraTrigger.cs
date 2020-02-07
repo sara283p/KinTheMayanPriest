@@ -46,6 +46,7 @@ public class CameraTrigger : MonoBehaviour
     private Vector2 _unusedVector;
     private Vector2 _enteringSide;
     private bool _alreadyTriggered;
+    private bool _offsetsAlreadyApplied;
 
     private void Awake()
     {
@@ -86,6 +87,9 @@ public class CameraTrigger : MonoBehaviour
     
     private void ApplyOffsets()
     {
+        if (_offsetsAlreadyApplied)
+            return;
+        _offsetsAlreadyApplied = true;
         float offsetX;
         float offsetY;
         if (_enteringSide == Vector2.left || _enteringSide == Vector2.up)
@@ -109,7 +113,7 @@ public class CameraTrigger : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerStay2D(Collider2D other)
     {
         if (oneWay && _alreadyTriggered)
             return;
@@ -119,7 +123,7 @@ public class CameraTrigger : MonoBehaviour
             _alreadyTriggered = true;
             if (!isHorizontal)
             {
-                if (other.transform.position.x < transform.position.x)
+                if (other.transform.position.x > transform.position.x)
                 {
                     _enteringSide = Vector2.left;
                     _targetSize = orthographicSizeAfterTrigger;
@@ -132,7 +136,7 @@ public class CameraTrigger : MonoBehaviour
             }
             else
             {
-                if (other.transform.position.y > transform.position.y)
+                if (other.transform.position.y < transform.position.y)
                 {
                     _enteringSide = Vector2.up;
                     _targetSize = orthographicSizeAfterTrigger;
