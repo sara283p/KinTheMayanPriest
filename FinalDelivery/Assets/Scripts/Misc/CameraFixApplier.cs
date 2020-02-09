@@ -61,7 +61,6 @@ public class CameraFixApplier : MonoBehaviour
         topLeft.y -= offsetY;
         topLeft.z = 0;
 
-        Vector2.SmoothDamp(healthBarPos, topLeft, ref zeroVect, 0.5f);
         _healthBar.transform.position = topLeft;
         topLeft.y -= _distance;
         topLeft = healthBarPos;

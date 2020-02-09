@@ -59,7 +59,7 @@ public class CameraTrigger : MonoBehaviour
         _triggerActivated = false;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (_triggerActivated)
         {
