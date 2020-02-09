@@ -7,21 +7,24 @@ public class EnemyRemoveHolder : MonoBehaviour
 {
 
     [SerializeField] private GameObject enemyHolder;
-    
-    // Start is called before the first frame update
-    void Start()
+
+    private void OnEnable()
     {
-        
+        EventManager.StartListening("PlayerRespawn", Reinit);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnDisable()
     {
-        
+        EventManager.StopListening("PlayerRespawn", Reinit);
+    }
+
+    private void Reinit()
+    {
+        enemyHolder.SetActive(true);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Destroy(enemyHolder);
+        enemyHolder.SetActive(false);
     }
 }
