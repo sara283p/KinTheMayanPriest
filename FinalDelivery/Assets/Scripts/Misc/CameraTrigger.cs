@@ -44,9 +44,9 @@ public class CameraTrigger : MonoBehaviour
     private bool _triggerActivated;
     private float _targetSize;
     private Vector2 _unusedVector;
-    private Vector2 _enteringSide;
+    private Vector2 _positionSide;
     private bool _alreadyTriggered;
-    private bool _offsetsAlreadyApplied;
+    private Vector2 _previousSide;
 
     private void Awake()
     {
@@ -67,7 +67,7 @@ public class CameraTrigger : MonoBehaviour
             bool enlargingTrigger = orthographicSizeBeforeTrigger <= orthographicSizeAfterTrigger;
             bool targetReached;
 
-            if (_enteringSide == Vector2.left || _enteringSide == Vector2.up)
+            if (_positionSide == Vector2.right || _positionSide == Vector2.down)
             {
                 targetReached = enlargingTrigger ? orthographicSize >= _targetSize - 0.01f : orthographicSize <= _targetSize + 0.01f;
             }
@@ -92,12 +92,9 @@ public class CameraTrigger : MonoBehaviour
     
     private void ApplyOffsets()
     {
-        if (_offsetsAlreadyApplied)
-            return;
-        _offsetsAlreadyApplied = true;
         float offsetX;
         float offsetY;
-        if (_enteringSide == Vector2.left || _enteringSide == Vector2.up)
+        if (_positionSide == Vector2.right || _positionSide == Vector2.down)
         {
             offsetX = leftOrTopOffsetX;
             offsetY = leftOrTopOffsetY;
@@ -126,6 +123,7 @@ public class CameraTrigger : MonoBehaviour
         {
             EventManager.StopListening("CameraTriggerActivated", DisableTriggerUpdate);
             EventManager.TriggerEvent("CameraTriggerActivated");
+            _previousSide = Vector2.zero;
         }
     }
 
@@ -135,18 +133,16 @@ public class CameraTrigger : MonoBehaviour
             return;
         if (other.CompareTag("Player") && other.isTrigger)
         {
-            _triggerActivated = true;
-            _alreadyTriggered = true;
             if (!isHorizontal)
             {
                 if (other.transform.position.x > transform.position.x)
                 {
-                    _enteringSide = Vector2.left;
+                    _positionSide = Vector2.right;
                     _targetSize = orthographicSizeAfterTrigger;
                 }
                 else
                 {
-                    _enteringSide = Vector2.right;
+                    _positionSide = Vector2.left;
                     _targetSize = orthographicSizeBeforeTrigger;
                 }
             }
@@ -154,23 +150,36 @@ public class CameraTrigger : MonoBehaviour
             {
                 if (other.transform.position.y < transform.position.y)
                 {
-                    _enteringSide = Vector2.up;
+                    _positionSide = Vector2.down;
                     _targetSize = orthographicSizeAfterTrigger;
                 }
                 else
                 {
-                    _enteringSide = Vector2.down;
+                    _positionSide = Vector2.up;
                     _targetSize = orthographicSizeBeforeTrigger;
                 }
             }
-            ApplyOffsets();
+
+            bool middleNotPassed = _previousSide == Vector2.zero || _positionSide.Equals(_previousSide);
+            _previousSide = _positionSide;
+            
+            // If this is a oneWay camera trigger and the player didn't pass its center yet, do nothing
+            //otherwise, activate the trigger normally
+            if (oneWay && middleNotPassed)
+                return;
+
+            _triggerActivated = true;
+            _alreadyTriggered = true;
+
+            if (!middleNotPassed)
+            {
+                ApplyOffsets();
+            }
         }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (oneWay && _alreadyTriggered)
-            return;
         if (other.CompareTag("Player") && other.isTrigger)
         {
             EventManager.StartListening("CameraTriggerActivated", DisableTriggerUpdate);
