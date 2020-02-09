@@ -167,21 +167,6 @@ public class Grappler_Joystick : MonoBehaviour
                 _joint.maxDistanceOnly = false;
             }
 
-            if (InputManager.GetButton("Button0"))
-            {
-                if (_joint.distance < _maxHangDistance)
-                {
-                    _joint.distance += _hangLengthVariationSpeed * Time.deltaTime;
-                    _controller.OnJointDistanceChange(_joint.distance);
-                }
-            }
-            else if (InputManager.GetButton("Button2") && _joint.distance > _minHangDistance)
-            {
-                _joint.distance -= _hangLengthVariationSpeed * Time.deltaTime;
-                _controller.OnJointDistanceChange(_joint.distance);
-            }
-
-
             if (!_wantToHook || _controller.IsGrounded()) // || _skyIsMoving)
             {
                 _waitTillGrounded = false;

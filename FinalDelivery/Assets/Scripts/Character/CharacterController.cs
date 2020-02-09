@@ -53,7 +53,6 @@ public class CharacterController : MonoBehaviour
     private PlayerHealth _health;
 
     private Transform _initialParent;
-    private float _jointDistance;
     private bool _justReleasedHook;
 	
     private void Awake()
@@ -356,20 +355,13 @@ public class CharacterController : MonoBehaviour
             _animator.SetBool(Falling, true);
             DistanceJoint2D joint = _rb.GetComponent<DistanceJoint2D>();
             _starPosition = joint.connectedBody.position;
-            _jointDistance = joint.distance;
-            _oscillationSpeed = _baseOscillationSpeed * _jointDistance * 0.8f ;
+            _oscillationSpeed = _baseOscillationSpeed * joint.distance * 0.8f ;
         }
         else
         {
             _justReleasedHook = true;
             _starPosition = Vector2.zero;
         }
-    }
-    
-    public void OnJointDistanceChange(float newDistance)
-    {
-        _jointDistance = newDistance;
-        _oscillationSpeed = _baseOscillationSpeed * _jointDistance * 0.8f;
     }
 
     public void StopJump()
