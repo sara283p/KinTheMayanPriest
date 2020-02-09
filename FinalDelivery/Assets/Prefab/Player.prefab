@@ -9946,7 +9946,7 @@ MonoBehaviour:
   _leftJumpCheck: {fileID: 1635278335292191555}
   _rightJumpCheck: {fileID: 1635278335214696001}
   floorCheck: {fileID: 1635278335687538369}
-  _jumpCheckRadius: 0.05
+  _jumpCheckRadius: 0.1
   _jumpForce: 400
   m_MovementSmoothing: 0.05
   _whatIsGround:
@@ -9965,7 +9965,7 @@ MonoBehaviour:
   _antiRampJump: 5
   obstacleLayerMask:
     serializedVersion: 2
-    m_Bits: 4352
+    m_Bits: 135424
   groundDir: {x: 0, y: 0}
 --- !u!70 &1635278333857860271
 CapsuleCollider2D:
@@ -9998,7 +9998,7 @@ MonoBehaviour:
   selectionDelay: 0.4
   obstacleLayerMask:
     serializedVersion: 2
-    m_Bits: 4352
+    m_Bits: 135424
   starLayerMask:
     serializedVersion: 2
     m_Bits: 1024
@@ -10044,7 +10044,7 @@ MonoBehaviour:
   lineRenderer: {fileID: 1635278334745749729}
   obstacleLayerMask:
     serializedVersion: 2
-    m_Bits: 4352
+    m_Bits: 135424
   thresholdManualAttackDistance: 15
   viewfinder: {fileID: 1635278334211474296}
   isHanging: 0
