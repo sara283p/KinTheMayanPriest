@@ -6,7 +6,6 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public CharacterController controller;
-    public Animator animator;
 
     private float _horizontalMove;
     public float runSpeed = 300f;
@@ -39,7 +38,7 @@ public class PlayerMovement : MonoBehaviour
 
         _horizontalMove = Math.Abs(_horizontalMove) > _analogDeadZone ? _horizontalMove * runSpeed : 0;
 
-        animator.SetFloat(Speed, Mathf.Abs(_horizontalMove));
+        //animator.SetFloat(Speed, Mathf.Abs(_horizontalMove));
 
         if (InputManager.GetButtonDown("Button0"))
         {

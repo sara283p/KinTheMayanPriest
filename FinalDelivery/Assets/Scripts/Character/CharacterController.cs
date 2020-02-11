@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
+using System.Net.Sockets;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Networking;
 
 public class CharacterController : MonoBehaviour
 
@@ -9,12 +11,15 @@ public class CharacterController : MonoBehaviour
     private static readonly int Jumping = Animator.StringToHash("Jumping");
     private static readonly int IsPlayerTouching = Animator.StringToHash("IsPlayerTouching");
     private static readonly int Falling = Animator.StringToHash("Falling");
+    private static readonly int Speed = Animator.StringToHash("Speed");
 
     public bool drawGroundedSphere;
     public Transform _leftJumpCheck;											// Position marking used to check when the character has landed after jumps
     public Transform _rightJumpCheck;
     public Transform floorCheck;												// A position marking used to check the direction of the floor in front of the character
-
+    public Sprite[] swingingSprites;
+    public Sprite idleSprite;
+    
     [SerializeField] private float _jumpCheckRadius;							// Distance from ground at which the jump is considered to be ended
     [SerializeField] private float _jumpForce = 400f;							// Amount of force added when the player jumps.
     [Range(0, .3f)] [SerializeField] private float m_MovementSmoothing = .05f;	// How much to smooth out the movement
@@ -51,6 +56,7 @@ public class CharacterController : MonoBehaviour
     private float _lavaGravityModifier;
     private Vector2 _wallPosition;                                                // Vector used to identify the position of the touched wall w.r.t. Kin in order to avoid sticky character
     private PlayerHealth _health;
+    private SpriteRenderer _spriteRenderer;
 
     private Transform _initialParent;
     private bool _justReleasedHook;
@@ -69,6 +75,7 @@ public class CharacterController : MonoBehaviour
         _lavaSpeedModifier = GameManager.Instance.lavaSpeedModifier;
         _lavaGravityModifier = GameManager.Instance.lavaGravityModifier;
         _health = GetComponent<PlayerHealth>();
+        _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     void Update()
@@ -169,6 +176,7 @@ public class CharacterController : MonoBehaviour
         // If the player is not hanged on a star...
         if (!_hooked)
         {
+            _animator.SetFloat(Speed, Math.Abs(move));
             if (_isInWater)
             {
                 move *= _waterSpeedModifier;
@@ -294,6 +302,31 @@ public class CharacterController : MonoBehaviour
             {
                 targetVelocity.y = targetVelocity.y * 0.7f;
             }
+
+            float minSwingSpeed = _oscillationSpeed / 3;
+            float facingDir = transform.localRotation.y;
+            
+            // To avoid having facingDir = 0, and so direction = 0, if localRotation.y is 0, set it to 1 (because it means
+            // character is facing right)
+            if (Math.Abs(transform.localRotation.y) <= 0.01)
+            {
+                facingDir = 1;
+            }
+            int direction = Math.Sign(targetVelocity.x * facingDir);
+            
+            if (Mathf.Abs(targetVelocity.x) <= minSwingSpeed)
+            {
+                _spriteRenderer.sprite = swingingSprites[0];
+            }
+            else if (Mathf.Abs(targetVelocity.x) > _oscillationSpeed - minSwingSpeed)
+            {
+                _spriteRenderer.sprite = direction >= 0 ? swingingSprites[2] : swingingSprites[4];
+            }
+            else
+            {
+                _spriteRenderer.sprite = direction >= 0 ? swingingSprites[1] : swingingSprites[3];
+            }
+
         }
 			
         // Set rigidbody velocity to move player
@@ -351,14 +384,16 @@ public class CharacterController : MonoBehaviour
         // If player is hanging to a star, set the maximum oscillation speed according to the distance from the star
         if (_hooked)
         {
-            // TODO: replace this with the hanging animation
-            _animator.SetBool(Falling, true);
+            _animator.enabled = false;
+            _spriteRenderer.sprite = swingingSprites[0];
             DistanceJoint2D joint = _rb.GetComponent<DistanceJoint2D>();
             _starPosition = joint.connectedBody.position;
             _oscillationSpeed = _baseOscillationSpeed * joint.distance * 0.8f ;
         }
         else
         {
+            _spriteRenderer.sprite = idleSprite;
+            _animator.enabled = true;
             _justReleasedHook = true;
             _starPosition = Vector2.zero;
         }

@@ -11,16 +11,32 @@ public class HangingEffect : MonoBehaviour
 
     public LineRenderer lineRenderer;
 
+    private GameObject _blueSphere;
+    private Animator _blueSphereAnimator;
+    
+    private static readonly int IsHanged = Animator.StringToHash("IsHanged");
+
+    private void Awake()
+    {
+        _blueSphere = transform.parent.GetComponentInChildren<HangBlueSphere>().gameObject;
+        _blueSphereAnimator = _blueSphere.GetComponent<Animator>();
+        _blueSphere.SetActive(false);
+    }
+
     public void StartEffect(Transform target)
     {
         _star = target;
         UpdateLineRendererPosition();
         lineRenderer.enabled = true;
+        _blueSphere.SetActive(true);
+        _blueSphereAnimator.SetBool(IsHanged, true);
     }
 
     public void StopEffect()
     {
         lineRenderer.enabled = false;
+        _blueSphereAnimator.SetBool(IsHanged, false);
+        _blueSphere.SetActive(false);
     }
 
     private void UpdateLineRendererPosition()
