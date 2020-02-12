@@ -13,8 +13,7 @@ public class MoveStarViewfinder_Joystick : MonoBehaviour
 
     public void DisplayViewfinder(bool val)
     {
-        if (val) _renderer.enabled = true;
-        else _renderer.enabled = false;
+        _renderer.enabled = val;
     }
 
     public void EnemyTooFarEffect()
