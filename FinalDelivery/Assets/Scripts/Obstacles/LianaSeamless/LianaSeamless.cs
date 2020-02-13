@@ -60,7 +60,7 @@ public class LianaSeamless : Health, IDamageable
     {
         foreach (var go in _children)
         {
-            Destroy(go.gameObject);
+            go.DestroyPiece();
         }
 
         GetComponent<Collider2D>().enabled = false;

@@ -7,12 +7,16 @@ public class Barrier : MonoBehaviour
 {
     private EnemySet _enemies;
     private int _killedEnemies;
+    private SpriteRenderer _renderer;
+    private BoxCollider2D _collider;
 
     private void Awake()
     {
         _enemies = ScriptableObject.CreateInstance<EnemySet>();
+        _renderer = GetComponent<SpriteRenderer>();
+        _collider = GetComponent<BoxCollider2D>();
 
-        foreach (Enemy enemy in GetComponentsInChildren<Enemy>())
+        foreach (Enemy enemy in GetComponentsInChildren<Enemy>(true))
         {
             _enemies.Add(enemy);
         }
@@ -36,16 +40,28 @@ public class Barrier : MonoBehaviour
         _killedEnemies++;
         if (_killedEnemies == _enemies.list.Count)
         {
-            enabled = false;
-            Destroy(gameObject);
+            // enabled = false;
+            StartCoroutine(DestroyAnimation());
         }
     }
 
-    // private void Update()
-    // {
-    //     if (GetComponentsInChildren<Enemy>().Length == 0)
-    //     {
-    //         Destroy(gameObject);
-    //     }
-    // }
+    IEnumerator DestroyAnimation()
+    {
+        float time = 0.5f;
+        var solidColor = _renderer.color;
+        var transparentColor = solidColor;
+
+        _collider.enabled = false;
+
+        float dec = 0.01f;
+        
+        for (int i = 0; i < 100; i++)
+        {
+            transparentColor.a -= dec;
+            _renderer.material.color = transparentColor;
+            yield return new WaitForSeconds(0.001f);
+        }
+        
+        Destroy(gameObject);
+    }
 }
