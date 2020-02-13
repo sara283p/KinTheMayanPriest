@@ -73,6 +73,7 @@ public class ExitLevelManager : MonoBehaviour
                //if "YES" is pressed while the exitLevelUI is active:
                else if (!isNoSelected && isYesSelected)
                {
+                   AudioManager.instance.Stop();
                    SceneManager.LoadScene("Scenes/SavedDataMenu");
                }
             }
