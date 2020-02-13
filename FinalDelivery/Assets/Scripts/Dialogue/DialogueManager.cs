@@ -13,6 +13,8 @@ public class DialogueManager : MonoBehaviour
 
     private static DialogueManager _instance;
     private Queue<String> _sentences;
+    private bool _isSentenceFinished;
+    private String _currentSentence;
 
     private void Awake()
     {
@@ -49,26 +51,38 @@ public class DialogueManager : MonoBehaviour
 
     public void NextSentence()
     {
+        if (!_isSentenceFinished && _currentSentence != null)
+        {
+            StopAllCoroutines();
+            dialogueText.text = _currentSentence;
+            _isSentenceFinished = true;
+            return;
+        }
+        
         if (_sentences.Count == 0)
         {
             EndDialogue();
             return;
         }
         StopAllCoroutines();
-        StartCoroutine(TypeSentence(_sentences.Dequeue()));
+        _currentSentence = _sentences.Dequeue();
+        StartCoroutine(TypeSentence(_currentSentence));
     }
 
     private IEnumerator TypeSentence(String sentence)
     {
+        _isSentenceFinished = false;
         dialogueText.text = "";
         foreach (char character in sentence)
         {
             dialogueText.text += character;
             yield return null;
         }
+
+        _isSentenceFinished = true;
     }
 
-    private void EndDialogue()
+    public void EndDialogue()
     {
         print("End of conversation");
         EventManager.TriggerEvent("EndOfDialogue");

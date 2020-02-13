@@ -162,7 +162,7 @@ public class GameManager : MonoBehaviour
         _loadingScreen.SceneLoading(SceneManager.LoadSceneAsync(scenes[_currentLevel]));
     }
 
-    public void ChangeLevel(String levelName)
+    public void ChangeLevel(String levelName, GameObject activeCanvas)
     {
         int levelIndex = scenes.ToList().IndexOf(levelName);
         if (levelIndex >= 0)
@@ -172,6 +172,7 @@ public class GameManager : MonoBehaviour
                 if (!_isLevelCompleted[i])
                     return;
             }
+            activeCanvas.SetActive(false);
             ChangeLevel(levelIndex);
         }
     }
@@ -248,6 +249,12 @@ public class GameManager : MonoBehaviour
     public void TakeCollectible()
     {
         _isCollectibleTaken[_currentLevel] = true;
+    }
+
+    public bool IsNewGame(String levelName)
+    {
+        int levelIndex = scenes.ToList().IndexOf(levelName);
+        return levelIndex == 0 && !_isLevelCompleted[0];
     }
 
     public bool isCollectibleTaken => _isCollectibleTaken[_currentLevel];
