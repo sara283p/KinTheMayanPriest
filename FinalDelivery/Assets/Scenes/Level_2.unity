@@ -26730,7 +26730,7 @@ Tilemap:
       - {fileID: 21300000, guid: 94b8c0cefd2e5adf3af4398bc4da8f3e, type: 3}
       - {fileID: 21300000, guid: 9b4262b68108749b4882d8b94f4693db, type: 3}
       - {fileID: 21300000, guid: 60c9067e2b782a26aae4d9099c685f6e, type: 3}
-      m_AnimationSpeed: 12
+      m_AnimationSpeed: 12.000001
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: 77, y: -10, z: 0}
@@ -26906,7 +26906,7 @@ Tilemap:
       - {fileID: 21300000, guid: 94b8c0cefd2e5adf3af4398bc4da8f3e, type: 3}
       - {fileID: 21300000, guid: 9b4262b68108749b4882d8b94f4693db, type: 3}
       - {fileID: 21300000, guid: 60c9067e2b782a26aae4d9099c685f6e, type: 3}
-      m_AnimationSpeed: 12
+      m_AnimationSpeed: 12.000001
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: 77, y: -6, z: 0}
@@ -27005,7 +27005,7 @@ Tilemap:
       - {fileID: 21300000, guid: 94b8c0cefd2e5adf3af4398bc4da8f3e, type: 3}
       - {fileID: 21300000, guid: 9b4262b68108749b4882d8b94f4693db, type: 3}
       - {fileID: 21300000, guid: 60c9067e2b782a26aae4d9099c685f6e, type: 3}
-      m_AnimationSpeed: 12
+      m_AnimationSpeed: 12.000001
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: 98, y: -3, z: 0}
@@ -27038,7 +27038,7 @@ Tilemap:
       - {fileID: 21300000, guid: 94b8c0cefd2e5adf3af4398bc4da8f3e, type: 3}
       - {fileID: 21300000, guid: 9b4262b68108749b4882d8b94f4693db, type: 3}
       - {fileID: 21300000, guid: 60c9067e2b782a26aae4d9099c685f6e, type: 3}
-      m_AnimationSpeed: 12
+      m_AnimationSpeed: 12.000001
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: 98, y: -1, z: 0}
@@ -43388,8 +43388,23 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 4dc844c8a6bcc9643a91b2e5cb86f065,
+      objectReference: {fileID: 21300000, guid: edc7f5ae42cbe0640b57d4cf58f0e9fb,
         type: 3}
+    - target: {fileID: 1635278334211474297, guid: a1240e1e33e94e14e8875613a27c1351,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 3.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 1635278334211474297, guid: a1240e1e33e94e14e8875613a27c1351,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 3.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 1635278334211474297, guid: a1240e1e33e94e14e8875613a27c1351,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1635278335770408360, guid: a1240e1e33e94e14e8875613a27c1351,
         type: 3}
       propertyPath: m_CameraCutEvent.m_PersistentCalls.m_Calls.Array.size
