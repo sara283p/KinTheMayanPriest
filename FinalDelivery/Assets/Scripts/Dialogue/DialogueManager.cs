@@ -84,6 +84,7 @@ public class DialogueManager : MonoBehaviour
 
     public void EndDialogue()
     {
+        StopAllCoroutines();
         print("End of conversation");
         EventManager.TriggerEvent("EndOfDialogue");
     }
