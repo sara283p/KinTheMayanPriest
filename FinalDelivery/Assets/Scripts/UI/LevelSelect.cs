@@ -12,11 +12,13 @@ public class LevelSelect : MonoBehaviour
    public Dialogue intro;
 
    private bool _isShowingIntro;
+   private bool _firstPressSkipped;
    private String _selectedLevel;
-   
+
    public void LoadSelectedLevel(string levelName)
    {
       _selectedLevel = levelName;
+      AudioManager.instance.Play();
       if (GameManager.Instance.IsNewGame(levelName))
       {
          ShowIntro();
@@ -58,7 +60,14 @@ public class LevelSelect : MonoBehaviour
       {
          if (InputManager.GetButtonDown("Button0"))
          {
-            DialogueManager.Instance.NextSentence();
+            if (_firstPressSkipped)
+            {
+               DialogueManager.Instance.NextSentence();
+            }
+            else
+            {
+               _firstPressSkipped = true;
+            }
          }
 
          if (InputManager.GetButtonDown("Button1"))

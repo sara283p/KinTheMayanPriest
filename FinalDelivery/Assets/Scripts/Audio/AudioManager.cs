@@ -12,6 +12,8 @@ public class AudioManager : MonoBehaviour
 
 	public Sound[] sounds;
 
+	private bool _isBackgroundPlaying;
+
 	void Awake()
 	{
 		if (instance != null)
@@ -34,9 +36,25 @@ public class AudioManager : MonoBehaviour
 		}
 	}
 
-	void Start()
+	private void Start()
 	{
-		Play("BackgroundMusic");
+		if(!_isBackgroundPlaying)
+		{
+			Play();
+		}
+	}
+
+	public void Play()
+	{
+		_isBackgroundPlaying = true;
+		if(!_isBackgroundPlaying)
+			Play("BackgroundMusic");
+	}
+
+	public void Stop()
+	{
+		_isBackgroundPlaying = false;
+		StopPlaying("BackgroundMusic");
 	}
 
 	public void Play(string sound)
