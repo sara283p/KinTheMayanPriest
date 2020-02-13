@@ -10,10 +10,13 @@ public class CameraFixApplier : MonoBehaviour
 {
     public float offsetX;
     public float offsetY;
-    
+    public float headOffsetX;
+    public float headOffsetY;
+    public float distance;
+
     private GameObject _healthBar;
     private GameObject _powerBar;
-    private float _distance;
+    private GameObject _kinHead;
     private CinemachineVirtualCamera _virtualCamera;
     private Camera _camera;
     private float _initialOrthographicSize;
@@ -23,6 +26,7 @@ public class CameraFixApplier : MonoBehaviour
 
     private void Awake()
     {
+        _kinHead = GetComponentInChildren<KinHead>().gameObject;
         _healthBar = GetComponentInChildren<HealthBar>().gameObject;
         _powerBar = GetComponentInChildren<PowerBar>().gameObject;
         _virtualCamera = FindObjectsOfType<CinemachineVirtualCamera>().First(cam => cam.gameObject.activeInHierarchy);
@@ -31,7 +35,6 @@ public class CameraFixApplier : MonoBehaviour
         _transposer = _virtualCamera.GetCinemachineComponent<CinemachineFramingTransposer>();
         _initialScreenX = _transposer.m_ScreenX;
         _initialScreenY = _transposer.m_ScreenY;
-        _distance = ((Vector2) (_healthBar.transform.position - _powerBar.transform.position)).magnitude;
     }
 
     private void ReinitCamera()
@@ -62,10 +65,13 @@ public class CameraFixApplier : MonoBehaviour
         topLeft.z = 0;
 
         _healthBar.transform.position = topLeft;
-        topLeft.y -= _distance;
+        topLeft.y -= distance;
         topLeft = healthBarPos;
-        topLeft.y -= _distance;
+        topLeft.y -= distance;
         _powerBar.transform.position = topLeft;
-        
+        Vector2 headPosition = healthBarPos;
+        headPosition.x += headOffsetX;
+        headPosition.y += headOffsetY;
+        _kinHead.transform.position = headPosition;
     }
 }
