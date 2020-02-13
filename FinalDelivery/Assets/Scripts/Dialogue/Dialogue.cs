@@ -5,6 +5,6 @@ using UnityEngine;
 public class Dialogue
 {
     public String name;
-    [TextArea(3,5)]
+    [TextArea(2, 2)]
     public String[] sentences;
 }
