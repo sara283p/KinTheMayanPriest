@@ -68,29 +68,32 @@ public class GameManager : MonoBehaviour
     private void LoadPersistentData()
     {
         String dataFile = "data.dat";
-        BinaryFormatter bf = new BinaryFormatter();
         bool fileCreated = false;
-        FileStream f;
-        
+
         if(!File.Exists(Application.persistentDataPath + dataFile))
         {
             fileCreated = true;
-            _isLevelCompleted = scenes.Select(x => false).ToArray();
-            _isCollectibleTaken = scenes.Select(x => false).ToArray();
-            linkableStars = 1;
-            f = File.Create(Application.persistentDataPath + dataFile);
-            bf.Serialize(f, new PersistentData(_isLevelCompleted, _isCollectibleTaken, linkableStars));
-            f.Close();
+            ReinitializePersistentData();
         }
 
         if(!fileCreated){
-            f = File.Open(Application.persistentDataPath + dataFile, FileMode.Open);
-            PersistentData data = (PersistentData) bf.Deserialize(f);
+            FileStream f = File.Open(Application.persistentDataPath + dataFile, FileMode.Open);
+            PersistentData data = (PersistentData) new BinaryFormatter().Deserialize(f);
             _isLevelCompleted = data.completedLevels;
             _isCollectibleTaken = data.collectedCollectibles;
             linkableStars = data.linkableStars;
             f.Close();
         }
+    }
+
+    public void ReinitializePersistentData()
+    {
+        _isLevelCompleted = scenes.Select(x => false).ToArray();
+        _isCollectibleTaken = scenes.Select(x => false).ToArray();
+        linkableStars = 1;
+        FileStream f = File.Create(Application.persistentDataPath + "data.dat");
+        new BinaryFormatter().Serialize(f, new PersistentData(_isLevelCompleted, _isCollectibleTaken, linkableStars));
+        f.Close();
     }
 
     private void SavePersistentData()
@@ -164,6 +167,11 @@ public class GameManager : MonoBehaviour
         int levelIndex = scenes.ToList().IndexOf(levelName);
         if (levelIndex >= 0)
         {
+            for (int i = 0; i < levelIndex; i++)
+            {
+                if (!_isLevelCompleted[i])
+                    return;
+            }
             ChangeLevel(levelIndex);
         }
     }

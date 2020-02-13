@@ -23,6 +23,6 @@ public class OpeningScreen : MonoBehaviour
     {
         yield return new WaitForSeconds(0.2f);
         text.color = Color.white;
-        SceneManager.LoadScene("Scenes/LevelSelection");
+        SceneManager.LoadScene("Scenes/SavedDataMenu");
     }
 }

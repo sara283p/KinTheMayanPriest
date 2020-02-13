@@ -30,7 +30,7 @@ public class PauseMenuManager : MonoBehaviour
     [SerializeField] private GameObject resume;
     [SerializeField] private GameObject exit;
 
-    void Start()
+    void Awake()
     {
         pauseMenuScript = pauseMenuCanvas.GetComponent<PauseMenuManager>();
         exitLevelScript = exitLevelCanvas.GetComponent<ExitLevelManager>();

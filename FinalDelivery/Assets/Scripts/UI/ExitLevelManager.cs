@@ -24,7 +24,7 @@ public class ExitLevelManager : MonoBehaviour
 
 
 
-    void Start()
+    void Awake()
     {
         pauseMenuScript = pauseMenuCanvas.GetComponent<PauseMenuManager>();
         exitLevelScript = exitLevelCanvas.GetComponent<ExitLevelManager>();
@@ -73,7 +73,7 @@ public class ExitLevelManager : MonoBehaviour
                //if "YES" is pressed while the exitLevelUI is active:
                else if (!isNoSelected && isYesSelected)
                {
-                   SceneManager.LoadScene("Scenes/LevelSelection");
+                   SceneManager.LoadScene("Scenes/SavedDataMenu");
                }
             }
        
