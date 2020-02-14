@@ -39,8 +39,8 @@ public class LoadingScreen : MonoBehaviour
 
         _bar.value = _loadingOperation.progress;
         yield return new WaitForSeconds(1);
+        _videoPlayer.Stop();
         gameObject.SetActive(false);
-        //_videoPlayer.Stop();
         _loadingOperation = null;
         EventManager.TriggerEvent("LoadingCompleted");
     }
