@@ -19,6 +19,7 @@ public class LevelSelect : MonoBehaviour
    {
       _selectedLevel = levelName;
       AudioManager.instance.Play();
+      levelSelectionCanvas.SetActive(false);
       if (GameManager.Instance.IsNewGame(levelName))
       {
          ShowIntro();
@@ -40,7 +41,6 @@ public class LevelSelect : MonoBehaviour
 
    private void ShowIntro()
    {
-      levelSelectionCanvas.SetActive(false);
       introCanvas.SetActive(true);
       DialogueManager.Instance.StartDialogue(intro);
       EventManager.StartListening("EndOfDialogue", LoadLevel);
