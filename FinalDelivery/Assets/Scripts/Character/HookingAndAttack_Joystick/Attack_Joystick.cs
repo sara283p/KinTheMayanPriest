@@ -10,6 +10,8 @@ public class Attack_Joystick : MonoBehaviour
 
     public LineRenderer lineRenderer;
     public LayerMask obstacleLayerMask;
+    public Sprite normalViewFinder;
+    public Sprite killingViewFinder;
     
     private float maxAllowedDistance; // Max distance at which the first star selected can be
     public float thresholdManualAttackDistance;
@@ -43,6 +45,9 @@ public class Attack_Joystick : MonoBehaviour
     private Transform _redSphere;
     private int _maxLinkableStars;
     private float _attackBonus;
+    private SpriteRenderer _viewFinderSpriteRenderer;
+    private float _bonusDamage;
+    private float _baseDamage;
     
     private static readonly int IsAttacking = Animator.StringToHash("IsAttacking");
 
@@ -59,7 +64,10 @@ public class Attack_Joystick : MonoBehaviour
         _maxLinkableStars = GameManager.Instance.linkableStars;
         _analogDeadZone = GameManager.Instance.analogDeadZone;
         _attackBonus = GameManager.Instance.attackBonus;
+        _baseDamage = 0;
+        _bonusDamage = 0;
         _redSphere.gameObject.SetActive(false);
+        _viewFinderSpriteRenderer = viewfinder.GetComponent<SpriteRenderer>();
     }
 
     private void OnEnable()
@@ -262,6 +270,11 @@ public class Attack_Joystick : MonoBehaviour
         {
             viewfinder.gameObject.transform.position = _targetEnemy.GetPosition();
         }
+
+        if (_targetType == TargetType.Star)
+        {
+            _viewFinderSpriteRenderer.sprite = normalViewFinder;
+        }
         
         if (_attacking)
         {
@@ -276,6 +289,7 @@ public class Attack_Joystick : MonoBehaviour
             if (_targetType == TargetType.Enemy && _selectedStars.Count > 0)
             {
                 TargetEnemy();
+                _viewFinderSpriteRenderer.sprite = _baseDamage + _bonusDamage >= ((Health) _targetEnemy).GetHealth() ? killingViewFinder : normalViewFinder;
             }
 
             // If the Select button is pressed, there are three possibilities:
@@ -338,13 +352,22 @@ public class Attack_Joystick : MonoBehaviour
                 }
                 _targetStar.SelectForAttack();
                 _selectedStars.Add(_targetStar);
+                _baseDamage += _targetStar.damagePoints;
+                
+                // Attack bonus in case all linkable stars are selected
+                if (_selectedStars.Count > 1 && _selectedStars.Count == _maxLinkableStars)
+                {
+                    _bonusDamage = _attackBonus * _selectedStars.First().damagePoints;
+                }
                 lineRenderer.positionCount++;
                 lineRenderer.SetPosition(_selectedStars.Count, (Vector2) _targetStar.transform.position);
             }
             else
             {
                 _targetStar.DeselectForAttack();
+                _bonusDamage = 0;
                 _selectedStars.Remove(_targetStar);
+                _baseDamage -= _targetStar.damagePoints;
                 lineRenderer.positionCount--;
                 var positions = _selectedStars.Select(x => x.transform.position).ToList();
                 positions.Insert(0, _redSphere.position);
@@ -355,6 +378,7 @@ public class Attack_Joystick : MonoBehaviour
 
     private void Abort()
     {
+        _baseDamage = _bonusDamage = 0;
         _autoTarget = true;
         _attacking = false;
         _selecting = false;
@@ -422,15 +446,8 @@ public class Attack_Joystick : MonoBehaviour
         if (_targetEnemy != null)
         {
             StartCoroutine(AttackEffect(_targetEnemy));
-            var damage = _selectedStars.Select(x => x.damagePoints).Sum();
-            
-            // Attack bonus in case all linkable stars are selected
-            if (_selectedStars.Count > 1 && _selectedStars.Count == _maxLinkableStars)
-            {
-                damage += _attackBonus * _selectedStars.First().damagePoints;
-            }
+            var damage = _baseDamage + _bonusDamage;
             _selectedStars.ForEach(star => star.UseForAttack());
-            
             _targetEnemy.TakeDamage(damage);
             print("Inflicted: " + damage);
             _audioManager.Play("Attack");

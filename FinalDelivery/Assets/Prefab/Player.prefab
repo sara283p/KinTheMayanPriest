@@ -9817,6 +9817,8 @@ MonoBehaviour:
   obstacleLayerMask:
     serializedVersion: 2
     m_Bits: 135424
+  normalViewFinder: {fileID: 21300000, guid: edc7f5ae42cbe0640b57d4cf58f0e9fb, type: 3}
+  killingViewFinder: {fileID: 21300000, guid: 88f2089d24cd9704889c33f3421c1d9a, type: 3}
   thresholdManualAttackDistance: 15
   viewfinder: {fileID: 1635278334211474296}
   isHanging: 0
@@ -10594,7 +10596,6 @@ MonoBehaviour:
   headOffsetX: -3.9
   headOffsetY: -0.2
   distance: 1
-  _smoothTime: 0.13
 --- !u!1 &3034072722511025012
 GameObject:
   m_ObjectHideFlags: 0
