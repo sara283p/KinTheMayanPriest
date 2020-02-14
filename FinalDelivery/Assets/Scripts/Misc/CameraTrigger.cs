@@ -47,7 +47,7 @@ public class CameraTrigger : MonoBehaviour
     private Vector2 _positionSide;
     private bool _alreadyTriggered;
     private Vector2 _previousSide;
-
+    
     private void Awake()
     {
         _virtualCamera = FindObjectsOfType<CinemachineVirtualCamera>().First(cam => cam.gameObject.activeInHierarchy);
@@ -129,6 +129,8 @@ public class CameraTrigger : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D other)
     {
+        float scaleMultiplier;
+        
         if (oneWay && _alreadyTriggered)
             return;
         if (other.CompareTag("Player") && other.isTrigger)
@@ -139,11 +141,13 @@ public class CameraTrigger : MonoBehaviour
                 {
                     _positionSide = Vector2.right;
                     _targetSize = orthographicSizeAfterTrigger;
+                    scaleMultiplier = orthographicSizeAfterTrigger / orthographicSizeBeforeTrigger;
                 }
                 else
                 {
                     _positionSide = Vector2.left;
                     _targetSize = orthographicSizeBeforeTrigger;
+                    scaleMultiplier = orthographicSizeBeforeTrigger / orthographicSizeAfterTrigger;
                 }
             }
             else
@@ -152,14 +156,16 @@ public class CameraTrigger : MonoBehaviour
                 {
                     _positionSide = Vector2.down;
                     _targetSize = orthographicSizeAfterTrigger;
+                    scaleMultiplier = orthographicSizeAfterTrigger / orthographicSizeBeforeTrigger;
                 }
                 else
                 {
                     _positionSide = Vector2.up;
                     _targetSize = orthographicSizeBeforeTrigger;
+                    scaleMultiplier = orthographicSizeBeforeTrigger / orthographicSizeAfterTrigger;
                 }
             }
-
+            
             bool middleNotPassed = _previousSide == Vector2.zero || _positionSide.Equals(_previousSide);
             _previousSide = _positionSide;
             
@@ -174,6 +180,7 @@ public class CameraTrigger : MonoBehaviour
             if (!middleNotPassed)
             {
                 ApplyOffsets();
+                CameraFixApplier.ScaleHUD(scaleMultiplier);
             }
         }
     }
