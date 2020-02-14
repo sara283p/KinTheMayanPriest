@@ -56,6 +56,11 @@ public class LianaSeamless : Health, IDamageable
         return transform;
     }
 
+    public bool IsEnemy()
+    {
+        return false;
+    }
+
     private void DestroyObstacle()
     {
         foreach (var go in _children)

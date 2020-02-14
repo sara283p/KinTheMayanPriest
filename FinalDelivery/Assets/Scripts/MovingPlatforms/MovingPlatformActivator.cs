@@ -33,4 +33,9 @@ public class MovingPlatformActivator : MonoBehaviour, IDamageable
     {
         return _tr;
     }
+
+    public bool IsEnemy()
+    {
+        return false;
+    }
 }
