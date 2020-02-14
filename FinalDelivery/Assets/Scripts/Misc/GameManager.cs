@@ -257,5 +257,24 @@ public class GameManager : MonoBehaviour
         return levelIndex == 0 && !_isLevelCompleted[0];
     }
 
+    public bool IsLevelUnlocked(String levelName)
+    {
+        int levelIndex = scenes.ToList().IndexOf(levelName);
+        if (levelIndex == 0)
+        {
+            return true;
+        }
+
+        for (int i = 0; i < levelIndex; i++)
+        {
+            if (!_isLevelCompleted[i])
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public bool isCollectibleTaken => _isCollectibleTaken[_currentLevel];
 }
