@@ -95,10 +95,6 @@ public class CameraFixApplier : MonoBehaviour
 
     public static void ScaleHUD(float scaleMultiplier)
     {
-        if (Math.Abs(_targetScale - scaleMultiplier) > 0.01)
-        {
-            _targetScale *= scaleMultiplier;
-            
-        }
+        _targetScale *= scaleMultiplier;
     }
 }
