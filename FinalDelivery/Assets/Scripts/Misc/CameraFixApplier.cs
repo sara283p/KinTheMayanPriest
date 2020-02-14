@@ -22,9 +22,10 @@ public class CameraFixApplier : MonoBehaviour
     private float _initialOrthographicSize;
     private float _initialScreenX;
     private float _initialScreenY;
-    private float _actualScale;
-    private static float _targetScale;
-    [SerializeField] private float _smoothTime;
+    private static float _actualScale;
+    private Vector3 _originalHealthScale;
+    private Vector3 _originalPowerScale;
+    private Vector3 _originalHeadScale;
     private CinemachineFramingTransposer _transposer;
 
     private void Awake()
@@ -39,7 +40,9 @@ public class CameraFixApplier : MonoBehaviour
         _initialScreenX = _transposer.m_ScreenX;
         _initialScreenY = _transposer.m_ScreenY;
         _actualScale = 1;
-        _targetScale = 1;
+        _originalHealthScale = _healthBar.transform.localScale;
+        _originalPowerScale = _powerBar.transform.localScale;
+        _originalHeadScale = _kinHead.transform.localScale;
     }
 
     private void ReinitCamera()
@@ -47,8 +50,10 @@ public class CameraFixApplier : MonoBehaviour
         _virtualCamera.m_Lens.OrthographicSize = _initialOrthographicSize;
         _transposer.m_ScreenX = _initialScreenX;
         _transposer.m_ScreenY = _initialScreenY;
-        ScaleHUD(1/_actualScale);
         _actualScale = 1;
+        _healthBar.transform.localScale = _originalHealthScale;
+        _powerBar.transform.localScale = _originalPowerScale;
+        _kinHead.transform.localScale = _originalHeadScale;
     }
 
     private void OnEnable()
@@ -64,15 +69,6 @@ public class CameraFixApplier : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        _healthBar.transform.localScale /= _actualScale;
-        _powerBar.transform.localScale /= _actualScale;
-        _kinHead.transform.localScale /= _actualScale;
-        
-        Vector2 zeroVect = Vector2.zero;
-        Vector2 actualVect = new Vector2(_actualScale, 0);
-        Vector2 targetVect = new Vector2(_targetScale, 0);
-        _actualScale = Vector2.SmoothDamp(actualVect, targetVect, ref zeroVect, _smoothTime).x;
-
         Vector3 topLeft = _camera.ScreenToWorldPoint(new Vector3(0, Screen.height));
         Vector2 healthBarPos = _healthBar.transform.position;
         topLeft.x += offsetX * _actualScale;
@@ -88,6 +84,10 @@ public class CameraFixApplier : MonoBehaviour
         headPosition.y += headOffsetY * _actualScale;
         _kinHead.transform.position = headPosition;
         
+        _healthBar.transform.localScale = _originalHealthScale;
+        _powerBar.transform.localScale = _originalPowerScale;
+        _kinHead.transform.localScale = _originalHeadScale;
+        
         _healthBar.transform.localScale *= _actualScale;
         _powerBar.transform.localScale *= _actualScale;
         _kinHead.transform.localScale *= _actualScale;
@@ -95,6 +95,6 @@ public class CameraFixApplier : MonoBehaviour
 
     public static void ScaleHUD(float scaleMultiplier)
     {
-        _targetScale *= scaleMultiplier;
+        _actualScale = scaleMultiplier;
     }
 }

@@ -47,10 +47,12 @@ public class CameraTrigger : MonoBehaviour
     private Vector2 _positionSide;
     private bool _alreadyTriggered;
     private Vector2 _previousSide;
+    private float _originalOrthographicSize;
     
     private void Awake()
     {
         _virtualCamera = FindObjectsOfType<CinemachineVirtualCamera>().First(cam => cam.gameObject.activeInHierarchy);
+        _originalOrthographicSize = _virtualCamera.m_Lens.OrthographicSize;
         _unusedVector = Vector2.zero;
     }
 
@@ -78,6 +80,9 @@ public class CameraTrigger : MonoBehaviour
 
             Vector2 targetVector = new Vector2(_targetSize, 0);
             _virtualCamera.m_Lens.OrthographicSize = Vector2.SmoothDamp(new Vector2(orthographicSize, 0), targetVector, ref _unusedVector, 0.5f).x;
+
+            float scaleMultiplier = orthographicSize / _originalOrthographicSize;
+            CameraFixApplier.ScaleHUD(scaleMultiplier);
             
             if (targetReached)
             {
@@ -129,8 +134,6 @@ public class CameraTrigger : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D other)
     {
-        float scaleMultiplier;
-        
         if (oneWay && _alreadyTriggered)
             return;
         if (other.CompareTag("Player") && other.isTrigger)
@@ -141,13 +144,11 @@ public class CameraTrigger : MonoBehaviour
                 {
                     _positionSide = Vector2.right;
                     _targetSize = orthographicSizeAfterTrigger;
-                    scaleMultiplier = orthographicSizeAfterTrigger / orthographicSizeBeforeTrigger;
                 }
                 else
                 {
                     _positionSide = Vector2.left;
                     _targetSize = orthographicSizeBeforeTrigger;
-                    scaleMultiplier = orthographicSizeBeforeTrigger / orthographicSizeAfterTrigger;
                 }
             }
             else
@@ -156,13 +157,11 @@ public class CameraTrigger : MonoBehaviour
                 {
                     _positionSide = Vector2.down;
                     _targetSize = orthographicSizeAfterTrigger;
-                    scaleMultiplier = orthographicSizeAfterTrigger / orthographicSizeBeforeTrigger;
                 }
                 else
                 {
                     _positionSide = Vector2.up;
                     _targetSize = orthographicSizeBeforeTrigger;
-                    scaleMultiplier = orthographicSizeBeforeTrigger / orthographicSizeAfterTrigger;
                 }
             }
             
@@ -180,7 +179,6 @@ public class CameraTrigger : MonoBehaviour
             if (!middleNotPassed)
             {
                 ApplyOffsets();
-                CameraFixApplier.ScaleHUD(scaleMultiplier);
             }
         }
     }
