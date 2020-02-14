@@ -25,5 +25,9 @@ public class TargettableButNotObstacle : MonoBehaviour, IDamageable
     {
         return transform;
     }
-    
+
+    public bool IsEnemy()
+    {
+        return false;
+    }
 }

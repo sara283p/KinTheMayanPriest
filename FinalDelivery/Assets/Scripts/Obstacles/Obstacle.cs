@@ -61,6 +61,11 @@ public class Obstacle : Health, IDamageable
         return transform;
     }
 
+    public bool IsEnemy()
+    {
+        return false;
+    }
+
     private void DestroyObstacle()
     {
         if (_usedForEnigma)

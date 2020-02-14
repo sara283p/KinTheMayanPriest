@@ -289,7 +289,7 @@ public class Attack_Joystick : MonoBehaviour
             if (_targetType == TargetType.Enemy && _selectedStars.Count > 0)
             {
                 TargetEnemy();
-                _viewFinderSpriteRenderer.sprite = _baseDamage + _bonusDamage >= ((Health) _targetEnemy).GetHealth() ? killingViewFinder : normalViewFinder;
+                _viewFinderSpriteRenderer.sprite = _targetEnemy.IsEnemy() && _baseDamage + _bonusDamage >= ((Health) _targetEnemy).GetHealth() ? killingViewFinder : normalViewFinder;
             }
 
             // If the Select button is pressed, there are three possibilities:

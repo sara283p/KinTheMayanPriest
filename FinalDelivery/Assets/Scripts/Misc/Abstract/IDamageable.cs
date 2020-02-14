@@ -8,4 +8,6 @@ public interface IDamageable
     Vector2 GetPosition();
 
     Transform GetTransform();
+
+    bool IsEnemy();
 }
