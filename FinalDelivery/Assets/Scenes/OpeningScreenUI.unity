@@ -239,7 +239,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.0007019043, y: 0.000061035156}
+  m_AnchoredPosition: {x: 0.00070953, y: 0.000053406}
   m_SizeDelta: {x: -255, y: -143.39}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!328 &282466124
@@ -250,7 +250,7 @@ VideoPlayer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 282466122}
   m_Enabled: 1
-  m_VideoClip: {fileID: 32900000, guid: 894760f8bbc3b58a7acd6e047a465365, type: 3}
+  m_VideoClip: {fileID: 32900000, guid: c5744f3daa6501c408791ceb197d3eaf, type: 3}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 168665270}
@@ -550,11 +550,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 7873859324201173163, guid: 30c6beeef11161349b21f55625bc0da8,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 1028636369211190659, guid: 30c6beeef11161349b21f55625bc0da8,
         type: 3}
       propertyPath: m_Name
@@ -618,14 +613,6 @@ PrefabInstance:
     - target: {fileID: 28185888, guid: 30c6beeef11161349b21f55625bc0da8, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 28185884, guid: 30c6beeef11161349b21f55625bc0da8, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 933136552, guid: 30c6beeef11161349b21f55625bc0da8, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1351477355, guid: 30c6beeef11161349b21f55625bc0da8, type: 3}
       propertyPath: m_AnchorMin.x
