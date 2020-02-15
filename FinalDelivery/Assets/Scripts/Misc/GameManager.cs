@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using Misc;
+using UnityEngine.UI;
 using UnityEngine.Video;
 
 public class GameManager : MonoBehaviour
@@ -52,6 +53,16 @@ public class GameManager : MonoBehaviour
             _aliveObjects = new List<GameObject>();
             _activeFlags = new List<bool>();
             _loadingScreen = loadingScreen.GetComponent<LoadingScreen>();
+
+            VideoPlayer videoPlayer = GetComponent<VideoPlayer>();
+            RenderTexture texture = new RenderTexture(Screen.width, Screen.height, 24);
+            RawImage panelImage = GetComponentInChildren<RawImage>(true);
+            videoPlayer.targetTexture = texture;
+            panelImage.texture = texture;
+            videoPlayer.Prepare();
+
+            
+            _loadingScreen.SetPlayer(videoPlayer);
 
             LoadPersistentData();
 
