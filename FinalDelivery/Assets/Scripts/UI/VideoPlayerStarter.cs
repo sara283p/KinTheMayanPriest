@@ -22,7 +22,7 @@ public class VideoPlayerStarter : MonoBehaviour
 
     private void Start()
     {
-        AudioManager.instance.Play("MenuMusic");
+        AudioManager.instance.Stop();
     }
 
     private IEnumerator PlaybackStart()
