@@ -396,7 +396,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 8400000, guid: 64b130cebc8f14943873f542b75caf3e, type: 2}
+  m_Texture: {fileID: 0}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -849,8 +849,8 @@ MonoBehaviour:
   obstacleMaxHealth: 1
   enemyPerStarDamage: 20
   starCooldownTime: 10
-  maxHangDistance: 5
-  maxStarSelectDistance: 13
+  maxHangDistance: 15
+  maxStarSelectDistance: 15
   minHangDistance: 2
   linkableStars: 1
   attackBonus: 1
@@ -872,7 +872,7 @@ VideoPlayer:
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 0}
-  m_TargetTexture: {fileID: 8400000, guid: 64b130cebc8f14943873f542b75caf3e, type: 2}
+  m_TargetTexture: {fileID: 0}
   m_TimeReference: 0
   m_TargetMaterialRenderer: {fileID: 0}
   m_TargetMaterialProperty: _MainTex
