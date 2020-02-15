@@ -46,15 +46,24 @@ public class AudioManager : MonoBehaviour
 
 	public void Play()
 	{
-		if(!_isBackgroundPlaying)
+		if (!_isBackgroundPlaying)
+		{
+			StopPlaying("MenuMusic");
 			Play("BackgroundMusic");
+		}
+
 		_isBackgroundPlaying = true;
 	}
 
 	public void Stop()
 	{
+		if (_isBackgroundPlaying)
+		{
+			StopPlaying("BackgroundMusic");
+			Play("MenuMusic");
+		}
+
 		_isBackgroundPlaying = false;
-		StopPlaying("BackgroundMusic");
 	}
 
 	public void Play(string sound)
