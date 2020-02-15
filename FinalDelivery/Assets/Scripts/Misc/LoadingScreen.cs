@@ -14,8 +14,6 @@ public class LoadingScreen : MonoBehaviour
     private void Awake()
     {
         _bar = GetComponentInChildren<Slider>(true);
-        _videoPlayer = GetComponentInParent<VideoPlayer>();
-        _videoPlayer.Prepare();
     }
 
     public void SceneLoading(AsyncOperation loadingOperation)
@@ -25,6 +23,11 @@ public class LoadingScreen : MonoBehaviour
         _loadingOperation = loadingOperation;
         _videoPlayer.Play();
         StartCoroutine(SceneLoading());
+    }
+
+    public void SetPlayer(VideoPlayer videoPlayer)
+    {
+        _videoPlayer = videoPlayer;
     }
     
     private IEnumerator SceneLoading()
@@ -39,8 +42,8 @@ public class LoadingScreen : MonoBehaviour
 
         _bar.value = _loadingOperation.progress;
         yield return new WaitForSeconds(1);
+        _videoPlayer.Stop();
         gameObject.SetActive(false);
-        //_videoPlayer.Stop();
         _loadingOperation = null;
         EventManager.TriggerEvent("LoadingCompleted");
     }

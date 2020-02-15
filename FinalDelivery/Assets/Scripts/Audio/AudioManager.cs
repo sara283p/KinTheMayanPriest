@@ -31,6 +31,7 @@ public class AudioManager : MonoBehaviour
 			s.source = gameObject.AddComponent<AudioSource>();
 			s.source.clip = s.clip;
 			s.source.loop = s.loop;
+			_isBackgroundPlaying = true;
 
 			// s.source.outputAudioMixerGroup = mixerGroup;
 		}
@@ -46,15 +47,24 @@ public class AudioManager : MonoBehaviour
 
 	public void Play()
 	{
-		if(!_isBackgroundPlaying)
+		if (!_isBackgroundPlaying)
+		{
+			StopPlaying("MenuMusic");
 			Play("BackgroundMusic");
+		}
+
 		_isBackgroundPlaying = true;
 	}
 
 	public void Stop()
 	{
+		if (_isBackgroundPlaying)
+		{
+			StopPlaying("BackgroundMusic");
+			Play("MenuMusic");
+		}
+
 		_isBackgroundPlaying = false;
-		StopPlaying("BackgroundMusic");
 	}
 
 	public void Play(string sound)

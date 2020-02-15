@@ -20,6 +20,11 @@ public class VideoPlayerStarter : MonoBehaviour
         StartCoroutine(PlaybackStart());
     }
 
+    private void Start()
+    {
+        AudioManager.instance.Stop();
+    }
+
     private IEnumerator PlaybackStart()
     {
         while (!_videoPlayer.isPrepared)
