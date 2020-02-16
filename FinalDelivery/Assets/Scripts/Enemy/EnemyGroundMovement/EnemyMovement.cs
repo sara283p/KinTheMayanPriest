@@ -30,21 +30,31 @@ public class EnemyMovement : MonoBehaviour
             _movingRight = true;
 
         if (_movingRight)
+        {
             MoveRight();
-        else 
+        }
+        else
+        {
             MoveLeft();
+        }
     }
 
 
     void MoveRight()
     {
         Vector2 targetVelocity = new Vector2(moveSpeed, _rb.velocity.y);
+        Vector3 scale = transform.localScale;
+        scale.x = - Math.Abs(scale.x);
+        transform.localScale = scale;
         _rb.velocity = Vector3.SmoothDamp(_rb.velocity, targetVelocity, ref _unusedVelocity, 0.05f);
     }
     
     void MoveLeft()
     {
         Vector2 targetVelocity = new Vector2( - moveSpeed, _rb.velocity.y);
+        Vector3 scale = transform.localScale;
+        scale.x = Math.Abs(scale.x);
+        transform.localScale = scale;
         _rb.velocity = Vector3.SmoothDamp(_rb.velocity, targetVelocity, ref _unusedVelocity, 0.05f);
     }
 }
