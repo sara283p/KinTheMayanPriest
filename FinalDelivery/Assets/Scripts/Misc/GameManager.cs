@@ -146,7 +146,7 @@ public class GameManager : MonoBehaviour
     {
         _isChangingLevel = true;
         ReinitRespawnLists();
-        if (!_isLevelCompleted[_currentLevel])
+        if (_currentLevel != 2 && !_isLevelCompleted[_currentLevel])
         {
             IncreaseLinkableStars();
         }
@@ -289,6 +289,11 @@ public class GameManager : MonoBehaviour
         }
 
         return true;
+    }
+
+    public bool ShouldEnableGrappler()
+    {
+        return _currentLevel == 2 || _isLevelCompleted[2];
     }
 
     public bool isCollectibleTaken => _isCollectibleTaken[_currentLevel];
