@@ -5,9 +5,19 @@ using UnityEngine;
 
 public class Level2SecretUnlocker : MonoBehaviour
 {
-    private void OnDestroy()
+    private Collider2D _barrierCollider;
+
+    private void Awake()
     {
-        EventManager.TriggerEvent("SecretUnlocked");
+        _barrierCollider = GetComponent<Collider2D>();
     }
-    
+
+    private void Update()
+    {
+        if (!_barrierCollider.enabled)
+        {
+            EventManager.TriggerEvent("SecretUnlocked");
+        }
+    }
+
 }
