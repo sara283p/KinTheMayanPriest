@@ -107,8 +107,8 @@ public class CharacterController : MonoBehaviour
         }
 
         // Check whether the player is on the ground
-        Collider2D groundCollider = Physics2D.OverlapCircle(_groundCheck.position, _groundedRadius, _whatIsGround);
-        if(groundCollider)
+        Collider2D[] groundColliders = Physics2D.OverlapCircleAll(_groundCheck.position, _groundedRadius, _whatIsGround);
+        if(groundColliders.Length > 0)
         {
             _grounded = true;
             _justReleasedHook = false;
@@ -116,9 +116,9 @@ public class CharacterController : MonoBehaviour
             // To avoid remaining child of the moving platform in the frame the player jumps, set the parent to be the moving platform only if he did not jump
             if (!_jumping)
             {
-                transform.SetParent(groundCollider.CompareTag("MovingPlatform")
-                    ? groundCollider.transform
-                    : _initialParent);
+                Collider2D movingPlatformCollider =
+                    groundColliders.FirstOrDefault(groundColl => groundColl.CompareTag("MovingPlatform"));
+                transform.SetParent(movingPlatformCollider ? movingPlatformCollider.transform : _initialParent);
 				
                 _animator.SetBool(Jumping, false);
             }
