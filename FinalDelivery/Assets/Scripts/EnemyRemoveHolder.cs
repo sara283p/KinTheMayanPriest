@@ -25,7 +25,7 @@ public class EnemyRemoveHolder : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.CompareTag("MovingPlatform"))
+        if(other.CompareTag("MovingPlatform") || (other.CompareTag("Player") && other.isTrigger))
         {
             enemyHolder.SetActive(false);
         }
