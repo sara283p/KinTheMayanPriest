@@ -9718,7 +9718,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 1e124137d49f2164091668daad67697d, type: 3}
   - {fileID: 21300000, guid: e802f8fea457b5541be7efac15d7b220, type: 3}
   idleSprite: {fileID: 21300000, guid: 35cc9bed7fb518e438d22eccd5e0ef8b, type: 3}
-  _jumpCheckRadius: 0.1
+  _jumpCheckRadius: 0.275
   _jumpForce: 400
   m_MovementSmoothing: 0.05
   _whatIsGround:
@@ -9796,8 +9796,6 @@ MonoBehaviour:
   obstacleLayerMask:
     serializedVersion: 2
     m_Bits: 4352
-  normalViewFinder: {fileID: 0}
-  hangingViewFinder: {fileID: 0}
   locker: {fileID: 1635278333857860268}
   _waitTillGrounded: 0
   viewfinder: {fileID: 1635278334211474296}
@@ -10361,7 +10359,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1635278335214696000}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.44, y: -3.992, z: 0}
+  m_LocalPosition: {x: -0.44, y: -3.492, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1635278333857860264}
@@ -10391,7 +10389,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1635278335292191554}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.329, y: -3.992, z: 0}
+  m_LocalPosition: {x: 0.329, y: -3.492, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1635278333857860264}

@@ -150,8 +150,7 @@ public class CharacterController : MonoBehaviour
 
     /* START OF GIZMOS SECTION*/
     public Vector2 groundDir;
-
-    /*
+    
     private void OnDrawGizmos()
     {
         Gizmos.DrawRay(_rb.position, groundDir);
@@ -165,7 +164,6 @@ public class CharacterController : MonoBehaviour
         if(drawGroundedSphere)
             Gizmos.DrawSphere(_groundCheck.position, _groundedRadius);
     }
-    */
     /*END OF GIZMOS SECTION */ 
 
     public void Move(float move, bool crouch, bool jump)
