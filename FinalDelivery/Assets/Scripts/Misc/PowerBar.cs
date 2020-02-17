@@ -27,11 +27,11 @@ public class PowerBar : MonoBehaviour
     {
         _linkableStars = GameManager.Instance.linkableStars;
         _enabledStars = 0;
-        _maxLinkableStars = 4;
+        _maxLinkableStars = 3;
         _leftEdge = GetComponentInChildren<PowerBarLeftEdge>().transform.position;
         _rightEdge = GetComponentInChildren<PowerBarRightEdge>().transform.position;
         _powerBarStarsDistance = (_rightEdge.x - _leftEdge.x) / (_maxLinkableStars - 1);
-        _dotsPerSegment = 3;
+        _dotsPerSegment = 4;
         _interDotDistance = _powerBarStarsDistance / (_dotsPerSegment + 1);
         _starSignals = new List<GameObject>();
         _disabledStarOpacity = 0.3f;
@@ -104,7 +104,7 @@ public class PowerBar : MonoBehaviour
         {
             newStarTransform.localScale *= 1.5f;
             
-            GameObject[] segment = new GameObject[3];
+            GameObject[] segment = new GameObject[_dotsPerSegment];
             Vector2 newPos = _starSignals.Last().transform.position;
             for (int i = 0; i < _dotsPerSegment; i++)
             {
