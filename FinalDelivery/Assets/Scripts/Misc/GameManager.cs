@@ -156,13 +156,16 @@ public class GameManager : MonoBehaviour
         if (_currentLevel == 2)
         {
             _currentLevel = 0;
+            SavePersistentData();
+            SceneManager.LoadScene(scenes[3]);
         }
         else
         {
             _currentLevel++;
+            SavePersistentData();
+            _loadingScreen.SceneLoading(SceneManager.LoadSceneAsync(scenes[_currentLevel]));
         }
-        SavePersistentData();
-        _loadingScreen.SceneLoading(SceneManager.LoadSceneAsync(scenes[_currentLevel]));
+        
     }
 
     private void ChangeLevel(int selected)
