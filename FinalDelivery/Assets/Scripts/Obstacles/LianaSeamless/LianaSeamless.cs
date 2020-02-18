@@ -11,6 +11,8 @@ public class LianaSeamless : Health, IDamageable
     private float _aliveChildren;
     private Transform _targetPosition;
 
+    public float fadeOutDurationInSeconds = 1f;
+
     void Awake()
     {
         _maxHealth = GameManager.Instance.obstacleMaxHealth;
