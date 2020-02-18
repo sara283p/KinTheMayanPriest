@@ -70,7 +70,7 @@ public class Obstacle : Health, IDamageable
     {
         if (_usedForEnigma)
         {
-            GetComponent<SequentialDestructible>().enabled = false;
+            GetComponent<SequentialDestructible>().Check();
         }
         EventManager.TriggerEvent("TargetDestroyed");
         _audioManager.Play("StalattiteBreak");

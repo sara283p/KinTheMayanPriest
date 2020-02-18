@@ -39,9 +39,9 @@ public class Enigma : MonoBehaviour
         }
         var toReturn = _enigmaSet
             .Where(obj => obj.sequenceOrder < destroyedObjectOrder)
-            .Aggregate(true, (init, obj) => (obj == null ||!obj.isActiveAndEnabled) && init);
+            .Aggregate(true, (init, obj) => (obj == null || obj.isDestroyed) && init);
 
-        if (toReturn && (_enigmaSet.Count() - _enigmaSet.Count(obj => obj == null || !obj.isActiveAndEnabled)) == 0)
+        if (toReturn && (_enigmaSet.Count() - _enigmaSet.Count(obj => obj == null || obj.isDestroyed)) == 0)
             StartCoroutine(_EndEnigma());
             
         return toReturn;
