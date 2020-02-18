@@ -1,18 +1,30 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class AttackRedSphere : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public Sprite firstFrame;
+
+    private Vector3 _initialPosition;
+    private SpriteRenderer _spriteRenderer;
+
+    private void Awake()
     {
-        
+        _initialPosition = transform.localPosition;
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+        EventManager.StartListening("PlayerRespawn", Init);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnDestroy()
     {
-        
+        EventManager.StopListening("PlayerRespawn", Init);
+    }
+
+    private void Init()
+    {
+        transform.localPosition = _initialPosition;
+        _spriteRenderer.sprite = firstFrame;
     }
 }
