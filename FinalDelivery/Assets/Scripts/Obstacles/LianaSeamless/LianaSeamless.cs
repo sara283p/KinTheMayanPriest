@@ -10,6 +10,7 @@ public class LianaSeamless : Health, IDamageable
     private float _currentHealth;
     private float _aliveChildren;
     private Transform _targetPosition;
+    private GameObject _outline;
 
     public float fadeOutDurationInSeconds = 1f;
 
@@ -20,6 +21,7 @@ public class LianaSeamless : Health, IDamageable
         _targetPosition = GetComponentInChildren<LianaSeamlessTarget>().transform;
         _children = GetComponentsInChildren<LianaSeamlessPiece>();
         _connectedEnemies = GetComponentsInChildren<Enemy>(true);
+        _outline = GetComponentInChildren<ObstacleOutline>(true).gameObject;
 
         foreach (var enemy in _connectedEnemies)
         {
@@ -65,6 +67,7 @@ public class LianaSeamless : Health, IDamageable
 
     private void DestroyObstacle()
     {
+        _outline.SetActive(false);
         foreach (var go in _children)
         {
             go.DestroyPiece();
