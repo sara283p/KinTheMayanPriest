@@ -28,6 +28,7 @@ public class CharacterController : MonoBehaviour
     private float _oscillationSpeed;											// Max oscillation speed used to avoid circles while hanging
     [SerializeField] private float _oscillationDelta;							// Delta of space the player performs while oscillating
     [SerializeField] private float _baseOscillationSpeed;						// Base oscillation speed used to compute the maximum oscillation speed according to distance from the star
+    private float _maxOscillationSpeed;
     private Vector2 _groundNormal;												// Vector in normal direction w.r.t. the ground
     private Vector2 _starPosition;												// Position of the star the player is hooked to
     [SerializeField] private float _groundedRadius = 0.2f; 						// Distance from ground at which player is considered to be grounded
@@ -76,6 +77,7 @@ public class CharacterController : MonoBehaviour
         _lavaGravityModifier = GameManager.Instance.lavaGravityModifier;
         _health = GetComponent<PlayerHealth>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
+        _maxOscillationSpeed = _baseOscillationSpeed * GameManager.Instance.maxHangDistance / 3 * 0.8f;
     }
 
     void Update()
@@ -301,30 +303,7 @@ public class CharacterController : MonoBehaviour
                 targetVelocity.y = targetVelocity.y * 0.7f;
             }
 
-            float minSwingSpeed = _oscillationSpeed / 3;
-            float facingDir = transform.localRotation.y;
-            
-            // To avoid having facingDir = 0, and so direction = 0, if localRotation.y is 0, set it to 1 (because it means
-            // character is facing right)
-            if (Math.Abs(transform.localRotation.y) <= 0.01)
-            {
-                facingDir = 1;
-            }
-            int direction = Math.Sign(targetVelocity.x * facingDir);
-            
-            if (Mathf.Abs(targetVelocity.x) <= minSwingSpeed)
-            {
-                _spriteRenderer.sprite = swingingSprites[0];
-            }
-            else if (Mathf.Abs(targetVelocity.x) > _oscillationSpeed - minSwingSpeed)
-            {
-                _spriteRenderer.sprite = direction >= 0 ? swingingSprites[2] : swingingSprites[4];
-            }
-            else
-            {
-                _spriteRenderer.sprite = direction >= 0 ? swingingSprites[1] : swingingSprites[3];
-            }
-
+            UpdateSwingingFrame(_rb.velocity.x);
         }
 			
         // Set rigidbody velocity to move player
@@ -362,6 +341,46 @@ public class CharacterController : MonoBehaviour
         }
     }
 
+    private void UpdateSwingingFrame(float currentVelocity)
+    {
+        float facingDir = transform.localRotation.y;
+            
+        // To avoid having facingDir = 0, and so direction = 0, if localRotation.y is 0, set it to 1 (because it means
+        // character is facing right)
+        if (Math.Abs(transform.localRotation.y) <= 0.01)
+        {
+            facingDir = 1;
+        }
+        
+        int direction = Math.Sign(currentVelocity * facingDir);
+        int middleFrameIndex = 4;
+        float minSwingSpeed = _maxOscillationSpeed / 5;
+        float absoluteSpeed = Mathf.Abs(currentVelocity);
+        
+        if (absoluteSpeed <= minSwingSpeed)
+        {
+            _spriteRenderer.sprite = swingingSprites[middleFrameIndex];
+        }
+        else
+        {
+            int forwardFrameIndex = FrameIndexFromCurrentSpeed(absoluteSpeed, minSwingSpeed);
+
+            _spriteRenderer.sprite = direction >= 0
+                ? swingingSprites[forwardFrameIndex]
+                : swingingSprites[forwardFrameIndex + middleFrameIndex + 1];
+        }
+    }
+
+    private int FrameIndexFromCurrentSpeed(float absoluteSpeed, float minSpeed)
+    {
+        int index = Mathf.FloorToInt(absoluteSpeed / minSpeed) - 1;
+        if (index > 3)
+        {
+            index = 3;
+        }
+
+        return index;
+    }
 
     private void Flip()
     {
