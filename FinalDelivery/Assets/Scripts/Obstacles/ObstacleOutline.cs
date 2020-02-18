@@ -42,4 +42,10 @@ public class ObstacleOutline : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         runningRoutine = null;
     }
+
+    private void OnDisable()
+    {
+        StopAllCoroutines();
+        runningRoutine = null;
+    }
 }

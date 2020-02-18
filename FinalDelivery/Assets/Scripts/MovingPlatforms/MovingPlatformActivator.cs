@@ -8,12 +8,14 @@ public class MovingPlatformActivator : MonoBehaviour, IDamageable
     private Transform _tr;
     private MovingPlatform _platform;
     private int _groundLayer;
+    private GameObject _outline;
 
     private void Awake()
     {
         _tr = GetComponent<Transform>();
         _platform = _tr.parent.GetComponentInChildren<MovingPlatform>();
         _groundLayer = LayerMask.NameToLayer("Ground");
+        _outline = GetComponentInChildren<ObstacleOutline>(true).gameObject;
     }
 
     public void TakeDamage(float damage)
@@ -21,6 +23,18 @@ public class MovingPlatformActivator : MonoBehaviour, IDamageable
         if (_platform.Activate(gameObject))
         {
             gameObject.layer = _groundLayer;
+        }
+    }
+
+    private void Update()
+    {
+        if (gameObject.layer == _groundLayer)
+        {
+            _outline.SetActive(false);
+        }
+        else
+        {
+            _outline.SetActive(true);
         }
     }
 
