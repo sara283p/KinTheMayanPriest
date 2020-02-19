@@ -56,6 +56,23 @@ public class CameraTrigger : MonoBehaviour
         _unusedVector = Vector2.zero;
     }
 
+    private void OnEnable()
+    {
+        EventManager.StartListening("PlayerRespawn", Init);
+    }
+
+    private void Init()
+    {
+        _alreadyTriggered = false;
+        _triggerActivated = false;
+        _previousSide = Vector2.zero;
+    }
+
+    private void OnDisable()
+    {
+        EventManager.StopListening("PlayerRespawn", Init);
+    }
+
     private void DisableTriggerUpdate()
     {
         _triggerActivated = false;
