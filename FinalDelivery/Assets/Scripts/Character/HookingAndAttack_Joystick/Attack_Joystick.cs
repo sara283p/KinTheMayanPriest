@@ -269,6 +269,15 @@ public class Attack_Joystick : MonoBehaviour
         if (_attacking && _targetType == TargetType.Enemy && _targetEnemy != null)
         {
             viewfinder.gameObject.transform.position = _targetEnemy.GetPosition();
+            Vector2 relativePosition = (Vector2) _selectedStars.Last().transform.position - _targetEnemy.GetPosition();
+            RaycastHit2D hit = Physics2D.Raycast(_targetEnemy.GetPosition(), relativePosition,
+                relativePosition.magnitude, obstacleLayerMask);
+            if (hit.collider)
+            {
+                lineRenderer.positionCount = 0;
+                Abort();
+                return;
+            }
         }
 
         if (_targetType == TargetType.Star)
