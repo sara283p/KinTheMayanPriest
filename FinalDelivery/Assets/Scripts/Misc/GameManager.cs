@@ -12,6 +12,11 @@ using UnityEngine.Video;
 
 public class GameManager : MonoBehaviour
 {
+    [Header("Debug flag")]
+    [Tooltip("Flag to enable keyboard fast commands to change level or increase available number of stars")]
+    public bool debug;
+    [Space]
+    [Header("Game Values")]
     public String[] scenes;
     public Canvas loadingScreen;
     public float characterMaxHealth;
@@ -214,7 +219,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!_isChangingLevel)
+        if (debug && !_isChangingLevel)
         {
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
