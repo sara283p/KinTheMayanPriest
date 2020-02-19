@@ -136,6 +136,45 @@ public class Locker_Joystick : MonoBehaviour
 		return null;
 	}
 	
+	public Star GetFirstStarByRaycast(Transform origin, float range, Transform kin)
+	{
+		if (_selectingWait) return null;
+
+		Vector2 originPosition = origin.position;
+		Vector2 kinPosition = kin.position;
+		var horizontalMove = InputManager.GetAxisRaw("RHorizontal");
+		var verticalMove = InputManager.GetAxisRaw("RVertical");
+
+		//if (Mathf.Abs(verticalMove) < DeadZone && Mathf.Abs(horizontalMove) < DeadZone) return null;
+		
+		var direction = new Vector2(horizontalMove, verticalMove);
+		var magnitude = direction.magnitude;
+		var endPoint = originPosition + (range * magnitude * direction.normalized);
+		//print(direction.magnitude);
+		//print(direction.normalized);
+		selectEffect.positionCount = 2;
+		selectEffect.SetPosition(0, originPosition);
+		selectEffect.SetPosition(1, endPoint);
+		
+		//Debug.DrawRay(originPosition, direction * 5.0f, Color.green);
+		
+		var stars = Physics2D.RaycastAll(originPosition, direction, magnitude*range, starLayerMask)
+			.Select(x => x.transform.GetComponent<Star>())
+			.Where(x => !x.isDisabled)
+			.Where(x => !Physics2D.Raycast(kinPosition, ((Vector2) x.transform.position - kinPosition), ((Vector2) x.transform.position - kinPosition).magnitude, obstacleLayerMask))
+			.OrderBy(x => (originPosition - (Vector2) x.transform.position).sqrMagnitude)
+			.ToArray();
+
+		if (stars.Length > 0)
+		{
+			selectEffect.positionCount = 0;
+			StartCoroutine(SelectionWait());
+			return stars[0];
+		}
+
+		return null;
+	}
+	
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////      ENEMIES & OBSTACLES      ////////////////////////////////////////////////////

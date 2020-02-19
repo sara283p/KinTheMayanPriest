@@ -411,14 +411,27 @@ public class Attack_Joystick : MonoBehaviour
             viewfinder.gameObject.transform.position = _targetStar.transform.position;
         }
         else
-        // The first star has already been choosen: try to understand if the user is targeting a star or an enemy
-        // and act accordingly.
         {
-            var pointedStar = locker.GetAvailableStarByRaycast(viewfinder.transform, maxAllowedDistance);
-            if (pointedStar)
+            // A star is already targeted. If the first star has not already been selected, let the user choose it.
+            // else, let the user choose the next available star
+            if (_selectedStars.Count == 0)
             {
-                _targetStar = pointedStar;
-                viewfinder.gameObject.transform.position = pointedStar.transform.position;
+                var pointedStar = locker.GetFirstStarByRaycast(viewfinder.transform, maxAllowedDistance, _tr);
+                if (pointedStar)
+                {
+                    _targetStar = pointedStar;
+                    viewfinder.gameObject.transform.position = pointedStar.transform.position;
+                }
+
+            }
+            else
+            {
+                var pointedStar = locker.GetAvailableStarByRaycast(viewfinder.transform, maxAllowedDistance);
+                if (pointedStar)
+                {
+                    _targetStar = pointedStar;
+                    viewfinder.gameObject.transform.position = pointedStar.transform.position;
+                }
             }
         }
     }
