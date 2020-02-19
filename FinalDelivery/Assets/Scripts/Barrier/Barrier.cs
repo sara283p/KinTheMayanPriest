@@ -21,6 +21,11 @@ public class Barrier : MonoBehaviour
             _enemies.Add(enemy);
         }
 
+        if (GetComponentInParent<LianaSeamless>())
+        {
+            return;
+        }
+
         GameManager.Instance.RegisterForRespawn(gameObject);
     }
 
