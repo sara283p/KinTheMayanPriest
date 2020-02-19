@@ -64,7 +64,7 @@ public class CreditsManager : MonoBehaviour
             yield return null;
         }
         
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(10);
 
         StartCoroutine(FadeOutCredits());
     }
@@ -105,7 +105,7 @@ public class CreditsManager : MonoBehaviour
         }
         else
         {
-            if (InputManager.GetButtonDown("Button1"))
+            if (InputManager.AnyKeyDown(true))
             {
                 StopAllCoroutines();
                 StartCoroutine(FadeOutCredits());
