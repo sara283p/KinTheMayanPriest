@@ -122,7 +122,7 @@ public class Locker_Joystick : MonoBehaviour
 		var stars = Physics2D.RaycastAll(originPosition, direction, magnitude*range, starLayerMask)
 			.Select(x => x.transform.GetComponent<Star>())
 			.Where(x => !x.isDisabled)
-			.Where(x => !Physics2D.Raycast(originPosition, direction, ((Vector2) x.transform.position - originPosition).magnitude, obstacleLayerMask))
+			.Where(x => !Physics2D.Raycast(originPosition, ((Vector2) x.transform.position - originPosition), ((Vector2) x.transform.position - originPosition).magnitude, obstacleLayerMask))
 			.OrderBy(x => (originPosition - (Vector2) x.transform.position).sqrMagnitude)
 			.ToArray();
 
