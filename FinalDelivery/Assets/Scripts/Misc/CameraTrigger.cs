@@ -104,10 +104,6 @@ public class CameraTrigger : MonoBehaviour
             if (targetReached)
             {
                 _triggerActivated = false;
-                if (oneWay)
-                {
-                    enabled = false;
-                }
             }
         }
     }
