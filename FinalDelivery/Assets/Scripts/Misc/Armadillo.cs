@@ -52,6 +52,7 @@ public class Armadillo : MonoBehaviour
         if (other.CompareTag("Player") && other.isTrigger)
         {
             Activate();
+            AudioManager.instance.Play("ArmadilloSound");
             GameManager.Instance.TakeCollectible();
         }
     }
