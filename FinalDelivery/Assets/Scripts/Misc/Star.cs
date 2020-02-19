@@ -11,6 +11,8 @@ public class Star : MonoBehaviour
     public float coolDownTime = 10;
     public float coolDownOpacity = 0.3f;
     public GameObject selectedForAttack;
+    public Color highlightColor;
+    
     private Color _color;
     private SpriteRenderer _renderer;
     private CircleCollider2D _collider;
@@ -83,7 +85,7 @@ public class Star : MonoBehaviour
     
     public void HighlightStar()
     {
-        Color newColor = new Color(0f, 255f, 0);
+        Color newColor = highlightColor;
         _renderer.color = newColor;
         
     }
