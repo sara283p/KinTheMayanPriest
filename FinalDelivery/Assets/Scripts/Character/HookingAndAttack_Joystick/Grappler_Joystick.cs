@@ -48,10 +48,7 @@ public class Grappler_Joystick : MonoBehaviour
         _friction.enabled = false;
         _friction.enableCollision = true;
         _maxSelectDistance = GameManager.Instance.maxStarSelectDistance;
-        if (GameManager.Instance.ShouldEnableGrappler())
-        {
-            enabled = true;
-        }
+        enabled = GameManager.Instance.ShouldEnableGrappler();
     }
 
     private void SwitchToKinematic()

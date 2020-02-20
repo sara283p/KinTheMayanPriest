@@ -298,7 +298,7 @@ public class GameManager : MonoBehaviour
 
     public bool ShouldEnableGrappler()
     {
-        return _currentLevel == 2 || _isLevelCompleted[2];
+        return _isLevelCompleted[1];
     }
 
     public bool isCollectibleTaken => _isCollectibleTaken[_currentLevel];
