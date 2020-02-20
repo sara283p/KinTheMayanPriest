@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -30,6 +31,8 @@ public class PauseMenuManager : MonoBehaviour
     [SerializeField] private GameObject resume;
     [SerializeField] private GameObject exit;
 
+    private bool _isGrapplerEnabled;
+
     void Awake()
     {
         pauseMenuScript = pauseMenuCanvas.GetComponent<PauseMenuManager>();
@@ -43,6 +46,11 @@ public class PauseMenuManager : MonoBehaviour
         isExitSelected = false;
         selectedText = resume.GetComponentInChildren<TextMeshProUGUI>();
         selectedText.color = Color.yellow;
+    }
+
+    private void Start()
+    {
+        _isGrapplerEnabled = grapplerScript.enabled;
     }
 
     void Update()
@@ -116,7 +124,7 @@ public class PauseMenuManager : MonoBehaviour
         playerMovementScript.enabled = true;
         characterControllerScript.enabled = true;
         lockerScript.enabled = true;
-        grapplerScript.enabled = true;
+        grapplerScript.enabled = _isGrapplerEnabled;
         attackScript.enabled = true;
     }
 
