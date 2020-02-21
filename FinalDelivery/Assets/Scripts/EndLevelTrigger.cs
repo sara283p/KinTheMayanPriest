@@ -11,6 +11,7 @@ public class EndLevelTrigger : MonoBehaviour
     private PlayerMovement _movement;
     private Rigidbody2D _rb;
     private bool _isDialogueActive;
+    private PauseMenuManager _pauseMenu;
     
     private static readonly int Activated = Animator.StringToHash("Activated");
     private static readonly int Speed = Animator.StringToHash("Speed");
@@ -29,6 +30,7 @@ public class EndLevelTrigger : MonoBehaviour
     {
         _godAnimators = GetComponentsInChildren<Animator>().ToList();
         _movement = FindObjectOfType<PlayerMovement>();
+        _pauseMenu = FindObjectOfType<PauseMenuManager>();
         _rb = _movement.GetComponent<Rigidbody2D>();
         dialogueBox.SetActive(false);
     }
@@ -38,6 +40,8 @@ public class EndLevelTrigger : MonoBehaviour
             if (other.CompareTag("Player") && other.isTrigger && !_alreadyTriggered)
             {
                 _movement.DisableInput();
+                if(_pauseMenu)
+                    _pauseMenu.enabled = false;
                 _movement.GetComponent<Animator>().SetFloat(Speed, 0);
                 _rb.velocity = Vector3.zero;
                 StartCoroutine(AnimationEnabler());
