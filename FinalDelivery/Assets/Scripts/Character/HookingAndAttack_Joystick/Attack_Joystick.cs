@@ -78,6 +78,8 @@ public class Attack_Joystick : MonoBehaviour
     private void OnDisable()
     {
         EventManager.StopListening("LinkableStarsIncreased", IncreaseLinkableStars);
+        StopAllCoroutines();
+        lineRenderer.positionCount = 0;
     }
 
     private void IncreaseLinkableStars()
